@@ -13,7 +13,7 @@ The SDK allows using twi types of speech recognition:
 
 2. Speaktoit. (!NB - COMING SOON). Speech recognition is performed on the API.AI server. The client app sends audio file or stream to API.AI server. 
 
-# GETTING STARTED:
+# Getting Started:
 
 
 1. Add two permissions into the AndroidManifest:
