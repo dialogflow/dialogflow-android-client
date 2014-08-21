@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity implements AIListener {
 
-    private static final String ACCESS_TOKEN = "bac5a0ed96e84741862f69d6475ba8ac";
+    private static final String ACCESS_TOKEN = "INSERT_CLIENT_ACCESS_TOKEN_HERE";
     private AIService aiService;
     private ProgressBar progressBar;
     private ImageView recIndicator;
