@@ -1,29 +1,28 @@
 api-ai-android-sdk
 ==================
 
-AI SDK позволяет использовать голосовое общение и команды, для обращения к AI сервису Speaktoit.
-В качестве обязательных условий использования AI SDK на мобильном клиенте является наличие интернет соединения,
-а также разрешения на запись аудио с микрофона устройства.
+API.AI Android SDK allows using voice commands and integration with dialog scenarios defined for a particular agent in API.AI.
 
-Для использования AI SDK у себя в приложении необходим OAuth2 ключ для совершения запросов к AI API.
+In order to use API.AI, Android application needs to have Internet access and access to the microphone (RECORD_AUDIO) permission.
 
-AI SDK имеет два варианта обращения к AI сервису:
+SDK requires specification of the OAuth2 Access Token that could be found in the API.AI agents details page for each of the agents.
 
-1. Google. Распознование речи производится стандартными средствами из Android SDK, после чего
-распознанный текст передается AI сервису для дальнейшей обработки и формирования ответа на клиент.
+The SDK allows using twi types of speech recognition:
 
-2. Speaktoit. Распознавание речи производится на AI сервисе. При этом с клиента отсылается аудио файл,
-содержащий записанную речь клиента. AI серсис распознает речь из аудио файла и формирует ответ для клиента.
+1. Google. Speech recognition is performed using Google's speech recognition on the client / in the cloud. Recognized text is passed to the API.AI query service for processing.
 
-Для того, чтобы начать общение с AI сервисом необходимо:
+2. Speaktoit. (!NB - COMING SOON). Speech recognition is performed on the API.AI server. The client app sends audio file or stream to API.AI server. 
 
-1. В AndroidManifest необходимо добавить 2 permissions:
+# GETTING STARTED:
+
+
+1. Add two permissions into the AndroidManifest:
     * android.permission.INTERNET
     * android.permission.RECORD_AUDIO
     
-2. Реализовать интерфейс AIListener, в необходимом вам месте, для получения обратной связи от сервиса.
-3. Создать объект конфигурации AIConfiguration и получить ссылку на объект сервиса из класса AIService при помощи него.
-4. В объект AIService передать ссылку на ваш объект, реализующий интерфейс AIListener.
-5. Запустить сервис методом "startListening". При этом сервис начнет слушать input с микрофона мобильного устройства.
-6. Если необходимо остановить или отменить работу серсиса, сервис имеет методы "stopListening" и "cancel".
+2. Implement AIListener interface to process responses from API.AI
+3. Create an instance of AIConfiguration and get a reference to the AIService from it.
+4. Set AIListener into the AIService.
+5. Launch listening from the mic via the "startListening" method. The SDK will start listening for the microphone input of the mobile device.
+6. To stop or cancel listening to a user commend call "stopListening" or "cancel" methods of AIService.
 
