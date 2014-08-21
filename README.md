@@ -18,8 +18,8 @@ AI SDK имеет два варианта обращения к AI сервис�
 Для того, чтобы начать общение с AI сервисом необходимо:
 
 1. В AndroidManifest необходимо добавить 2 permissions:
-- <uses-permission android:name="android.permission.INTERNET" />
-- <uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
 
 2. Реализовать интерфейс AIListener, в необходимом вам месте, для получения обратной связи от сервиса.
 3. Создать объект конфигурации AIConfiguration и получить ссылку на объект сервиса из класса AIService при помощи него.
