@@ -9,7 +9,7 @@ import java.util.Locale;
 public class GsonFactory {
 
     private static final Gson protocolGson = new GsonBuilder()
-            .setDateFormat(new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z", Locale.US).toPattern()).create();
+            .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).toPattern()).create();
 
     public static Gson getGson(){
         return protocolGson;
