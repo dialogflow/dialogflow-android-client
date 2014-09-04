@@ -7,7 +7,7 @@ In order to use API.AI, Android application needs to have Internet access and ac
 
 SDK requires specification of the OAuth2 Access Token that could be found in the API.AI agents details page for each of the agents.
 
-The SDK allows using twi types of speech recognition:
+The SDK allows using two types of speech recognition:
 
 1. Google. Speech recognition is performed using Google's speech recognition on the client / in the cloud. Recognized text is passed to the API.AI query service for processing.
 
@@ -17,8 +17,8 @@ The SDK allows using twi types of speech recognition:
 
 
 1. Add two permissions into the AndroidManifest:
-    * android.permission.INTERNET
-    * android.permission.RECORD_AUDIO
+    * **android.permission.INTERNET**
+    * **android.permission.RECORD_AUDIO**
     
 2. Implement AIListener interface to process responses from API.AI
 3. Create an instance of AIConfiguration and get a reference to the AIService from it.

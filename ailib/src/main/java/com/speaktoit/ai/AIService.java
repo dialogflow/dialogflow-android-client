@@ -46,10 +46,19 @@ public abstract class AIService {
         this.config = config;
     }
 
+    /**
+     * Starts listening process
+     */
     public abstract void startListening();
 
+    /**
+     * Stop listening and start request to the AI service with current recognition results
+     */
     public abstract void stopListening();
 
+    /**
+     * Cancel listening process and don't request to AI service
+     */
     public abstract void cancel();
 
     public void setListener(final AIListener listener) {
