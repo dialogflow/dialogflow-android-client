@@ -21,7 +21,6 @@ package com.speaktoit.ai;
  *
  ***********************************************************************************************************************/
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -82,7 +81,7 @@ public class AIDataService {
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
-            connection.addRequestProperty("Authorization", "Bearer " + config.getAccessToken());
+            connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
             connection.addRequestProperty("Content-Type","application/json");
             connection.addRequestProperty("Accept","application/json");
 

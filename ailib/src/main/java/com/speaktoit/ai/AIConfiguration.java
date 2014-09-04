@@ -40,30 +40,30 @@ public class AIConfiguration {
         Google, Speaktoit
     }
 
-    private String accessToken;
+    private String apiKey;
     private String language;
     private RecognitionEngine recognitionEngine;
     private boolean debug;
 
-    public AIConfiguration(final String accessToken, final String language) {
-        this.accessToken = accessToken;
+    public AIConfiguration(final String apiKey, final String language) {
+        this.apiKey = apiKey;
         this.language = language;
     }
 
-    public AIConfiguration(final String accessToken, final String language, final RecognitionEngine recognitionEngine) {
-        this.accessToken = accessToken;
+    public AIConfiguration(final String apiKey, final String language, final RecognitionEngine recognitionEngine) {
+        this.apiKey = apiKey;
         this.language = language;
         this.recognitionEngine = recognitionEngine;
 
         serviceUrl = SERVICE_PROD_URL;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public String getApiKey() {
+        return apiKey;
     }
 
-    public void setAccessToken(final String accessToken) {
-        this.accessToken = accessToken;
+    public void setApiKey(final String apiKey) {
+        this.apiKey = apiKey;
     }
 
     public String getLanguage() {
