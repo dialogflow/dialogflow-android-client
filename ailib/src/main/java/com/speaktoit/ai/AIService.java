@@ -26,11 +26,20 @@ import android.content.Context;
 import com.speaktoit.ai.model.AIError;
 import com.speaktoit.ai.model.AIResponse;
 
+/**
+ * Main SDK class fro working with API.AI service.
+ */
 public abstract class AIService {
 
     protected final AIConfiguration config;
     private AIListener listener;
 
+    /**
+     * Use this method to get ready to work instance
+     * @param context
+     * @param config
+     * @return instance of AIService implementation
+     */
     public static AIService getService(final Context context, final AIConfiguration config) {
         if (config.getRecognitionEngine() == AIConfiguration.RecognitionEngine.Google) {
             return new GoogleRecognitionServiceImpl(context, config);
@@ -61,6 +70,10 @@ public abstract class AIService {
      */
     public abstract void cancel();
 
+    /**
+     * Sets listener, which used to notify about process steps
+     * @param listener {@link com.speaktoit.ai.AIListener AIListener} implementation
+     */
     public void setListener(final AIListener listener) {
         this.listener = listener;
     }
