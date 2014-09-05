@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(RobolectricTestRunner.class)
 public class ProtocolTest {
 
-    private static final String ACCESS_TOKEN = "e43c0g5d787787d95221c9481cw8fe98";
+    private static final String ACCESS_TOKEN = "YOUR_ACCESS_TOKEN_HERE";
 
     @Test
     public void testCheck() {
