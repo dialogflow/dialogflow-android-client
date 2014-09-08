@@ -1,1 +1,1 @@
-include ':ailib', ':sampleApp'
+include ':ailib', ':apiAISampleApp'

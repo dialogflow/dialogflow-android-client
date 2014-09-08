@@ -16,7 +16,7 @@
 #   public *;
 #}
 
--keep class com.speaktoit.model.** { *; }
+-keep class ai.api.model.** { *; }
 
 ##---------------Begin: proguard configuration for Gson  ----------
 # Gson uses generic type information stored in a class file when working with fields. Proguard
