@@ -44,4 +44,6 @@ Follow these steps for creating your own app that uses the API.AI Android SDK:
 6. Launch listening from the microphone via the **startListening** method. The SDK will start listening for the microphone input of the mobile device.
 7. To stop listening and start the request to the API.AI service using the current recognition results, call the **stopListening** method of the AIService class.
 8. To cancel the listening process without sending a request to the API.AI service, call the **cancel** method of the AIService class.
+9. In the **onResult** method of the AIListener interface, check the response for errors using the **AIResponse.isError** method.
+10. If there are no errors, you can get the result using the **AIResponse.getResult** method. From there, you can obtain the action and parameters.
 
