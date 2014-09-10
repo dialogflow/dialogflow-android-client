@@ -49,7 +49,10 @@ public class MainActivity extends ActionBarActivity implements AIListener {
 
     public static final String TAG = MainActivity.class.getName();
 
+    // copy this keys from your developer dashboard
     private static final String ACCESS_TOKEN = "INSERT_CLIENT_ACCESS_TOKEN_HERE";
+    private static final String SUBSCRIPTION_KEY = "INSERT_SUBSCRIPTION_KEY_HERE";
+
     private AIService aiService;
     private ProgressBar progressBar;
     private ImageView recIndicator;
@@ -70,13 +73,38 @@ public class MainActivity extends ActionBarActivity implements AIListener {
 
         gson = GsonFactory.getGson();
 
-        final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, Locale.US.toString(), AIConfiguration.RecognitionEngine.Google);
-        config.setDebug(true);
+        final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN,
+                SUBSCRIPTION_KEY, Locale.US.toString(),
+                AIConfiguration.RecognitionEngine.Google);
 
         aiService = AIService.getService(this, config);
         aiService.setListener(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.d(TAG, "onPause");
+
+        // use this method to disconnect from speech recognition service
+        // Not destroying the SpeechRecognition object in onPause method would block other apps from using SpeechRecognition service
+        if (aiService != null) {
+            aiService.pause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.d(TAG, "onResume");
+
+        // use this method to reinit connection to recognition service
+        if (aiService != null) {
+            aiService.resume();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -125,8 +153,10 @@ public class MainActivity extends ActionBarActivity implements AIListener {
             Log.i(TAG, "Received success response");
 
             // this is example how to get different parts of result object
-            Log.i(TAG, "Status: " + response.getStatus());
-            Log.i(TAG, "Resolved query: " + response.getResolvedQuery());
+            Log.i(TAG, "Status code: " + response.getStatus().getCode());
+            Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
+
+            Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
 
             Log.i(TAG, "Action: " + response.getResult().getAction());
             Log.i(TAG, "Speech: " + response.getResult().getSpeech());

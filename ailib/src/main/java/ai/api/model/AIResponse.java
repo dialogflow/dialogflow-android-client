@@ -31,9 +31,6 @@ public class AIResponse implements Serializable {
     @SerializedName("id")
     private String id;
 
-    @SerializedName("resolvedQuery")
-    private String resolvedQuery;
-
     @SerializedName("timestamp")
     private Date timestamp;
 
@@ -49,14 +46,6 @@ public class AIResponse implements Serializable {
 
     public void setId(final String id) {
         this.id = id;
-    }
-
-    public String getResolvedQuery() {
-        return resolvedQuery;
-    }
-
-    public void setResolvedQuery(final String resolvedQuery) {
-        this.resolvedQuery = resolvedQuery;
     }
 
     public Date getTimestamp() {

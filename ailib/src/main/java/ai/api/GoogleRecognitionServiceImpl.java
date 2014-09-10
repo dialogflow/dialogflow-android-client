@@ -43,7 +43,8 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
     private static final String TAG = GoogleRecognitionServiceImpl.class.getName();
 
-    private final SpeechRecognizer speechRecognizer;
+    private SpeechRecognizer speechRecognizer;
+    private final Context context;
     private volatile boolean recognitionActive = false;
     private final AIDataService aiDataService;
 
@@ -63,6 +64,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
     protected GoogleRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config);
+        this.context = context;
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
         speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
@@ -141,6 +143,26 @@ public class GoogleRecognitionServiceImpl extends AIService {
         if (recognitionActive) {
             speechRecognizer.cancel();
             recognitionActive = false;
+        }
+    }
+
+    @Override
+    public void pause() {
+        super.pause();
+
+        if (speechRecognizer != null) {
+            speechRecognizer.destroy();
+            speechRecognizer = null;
+        }
+    }
+
+    @Override
+    public void resume() {
+        super.resume();
+
+        if (speechRecognizer == null) {
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+            speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
         }
     }
 

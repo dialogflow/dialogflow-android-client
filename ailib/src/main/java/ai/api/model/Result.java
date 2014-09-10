@@ -44,6 +44,9 @@ public class Result implements Serializable {
     @SerializedName("metadata")
     private Metadata metadata;
 
+    @SerializedName("resolvedQuery")
+    private String resolvedQuery;
+
     public String getSpeech() {
         return speech;
     }
@@ -70,5 +73,13 @@ public class Result implements Serializable {
 
     public HashMap<String, JsonElement> getParameters() {
         return parameters;
+    }
+
+    public String getResolvedQuery() {
+        return resolvedQuery;
+    }
+
+    public void setResolvedQuery(final String resolvedQuery) {
+        this.resolvedQuery = resolvedQuery;
     }
 }

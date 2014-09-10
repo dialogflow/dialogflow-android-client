@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 public class ProtocolTest {
 
     private static final String ACCESS_TOKEN = "YOUR_ACCESS_TOKEN_HERE";
+    private static final String SUBSCRIPTION_KEY = "INSERT_SUBSCRIPTION_KEY_HERE";
+
 
     @Test
     public void testCheck() {
@@ -32,7 +34,7 @@ public class ProtocolTest {
 
     @Test
     public void AIDataServiceDebugTest() {
-        final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, Locale.US.toString(), AIConfiguration.RecognitionEngine.Google);
+        final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY, Locale.US.toString(), AIConfiguration.RecognitionEngine.Google);
         config.setDebug(true);
 
         final AIDataService aiDataService = new AIDataService(config);

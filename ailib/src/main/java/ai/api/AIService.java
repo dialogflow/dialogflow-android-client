@@ -107,4 +107,12 @@ public abstract class AIService {
             listener.onListeningFinished();
         }
     }
+
+    public void pause() {
+
+    }
+
+    public void resume(){
+
+    }
 }

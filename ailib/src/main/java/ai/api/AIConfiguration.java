@@ -28,7 +28,7 @@ public class AIConfiguration {
 
     protected static String PROTOCOL_VERSION = "v1";
 
-    protected static final String QUESTION_ENDPOINT = "query/";
+    protected static final String QUESTION_ENDPOINT = "query";
 
     private String serviceUrl;
 
@@ -37,21 +37,27 @@ public class AIConfiguration {
     }
 
     public enum RecognitionEngine {
-        Google, Speaktoit
+
+        /**
+         * Google Speech Recognition integrated into Android OS
+         */
+        Google,
+
+        /**
+         * Not implemented yet. Do not use.
+         */
+        Speaktoit
     }
 
     private String apiKey;
+    private final String subscriptionKey;
     private String language;
     private RecognitionEngine recognitionEngine;
     private boolean debug;
 
-    public AIConfiguration(final String apiKey, final String language) {
+    public AIConfiguration(final String apiKey, final String subscriptionKey, final String language, final RecognitionEngine recognitionEngine) {
         this.apiKey = apiKey;
-        this.language = language;
-    }
-
-    public AIConfiguration(final String apiKey, final String language, final RecognitionEngine recognitionEngine) {
-        this.apiKey = apiKey;
+        this.subscriptionKey = subscriptionKey;
         this.language = language;
         this.recognitionEngine = recognitionEngine;
 
@@ -97,6 +103,6 @@ public class AIConfiguration {
     }
 
     public String getQuestionUrl() {
-        return serviceUrl + QUESTION_ENDPOINT;
+        return String.format("%s%s?subscription-key=%s", serviceUrl, QUESTION_ENDPOINT, subscriptionKey);
     }
 }
