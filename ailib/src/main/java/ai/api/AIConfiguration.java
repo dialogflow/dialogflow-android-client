@@ -72,6 +72,10 @@ public class AIConfiguration {
         this.apiKey = apiKey;
     }
 
+    public String getSubscriptionKey() {
+        return subscriptionKey;
+    }
+
     public String getLanguage() {
         return language;
     }
@@ -103,6 +107,6 @@ public class AIConfiguration {
     }
 
     public String getQuestionUrl() {
-        return String.format("%s%s?subscription-key=%s", serviceUrl, QUESTION_ENDPOINT, subscriptionKey);
+        return String.format("%s%s", serviceUrl, QUESTION_ENDPOINT);
     }
 }

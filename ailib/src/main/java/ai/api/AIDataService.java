@@ -82,6 +82,7 @@ public class AIDataService {
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
+            connection.addRequestProperty("ocp-apim-subscription-key", config.getSubscriptionKey());
             connection.addRequestProperty("Content-Type","application/json");
             connection.addRequestProperty("Accept","application/json");
 
