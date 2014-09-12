@@ -33,6 +33,12 @@ public class Metadata implements Serializable {
     @SerializedName("intentId")
     private String intentId;
 
+    @SerializedName("inputContexts")
+    private String inputContexts;
+
+    @SerializedName("contexts")
+    private String contexts;
+
     public String getIntentName() {
         return intentName;
     }
@@ -47,5 +53,13 @@ public class Metadata implements Serializable {
 
     public void setIntentId(final String intentId) {
         this.intentId = intentId;
+    }
+
+    public String getInputContexts() {
+        return inputContexts;
+    }
+
+    public String getContexts() {
+        return contexts;
     }
 }
