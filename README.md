@@ -31,6 +31,8 @@ The API.AI Android SDK comes with a simple sample that illustrates how voice com
 
 # Getting Started with Your Own App
 
+## Using integrated recognition
+
 Follow these steps for creating your own app that uses the API.AI Android SDK:
 
 1. Add two permissions into the AndroidManifest:
@@ -47,3 +49,31 @@ Follow these steps for creating your own app that uses the API.AI Android SDK:
 9. In the **onResult** method of the AIListener interface, check the response for errors using the **AIResponse.isError** method.
 10. If there are no errors, you can get the result using the **AIResponse.getResult** method. From there, you can obtain the action and parameters.
 
+## Using your own recognition
+
+If you have your own recognition (or already implement custom logic), you can use API.AI Android SDK for receiving results from text input. Follow these steps for this:
+
+1. Add this permission into the AndroidManifest:
+    * **android.permission.INTERNET**
+    
+2. Create an instance of **AIConfiguration**, specifying the access token, locale, and recognition engine (you can specify any recognition engine, in this case it does not matters).
+3. Create the **AIDataService** object using configuration object.
+4. Create the empty **AIRequest** instance. Set request text using method **setQuery**.
+5. Send request to the API.AI service using method **aiDataService.request(aiRequest)**.
+6. Process response.
+
+Example code:
+
+    final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY, Locale.US.toString(), AIConfiguration.RecognitionEngine.Google);
+    final AIDataService aiDataService = new AIDataService(config);
+    
+    final AIRequest aiRequest = new AIRequest();
+    aiRequest.setQuery("Hello");
+    
+    try {
+        final AIResponse aiResponse = aiDataService.request(aiRequest);
+        // process response object here...
+        
+    } catch (final AIServiceException e) {
+        e.printStackTrace();
+    }
