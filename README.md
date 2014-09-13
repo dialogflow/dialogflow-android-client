@@ -23,7 +23,11 @@ The API.AI Android SDK comes with a simple sample that illustrates how voice com
 2. Import the **api-ai-android-master** directory.
 3. Open the SDK Manager and be sure that you have installed Android Build Tools 1.9.
 4. In the Project browser, open **apiAISampleApp/src/main/java/ai.api.sample/MainActivity**.
-5. Towards the top of the file, you will see a declarations of two strings: *ACCESS_TOKEN* and *SUBSCRIPTION_KEY*. Set this values to be the client access token of your agent. 
+5. Towards the top of the file, you will see a declarations of two strings: *ACCESS_TOKEN* and *SUBSCRIPTION_KEY*. Set this values to be the client access token of your agent.
+
+        private static final String ACCESS_TOKEN = "YOUR_ACCESS_TOKEN_HERE";
+        private static final String SUBSCRIPTION_KEY = "INSERT_SUBSCRIPTION_KEY_HERE";
+
 6. Attach an Android device, or have the emulator set up with an emulated device.
 7. From the **Run** menu, choose **Debug** (or click the Debug symbol).
 8. You should see an app running with three buttons: **Listen**, **StopListen**, and **Cancel**.
