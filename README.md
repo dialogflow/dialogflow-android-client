@@ -49,6 +49,8 @@ Follow these steps for creating your own app that uses the API.AI Android SDK:
 9. In the **onResult** method of the AIListener interface, check the response for errors using the **AIResponse.isError** method.
 10. If there are no errors, you can get the result using the **AIResponse.getResult** method. From there, you can obtain the action and parameters.
 
+The example of this integration you can see in the example app in **apiAISampleApp/src/main/java/ai.api.sample/MainActivity.java** file.
+
 ## Using your own recognition
 
 If you have your own recognition (or already implement custom logic), you can use API.AI Android SDK for receiving results from text input. Follow these steps for this:
