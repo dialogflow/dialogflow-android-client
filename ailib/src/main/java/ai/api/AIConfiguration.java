@@ -23,7 +23,7 @@ package ai.api;
 
 public class AIConfiguration {
 
-    private static final String SERVICE_PROD_URL="https://api.api.ai/v1-dev/";
+    private static final String SERVICE_PROD_URL="https://api.api.ai/v1/";
     private static final String SERVICE_DEV_URL = "https://dev.api.ai/api/";
 
     protected static String PROTOCOL_VERSION = "v1";
