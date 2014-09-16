@@ -35,9 +35,20 @@ The API.AI Android SDK comes with a simple sample that illustrates how voice com
 
 # Getting Started with Your Own App
 
+There are two options to get API.AI SDK library:
+
+1. Add dependency to your *build.gradle* file.
+2. Download library source code from here, and attach it to your project.
+
+The first way is the simplest. Simply add this line:
+
+    compile 'ai.api:sdk:1.0.0'
+
+to your application dependencies block. (Take a look to the *apiAISampleApp/build.gradle* for example).
+
 ## Using integrated recognition
 
-Follow these steps for creating your own app that uses the API.AI Android SDK:
+Then follow these steps for creating your own app that uses the API.AI Android SDK:
 
 1. Add two permissions into the AndroidManifest:
     * **android.permission.INTERNET**
