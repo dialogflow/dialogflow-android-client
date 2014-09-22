@@ -24,7 +24,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:19.+'
-    compile 'ai.api:sdk:1.0.0'
+    compile 'ai.api:sdk:1.0.1'
 
     // this line left for testing purposes
     // compile project(':ailib')
