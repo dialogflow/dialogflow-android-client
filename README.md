@@ -42,7 +42,7 @@ There are two options to get API.AI SDK library:
 
 The first way is the simplest. Simply add this line:
 
-    compile 'ai.api:sdk:1.0.0'
+    compile 'ai.api:sdk:1.0.1'
 
 to your application dependencies block. (Take a look to the *apiAISampleApp/build.gradle* for example).
 
