@@ -120,6 +120,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, config.getLanguage());
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, config.getLanguage());
+
+            // WORKAROUND for https://code.google.com/p/android/issues/detail?id=75347
+            // TODO Must be removed after fix in Android
+            sttIntent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{});
+
             speechRecognizer.startListening(sttIntent);
             recognitionActive = true;
         } else {
