@@ -35,7 +35,17 @@ This section describes what you need to do to get started with your own app that
 
 ## Overview
 
-Follow these steps for creating your own app that uses the API.AI Android SDK:
+To create your own app, you must first add the API.AI SDK library to your project. There are two ways to accomplish this. The first way is simpler.
+
+* Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
+        compile 'ai.api:sdk:1.0.1'
+* Download the library source code from github, and attach it to your project.
+
+Now you can create your own app, using either integrated speech recognition or using your own speech recognition.
+
+## Using integrated speech recognition
+
+Once you've added the SDK library, follow these steps:
 
 1. Add two permissions into the AndroidManifest:
     * **android.permission.INTERNET**
@@ -51,7 +61,39 @@ Follow these steps for creating your own app that uses the API.AI Android SDK:
 9. In the **onResult** method of the AIListener interface, check the response for errors using the **AIResponse.isError** method.
 10. If there are no errors, you can get the result using the **AIResponse.getResult** method. From there, you can obtain the action and parameters.
 
+## Using your own speech recognition
+
+This section assumes that you have performed your own speech recognition and that you have text that you want to process as natural language. Once you've added the SDK library, follow these steps:
+
+1. Add this permission into the AndroidManifest:
+    * **android.permission.INTERNET**
+    
+2. Create an instance of **AIConfiguration**, specifying the access token, locale, and recognition engine. You can specify any recognition engine, since that value will not be used.
+3. Create an **AIDataService** instance using the configuration object.
+4. Create the empty **AIRequest** instance. Set the request text using the method **setQuery**.
+5. Send the request to the API.AI service using the method **aiDataService.request(aiRequest)**.
+6. Process the response.
+
+The following example code sends a query with the text "Hello":
+
+    final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY, 
+        Locale.US.toString(), AIConfiguration.RecognitionEngine.Google);
+    final AIDataService aiDataService = new AIDataService(config);
+    
+    final AIRequest aiRequest = new AIRequest();
+    aiRequest.setQuery("Hello");
+    
+    try {
+        final AIResponse aiResponse = aiDataService.request(aiRequest);
+        // process response object here...
+        
+    } catch (final AIServiceException e) {
+        e.printStackTrace();
+    }
+    
 ## Tutorial
+
+This section contains a detailed tutorial that starts with the downloaded project and creates a new module with a new sample app.
 
 ### Set up your environment
 
