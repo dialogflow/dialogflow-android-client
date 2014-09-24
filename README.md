@@ -109,9 +109,9 @@ Follow these steps to set up your environment:
 
 Next you will create a new module for an app that uses the SDK. Follow these steps:
 
-1. In the Project Navigator, right-click on **api-ai-android-sdk** and choose **New**, and then **Module**.<br/> ![New Module](readmeImages/newModule.png)
+1. In the Project Navigator, right-click on **api-ai-android-sdk** and choose **New**, and then **Module**.<br/> ![New Module](readmeImages/NewModule.png)
 2. In the New Module dialog, choose **Android Application**, then **Next**.
-3. Name your application and package. Set the Target SDK and Compile with to **API19: Android 4.4 (KitKat)**. Click **Next**.<br/> ![New Module Dialog](readmeImages/newModuleDlg.png)
+3. Name your application and package. Set the Target SDK and Compile with to **API19: Android 4.4 (KitKat)**. Click **Next**.<br/> ![New Module Dialog](readmeImages/NewModuleDlg.png)
 4. Click **Next** to accept the default images, etc. 
 5. Select **Blank Activity** and click **Next**.
 6. Click **Finish** to accept the name MainActivity.
@@ -123,12 +123,14 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 
 1. Open **AndroidManifest.xml** under **app/src/main**. 
 2. Just above the `<activity>` tag, add these line in order to give the app permission to access the internet and the microphone: </br>
+
         <uses-permission android:name="android.permission.INTERNET"/>
         <uses-permission android:name="android.permission.RECORD_AUDIO" />
 3. Save **AndroidManifest.xml**.
 4. Next, you need to add a new dependency for the AI.API library. Right click on your module name in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the upper right side and select **Module dependency**. Choose **:ailib**. Click **OK**. <br/>![Add dependency](readmeImages/Dependencies.png)
 5. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
 6. Expand the import section and add the following lines to import the necessary API.AI classes:
+
         import ai.api.AIConfiguration;
         import ai.api.AIListener;
         import ai.api.AIService;
@@ -141,34 +143,43 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 1. Open **activity_main.xml** under **app/src/main/res/layout**. This will open the layout in the designer.<br/>![activity_main.xml in Designer](readmeImages/LayoutDesigner.png)
 2. Select and delete the "Hello World" TextView.
 3. Drag a Button (under Widgets) to the top of the screen. Change the **id** property to "listenButton" and the **text** property to "Listen".<br/>![Listen button](readmeImages/ListenButton.png)
-4. Drag a Plain TextView (under Widgets) under the button. Expand it so that it covers the rest of the bottom of the screen. Change the **id** property to "resultTextView" and the **text** property to an empty string.<br/>![Result TextView](readmeImages/ResultTextView.png)
+4. Drag a Plain TextView (under Widgets) under the button. Expand it so that it covers the rest of the bottom of the screen. Change the **id** property to "resultTextView" and the **text** property to an empty string.<br/>![Result TextView](readmeImages/ResultViewText.png)
 6. Now return to the MainActivity.java file. Add three import statements to access our widgets:
+
         import android.view.View;
         import android.widget.Button;
         import android.widget.TextView;
 7. Create two private members in MainActivity for the widgets:
+
         private Button processButton;
         private TextView resultTextView;
 8. At the end of the OnCreate method, add these lines to initialize the widgets:
+
         processButton = (Button) findViewById(R.id.processButton);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
 9. Add a new, empty method to handle the button click:
+
         public void listenButtonOnClick(final View view) {}
 10. Return to activity_main.xml and click on the Listen button. In the properties pane, set the onClick property to listenButtonOnClick.
 
 ### Create the AI Service and Listener
 1. Use the MainActivity as the class that will be called when events occur by having it implement the AIListener class. Replace the class declaration with this:
+
         public class MainActivity extends ActionBarActivity implements AIListener {      
 2. In the MainActivity class, create a private member for the **AIService** class named `aiService`.
+
          private AIService aiService;
 3. In the OnCreate method, add the following line to set up the configuration to use Google speech recognition. Replace CLIENT_ACCESS_TOKEN and SUBSCRIPTION KEY with your client access token and subscription key. When it asks to add `import java.util.Locale`, say OK. 
+
          final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
                 "SUBSCRIPTION_KEY", Locale.US.toString(),
                 AIConfiguration.RecognitionEngine.Google);
 4. Below this line, initialize the AI service and add this instance as the listener to handle events.
+
         aiService = AIService.getService(this, config);
         aiService.setListener(this);       
 5. Add the following method to show the results when the listening is complete:
+
         public void onResult(final AIResponse response) {
             if (response.isError()) {
                 resultTextView.setText("Error: " + response.getStatus().getErrorDetails());
@@ -190,12 +201,14 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
             }
         }
 6. Add the following method to handle errors:
+
         @Override
         public void onError(final AIError error) {
             resultTextView.setText(error.toString());
         }
 
 5. Add the following empty methods to implement the AIListener interface:
+
         @Override
         public void onListeningStarted() {}
         
@@ -208,10 +221,12 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 ### Run the App
 1. Attach an Android device to your computer or have a virtual device ready.
 2. Make sure that your module is selected in the dropdown, and then click the Debug button.<br/>![Debug button](readmeImages/DebugButton.png)
-3. The app should now be running on your device or virtual device. Click the **Listen** button and then speak a phrase that will work with your intent. Wait a few seconds. The result should appear in the result TextView. <br/>![Result](readmeImages/Result.png)
+3. The app should now be running on your device or virtual device. Click the **Listen** button and then speak a phrase that will work with your intent. Wait a few seconds. The result should appear in the result TextView. <br/>![Result](readmeImages/AppScreenshot.png)
 
 ### Troubleshooting
 
 * If you get an error when debugging that says "INSTALL_FAILED_OLDER_SDK", then you need to choose the appropriate API version for your device. You can do this is the **build.gradle** file. For example, these lines work for an older device that can only handle API 19.
+
         compileSdkVersion 19
         buildToolsVersion '19.1.0'
+        
