@@ -93,29 +93,19 @@ The following example code sends a query with the text "Hello":
     
 ## Tutorial
 
-This section contains a detailed tutorial that starts with the downloaded project and creates a new module with a new sample app.
-
-### Set up your environment
-
-Follow these steps to set up your environment:
-
-1. Create an API.AI agent with entities and intents, or use one that you've already created. See the API.AI documentation for instructions on how to do this. 
-2. Open [Android Studio](https://developer.android.com/sdk/installing/studio.html). (Download it if you don't have it.)
-3. From the **File** menu, choose **Import Project...***. Navigate to the **api-ai-android-master** directory and click **OK.**
-4. Open the SDK Manager.<br/> ![Open SDK Manager](readmeImages/SDKManager.png)
-5. Make sure that Android Build Tools 19.1 is installed. If not, install it <br/> ![Android Build Tools 19.1](readmeImages/BuildTools19.1.png)
+This section contains a detailed tutorial about creating new app and connect it to API.AI.
 
 ### Create a new app
 
-Next you will create a new module for an app that uses the SDK. Follow these steps:
+Follow these steps to set up your environment and create new android app with API.AI integration:
 
-1. In the Project Navigator, right-click on **api-ai-android-sdk** and choose **New**, and then **Module**.<br/> ![New Module](readmeImages/NewModule.png)
-2. In the New Module dialog, choose **Android Application**, then **Next**.
-3. Name your application and package. Set the Target SDK and Compile with to **API19: Android 4.4 (KitKat)**. Click **Next**.<br/> ![New Module Dialog](readmeImages/NewModuleDlg.png)
-4. Click **Next** to accept the default images, etc. 
-5. Select **Blank Activity** and click **Next**.
-6. Click **Finish** to accept the name MainActivity.
-7. You should now see a new module named **app**.
+1. Create an API.AI agent with entities and intents, or use one that you've already created. See the API.AI documentation for instructions on how to do this. 
+2. Open [Android Studio](https://developer.android.com/sdk/installing/studio.html). (Download it if you don't have it.)
+3. From the start screen (or **File** menu) , choose **New Project...**.<br/> ![New Project](readmeImages/NewProject.png)
+4. In the New Project dialog, fill **Application name** and **Company Domain**, then click **Next**.<br/> ![New project dialog](readmeImages/NewProjectDialog.png)
+5. Choose minimum SDK for project, minimum supported by API.AI SDK is **9 Gingerbread**. Click **Next**.<br/> ![Min SDK](readmeImages/MinSDK.png)
+6. Select **Blank Activity** and click **Next**.
+7. Enter the main activity name and click **Finish**.
 
 ### Integrate with the SDK
 
@@ -127,7 +117,8 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
         <uses-permission android:name="android.permission.INTERNET"/>
         <uses-permission android:name="android.permission.RECORD_AUDIO" />
 3. Save **AndroidManifest.xml**.
-4. Next, you need to add a new dependency for the AI.API library. Right click on your module name in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the upper right side and select **Module dependency**. Choose **:ailib**. Click **OK**. <br/>![Add dependency](readmeImages/Dependencies.png)
+4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](readmeImages/Dependencies.png)
+5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.0.1** item then click OK.<br/> ![Add dependency](readmeImages/SearchApiAi.png)
 5. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
 6. Expand the import section and add the following lines to import the necessary API.AI classes:
 
@@ -190,7 +181,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
                 String parameterString = "";
                 if (result.getParameters() != null && !result.getParameters().isEmpty()) {
                     for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
-                    parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
+                        parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
                     }
                 }
 
