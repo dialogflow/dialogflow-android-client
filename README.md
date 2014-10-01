@@ -148,10 +148,6 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 
         processButton = (Button) findViewById(R.id.processButton);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
-9. Add a new, empty method to handle the button click:
-
-        public void listenButtonOnClick(final View view) {}
-10. Return to activity_main.xml and click on the Listen button. In the properties pane, set the onClick property to listenButtonOnClick.
 
 ### Create the AI Service and Listener
 1. Use the MainActivity as the class that will be called when events occur by having it implement the AIListener class. Replace the class declaration with this:
@@ -165,11 +161,21 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
          final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
                 "SUBSCRIPTION_KEY", Locale.US.toString(),
                 AIConfiguration.RecognitionEngine.Google);
+    
+    ![Api keys](readmeImages/apiKeys.png)
+
 4. Below this line, initialize the AI service and add this instance as the listener to handle events.
 
         aiService = AIService.getService(this, config);
         aiService.setListener(this);       
-5. Add the following method to show the results when the listening is complete:
+5. Add method to start listening on the button click:
+
+        public void listenButtonOnClick(final View view) {
+            aiService.startListening();
+        }
+6. Return to activity_main.xml and click on the Listen button. In the properties pane, set the onClick property to listenButtonOnClick.
+
+7. Add the following method to show the results when the listening is complete:
 
         public void onResult(final AIResponse response) {
             if (response.isError()) {
@@ -191,14 +197,14 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
                     "\nParameters: " + parameterString);
             }
         }
-6. Add the following method to handle errors:
+8. Add the following method to handle errors:
 
         @Override
         public void onError(final AIError error) {
             resultTextView.setText(error.toString());
         }
 
-5. Add the following empty methods to implement the AIListener interface:
+9. Add the following empty methods to implement the AIListener interface:
 
         @Override
         public void onListeningStarted() {}
