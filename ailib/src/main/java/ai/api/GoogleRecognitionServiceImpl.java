@@ -21,6 +21,7 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -34,6 +35,7 @@ import android.util.Log;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
+import ai.api.util.RecognizerChecker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +68,12 @@ public class GoogleRecognitionServiceImpl extends AIService {
         super(config);
         this.context = context;
 
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+        final ComponentName googleRecognizerComponent = RecognizerChecker.findGoogleRecognizer(context);
+        if (googleRecognizerComponent == null) {
+            Log.w(TAG, "Google Recognizer application not found on device. Quality of the recognition may be low. Please check if Google Search application installed and enabled.");
+        }
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context, googleRecognizerComponent);
         speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
 
         aiDataService = new AIDataService(config);
