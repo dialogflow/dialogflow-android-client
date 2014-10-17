@@ -1,5 +1,6 @@
 package ai.api.test;
 
+import android.test.mock.MockContext;
 import android.text.TextUtils;
 
 import ai.api.AIConfiguration;
@@ -13,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Locale;
+import java.io.InputStream;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -34,10 +35,10 @@ public class ProtocolTest {
 
     @Test
     public void AIDataServiceDebugTest() {
-        final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY, Locale.US.toString(), AIConfiguration.RecognitionEngine.Google);
-        config.setDebug(true);
+        final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English, AIConfiguration.RecognitionEngine.Google);
+        config.setWriteSoundLog(false);
 
-        final AIDataService aiDataService = new AIDataService(config);
+        final AIDataService aiDataService = new AIDataService(new MockContext(), config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("Hello");
@@ -49,7 +50,29 @@ public class ProtocolTest {
             assertFalse(TextUtils.isEmpty(aiResponse.getId()));
             assertNotNull(aiResponse.getResult());
 
-            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getAction()));
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    @Test
+    public void AIServiceVoiceRequestTest() {
+        final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English, AIConfiguration.RecognitionEngine.Speaktoit);
+        config.setWriteSoundLog(false);
+
+        final AIDataService aiDataService = new AIDataService(new MockContext(), config);
+
+        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("debug0.wav");
+
+        try {
+            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream);
+            assertNotNull(aiResponse);
+            assertFalse(aiResponse.isError());
+            assertFalse(TextUtils.isEmpty(aiResponse.getId()));
+            assertNotNull(aiResponse.getResult());
 
         } catch (final AIServiceException e) {
             e.printStackTrace();

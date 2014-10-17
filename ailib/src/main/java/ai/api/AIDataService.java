@@ -21,11 +21,14 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
+import ai.api.http.HttpClient;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
@@ -48,9 +51,11 @@ public class AIDataService {
 
     public static final String TAG = AIDataService.class.getName();
 
+    private final Context context;
     private final AIConfiguration config;
 
-    public AIDataService(final AIConfiguration config) {
+    public AIDataService(final Context context, final AIConfiguration config) {
+        this.context = context;
         this.config = config;
     }
 
@@ -118,4 +123,78 @@ public class AIDataService {
         }
 
     }
+
+    /**
+     * Make requests to the ai service with voiceData.  This method must not be called in the UI Thread.
+     * @param voiceStream voice data stream for recognition
+     * @return response object from service
+     * @throws AIServiceException
+     */
+    public AIResponse voiceRequest(final InputStream voiceStream) throws AIServiceException {
+        final Gson gson = GsonFactory.getGson();
+
+        HttpURLConnection connection = null;
+
+        HttpClient httpClient = null;
+
+        try {
+            final AIRequest request = new AIRequest();
+
+            final URL url = new URL(config.getQuestionUrl());
+
+            request.setLanguage(config.getLanguage());
+            request.setAgentId(config.getAgentId());
+            request.setTimezone(Calendar.getInstance().getTimeZone().getID());
+
+            final String queryData = gson.toJson(request);
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
+            connection.addRequestProperty("ocp-apim-subscription-key", config.getSubscriptionKey());
+            connection.addRequestProperty("Accept", "application/json");
+            connection.setRequestMethod("POST");
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+
+            httpClient = new HttpClient(connection);
+            httpClient.setWriteSoundLog(config.isWriteSoundLog());
+
+            httpClient.connectForMultipart();
+            httpClient.addFormPart("request", queryData);
+            httpClient.addFilePart("voiceData", "voice.wav", voiceStream);
+            httpClient.finishMultipart();
+
+            final String response = httpClient.getResponse();
+
+            if (TextUtils.isEmpty(response)) {
+                throw new AIServiceException("Empty response from ai service. Please check configuration.");
+            }
+
+            final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
+            return aiResponse;
+
+        } catch (final MalformedURLException e) {
+            Log.e(TAG, "Malformed url should not be raised", e);
+            throw new AIServiceException("Wrong configuration. Please, connect to AI Service support", e);
+        } catch (final IOException e) {
+
+            if (httpClient != null) {
+                final String errorString = httpClient.getErrorString();
+                Log.d(TAG, "" + errorString);
+                if (!TextUtils.isEmpty(errorString)) {
+
+                }
+            }
+
+            Log.e(TAG, "Can't make request to the Speaktoit AI service. Please, check connection settings and API access token.", e);
+            throw new AIServiceException("Can't make request to the AI service. Please, check connection settings and API access token.", e);
+        } catch (final JsonSyntaxException je) {
+            throw new AIServiceException("Wrong service answer format. Please, connect to AI Service support", je);
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
 }

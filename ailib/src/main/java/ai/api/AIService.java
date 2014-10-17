@@ -32,6 +32,7 @@ import ai.api.model.AIResponse;
 public abstract class AIService {
 
     protected final AIConfiguration config;
+    protected final Context context;
     private AIListener listener;
 
     /**
@@ -51,8 +52,9 @@ public abstract class AIService {
         }
     }
 
-    protected AIService(final AIConfiguration config) {
+    protected AIService(final AIConfiguration config, final Context context) {
         this.config = config;
+        this.context = context;
     }
 
     /**

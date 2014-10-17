@@ -46,7 +46,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
     private static final String TAG = GoogleRecognitionServiceImpl.class.getName();
 
     private SpeechRecognizer speechRecognizer;
-    private final Context context;
     private volatile boolean recognitionActive = false;
     private final AIDataService aiDataService;
 
@@ -65,8 +64,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
     }
 
     protected GoogleRecognitionServiceImpl(final Context context, final AIConfiguration config) {
-        super(config);
-        this.context = context;
+        super(config, context);
 
         final ComponentName googleRecognizerComponent = RecognizerChecker.findGoogleRecognizer(context);
         if (googleRecognizerComponent == null) {
@@ -76,7 +74,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context, googleRecognizerComponent);
         speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
 
-        aiDataService = new AIDataService(config);
+        aiDataService = new AIDataService(context, config);
     }
 
     /**

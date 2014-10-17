@@ -74,8 +74,11 @@ public class MainActivity extends ActionBarActivity implements AIListener {
         gson = GsonFactory.getGson();
 
         final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN,
-                SUBSCRIPTION_KEY, Locale.US.toString(),
-                AIConfiguration.RecognitionEngine.Google);
+                SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.Speaktoit);
+
+        // TODO remove before publish
+        //config.setWriteSoundLog(true);
 
         aiService = AIService.getService(this, config);
         aiService.setListener(this);
@@ -139,64 +142,96 @@ public class MainActivity extends ActionBarActivity implements AIListener {
 
     @Override
     public void onResult(final AIResponse response) {
-        if (response.isError()) {
-            resultTextView.setText("Error: " + response.getStatus().getErrorDetails());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "onResult");
 
-            Log.i(TAG, "Received error response");
+                if (response.isError()) {
+                    resultTextView.setText("Error: " + response.getStatus().getErrorDetails());
 
-            // this is example how to get different parts of error description
-            Log.i(TAG, "Error details: " + response.getStatus().getErrorDetails());
-            Log.i(TAG, "Error type: " + response.getStatus().getErrorType());
-        } else {
-            resultTextView.setText(gson.toJson(response));
+                    Log.i(TAG, "Received error response");
 
-            Log.i(TAG, "Received success response");
+                    // this is example how to get different parts of error description
+                    Log.i(TAG, "Error details: " + response.getStatus().getErrorDetails());
+                    Log.i(TAG, "Error type: " + response.getStatus().getErrorType());
+                } else {
+                    resultTextView.setText(gson.toJson(response));
 
-            // this is example how to get different parts of result object
-            Log.i(TAG, "Status code: " + response.getStatus().getCode());
-            Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
+                    Log.i(TAG, "Received success response");
 
-            Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
+                    // this is example how to get different parts of result object
+                    Log.i(TAG, "Status code: " + response.getStatus().getCode());
+                    Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
 
-            Log.i(TAG, "Action: " + response.getResult().getAction());
-            Log.i(TAG, "Speech: " + response.getResult().getSpeech());
+                    Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
 
-            if (response.getResult().getMetadata() != null) {
-                Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
-                Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
-            }
+                    Log.i(TAG, "Action: " + response.getResult().getAction());
+                    Log.i(TAG, "Speech: " + response.getResult().getSpeech());
 
-            if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
-                Log.i(TAG, "Parameters: ");
-                for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()){
-                    Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
+                    if (response.getResult().getMetadata() != null) {
+                        Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
+                        Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
+                    }
+
+                    if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
+                        Log.i(TAG, "Parameters: ");
+                        for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()){
+                            Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
+                        }
+                    }
                 }
             }
-        }
+        });
     }
 
     @Override
     public void onError(final AIError error) {
-        resultTextView.setText(error.toString());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "onError");
+                resultTextView.setText(error.toString());
+            }
+        });
     }
 
     @Override
     public void onAudioLevel(final float level) {
-        float positiveLevel = Math.abs(level);
-        if (positiveLevel > 100) {
-            positiveLevel = 100;
-        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                float positiveLevel = Math.abs(level);
+                if (positiveLevel > 100) {
+                    positiveLevel = 100;
+                }
 
-        progressBar.setProgress((int) positiveLevel);
+                progressBar.setProgress((int) positiveLevel);
+            }
+        });
     }
 
     @Override
     public void onListeningStarted() {
-        recIndicator.setVisibility(View.VISIBLE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "onListeningStarted");
+
+                recIndicator.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
     public void onListeningFinished() {
-        recIndicator.setVisibility(View.INVISIBLE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "onListeningFinished");
+
+                recIndicator.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 }

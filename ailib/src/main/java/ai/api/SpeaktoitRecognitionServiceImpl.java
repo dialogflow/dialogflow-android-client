@@ -25,15 +25,15 @@ import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
-import ai.api.model.QuestionMetadata;
 
 import java.io.ByteArrayOutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Calendar;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class SpeaktoitRecognitionServiceImpl extends AIService {
 
@@ -43,20 +43,29 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
 
-    private final AudioRecord mediaRecorder;
+    private AudioRecord mediaRecorder;
+
+    private final AIDataService aiDataService;
 
     private volatile boolean isRecording = false;
 
     private ByteArrayOutputStream outputStream;
 
     protected SpeaktoitRecognitionServiceImpl(final Context context, final AIConfiguration config) {
-        super(config);
+        super(config, context);
 
+        initMediaRecorder();
+
+        aiDataService = new AIDataService(context, config);
+    }
+
+    private void initMediaRecorder() {
+        int minBufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
         mediaRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 SAMPLE_RATE_IN_HZ,
                 CHANNEL_CONFIG,
                 AUDIO_FORMAT,
-                AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT));
+                minBufferSize);
     }
 
     @Override
@@ -68,6 +77,8 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
         onListeningStarted();
 
+        new RequestTask(new RecorderWrapper(mediaRecorder)).execute();
+
     }
 
     @Override
@@ -77,10 +88,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
             isRecording = false;
 
             onListeningFinished();
-
-            sendRequest(outputStream.toByteArray());
         }
-
     }
 
     @Override
@@ -93,37 +101,75 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
         }
     }
 
-    private void sendRequest(final byte[] soundData) {
-        try {
-            final URL url = new URL(config.getQuestionUrl());
+    @Override
+    public void pause() {
+        super.pause();
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        mediaRecorder = null;
+    }
 
-            final QuestionMetadata questionMetadata = new QuestionMetadata();
-            questionMetadata.setLanguage(config.getLanguage());
-            questionMetadata.setAgentId(config.getAgentId());
-            questionMetadata.setTimezone(Calendar.getInstance().getTimeZone().getID());
+    @Override
+    public void resume() {
+        super.resume();
 
-            final SpeaktoitRecognitionRequest speaktoitRecognitionRequest = new SpeaktoitRecognitionRequest();
-            speaktoitRecognitionRequest.setMetadata(questionMetadata);
-            speaktoitRecognitionRequest.setSoundData(soundData);
+        if (mediaRecorder == null) {
+            initMediaRecorder();
+        }
+    }
 
-            final SpeaktoitRecognitionRequestTask requestTask = new SpeaktoitRecognitionRequestTask(url){
-                @Override
-                protected void onPostExecute(final String stringResult) {
-                    try {
-                        final AIResponse aiResponse = GsonFactory.getGson().fromJson(stringResult, AIResponse.class);
-                        onResult(aiResponse);
+    private class RecorderWrapper extends InputStream {
 
-                    } catch (final Exception e) {
-                        final AIError aiError = new AIError("Wrong answer from server " + e.toString());
-                        onError(aiError);
-                    }
-                }
-            };
+        private final AudioRecord audioRecord;
 
-            requestTask.execute(speaktoitRecognitionRequest);
+        private RecorderWrapper(final AudioRecord audioRecord) {
+            this.audioRecord = audioRecord;
+        }
 
-        }catch (final MalformedURLException e) {
-            e.printStackTrace();
+        @Override
+        public int read() throws IOException {
+            final byte[] buffer = new byte[1];
+            audioRecord.read(buffer,0,1);
+            return buffer[0];
+        }
+
+        @Override
+        public int read(final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
+            Log.v(TAG, "RecorderWrapper: read");
+            return audioRecord.read(buffer, byteOffset, byteCount);
+        }
+    }
+
+    private class RequestTask extends AsyncTask<Void, Void, AIResponse> {
+
+        private final RecorderWrapper recorderWrapper;
+        private AIError aiError;
+
+        private RequestTask(final RecorderWrapper recorderWrapper) {
+            this.recorderWrapper = recorderWrapper;
+        }
+
+        @Override
+        protected AIResponse doInBackground(final Void... params) {
+            try {
+                final AIResponse aiResponse = aiDataService.voiceRequest(recorderWrapper);
+                return aiResponse;
+            } catch (final AIServiceException e) {
+                aiError = new AIError("Wrong answer from server " + e.toString());
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final AIResponse aiResponse) {
+            super.onPostExecute(aiResponse);
+
+            if (aiResponse != null) {
+                onResult(aiResponse);
+            } else {
+                onError(aiError);
+            }
         }
     }
 

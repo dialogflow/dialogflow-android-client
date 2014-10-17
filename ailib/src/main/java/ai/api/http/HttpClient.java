@@ -21,6 +21,14 @@ package ai.api.http;
  *
  ***********************************************************************************************************************/
 
+import android.util.Log;
+
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,64 +36,113 @@ import java.net.HttpURLConnection;
 
 public class HttpClient {
 
-    private HttpURLConnection con;
+    public static final String TAG = HttpClient.class.getName();
+
+    private final HttpURLConnection connection;
     private OutputStream os;
 
     private final String delimiter = "--";
-    private final String boundary =  "SwA"+Long.toString(System.currentTimeMillis())+"SwA";
+    private final String boundary = "SwA" + Long.toString(System.currentTimeMillis()) + "SwA";
 
-    public HttpClient(final HttpURLConnection con) {
-        this.con = con;
+    private boolean writeSoundLog;
+
+    public HttpClient(final HttpURLConnection connection) {
+        this.connection = connection;
     }
 
     public void connectForMultipart() throws IOException {
-     //   con = (HttpURLConnection) ( new URL(url)).openConnection();
-        con.setRequestMethod("POST");
-        con.setDoInput(true);
-        con.setDoOutput(true);
-        con.setRequestProperty("Connection", "Keep-Alive");
-        con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-        con.connect();
-        os = con.getOutputStream();
+        connection.setRequestProperty("Connection", "Keep-Alive");
+        connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        connection.connect();
+        os = connection.getOutputStream();
     }
 
     public void addFormPart(final String paramName, final String value) throws IOException {
-        os.write( (delimiter + boundary + "\r\n").getBytes());
-        os.write( "Content-Type: text/plain\r\n".getBytes());
-        os.write( ("Content-Disposition: form-data; name=\"" + paramName + "\"\r\n").getBytes());
-        os.write( ("\r\n" + value + "\r\n").getBytes());
+        os.write((delimiter + boundary + "\r\n").getBytes());
+        os.write("Content-Type: application/json\r\n".getBytes());
+        os.write(("Content-Disposition: form-data; name=\"" + paramName + "\"\r\n").getBytes());
+        os.write(("\r\n" + value + "\r\n").getBytes());
     }
 
-    public void addFilePart(final String paramName, final String fileName, final byte[] data) throws IOException {
-        os.write( (delimiter + boundary + "\r\n").getBytes());
-        os.write( ("Content-Disposition: form-data; name=\"" + paramName +  "\"; filename=\"" + fileName + "\"\r\n"  ).getBytes());
-        os.write( ("Content-Type: application/octet-stream\r\n"  ).getBytes());
-        os.write( ("Content-Transfer-Encoding: binary\r\n"  ).getBytes());
+    public void addFilePart(final String paramName, final String fileName, final InputStream data) throws IOException {
+        os.write((delimiter + boundary + "\r\n").getBytes());
+        os.write(("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + fileName + "\"\r\n").getBytes());
+        os.write(("Content-Type: audio/wav\r\n").getBytes());
+        //os.write( ("Content-Transfer-Encoding: binary\r\n"  ).getBytes());
         os.write("\r\n".getBytes());
 
-        os.write(data);
+        Log.v(TAG, "Sound write start");
+
+        FileOutputStream outputStream = null;
+
+        if (writeSoundLog) {
+            final File cacheDir = new File(android.os.Environment.getExternalStorageDirectory(), "sound_log");
+            if (!cacheDir.exists()) {
+                cacheDir.mkdirs();
+            }
+            Log.d(TAG, cacheDir.getAbsolutePath());
+
+            final File soundFile = new File(cacheDir, "log.wav");
+            outputStream = new FileOutputStream(soundFile, false);
+        }
+
+        //TODO remove magic number
+        final int bufferSize = 4096;
+        final byte[] buffer = new byte[bufferSize];
+
+        int bytesActuallyRead;
+
+        bytesActuallyRead = data.read(buffer, 0, bufferSize);
+        Log.v(TAG, "Bytes read: " + bytesActuallyRead);
+
+        while (bytesActuallyRead >= 0) {
+            if (bytesActuallyRead > 0) {
+                os.write(buffer, 0, bytesActuallyRead);
+
+                if (writeSoundLog) {
+                    outputStream.write(buffer, 0, bytesActuallyRead);
+                }
+            }
+            bytesActuallyRead = data.read(buffer, 0, bufferSize);
+            Log.v(TAG, "Bytes read: " + bytesActuallyRead);
+        }
+
+        if (writeSoundLog) {
+            outputStream.close();
+        }
+
+        Log.v(TAG, "Sound write finished");
 
         os.write("\r\n".getBytes());
     }
 
     public void finishMultipart() throws IOException {
-        os.write( (delimiter + boundary + delimiter + "\r\n").getBytes());
+        os.write((delimiter + boundary + delimiter + "\r\n").getBytes());
+        os.close();
     }
 
 
     public String getResponse() throws IOException {
-        final InputStream is = con.getInputStream();
-        final byte[] b1 = new byte[1024];
-        final StringBuilder buffer = new StringBuilder();
-
-        while ( is.read(b1) != -1)
-        {
-            buffer.append(new String(b1));
-        }
-
-        con.disconnect();
-
-        return buffer.toString();
+        final InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+        final String response = IOUtils.toString(inputStream, Charsets.UTF_8);
+        inputStream.close();
+        return response;
     }
 
+    public String getErrorString() {
+        try {
+            final InputStream inputStream = new BufferedInputStream(connection.getErrorStream());
+            final String response;
+            response = IOUtils.toString(inputStream, Charsets.UTF_8);
+            inputStream.close();
+            return response;
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void setWriteSoundLog(final boolean writeSoundLog) {
+        this.writeSoundLog = writeSoundLog;
+    }
 }

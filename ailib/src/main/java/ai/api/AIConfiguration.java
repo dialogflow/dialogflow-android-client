@@ -49,16 +49,28 @@ public class AIConfiguration {
         Speaktoit
     }
 
+    public enum SupportedLanguages {
+        English("en");
+
+        private final String languageTag;
+
+        private SupportedLanguages(final String languageTag) {
+            this.languageTag = languageTag;
+        }
+    }
+
     private String apiKey;
     private final String subscriptionKey;
     private String language;
     private RecognitionEngine recognitionEngine;
-    private boolean debug;
 
-    public AIConfiguration(final String apiKey, final String subscriptionKey, final String language, final RecognitionEngine recognitionEngine) {
+    private boolean debug;
+    private boolean writeSoundLog;
+
+    public AIConfiguration(final String apiKey, final String subscriptionKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
         this.apiKey = apiKey;
         this.subscriptionKey = subscriptionKey;
-        this.language = language;
+        this.language = language.languageTag;
         this.recognitionEngine = recognitionEngine;
 
         serviceUrl = SERVICE_PROD_URL;
@@ -92,10 +104,18 @@ public class AIConfiguration {
         this.recognitionEngine = recognitionEngine;
     }
 
+    /**
+     * This flag is for testing purposes ONLY. Don't change it.
+     * @return value indicating used service address
+     */
     public boolean isDebug() {
         return debug;
     }
 
+    /**
+     * This flag is for testing purposes ONLY. Don't use it in your code.
+     * @param debug value indicating used service address
+     */
     public void setDebug(final boolean debug) {
         this.debug = debug;
 
@@ -104,6 +124,22 @@ public class AIConfiguration {
         } else {
             serviceUrl = SERVICE_PROD_URL;
         }
+    }
+
+    /**
+     * This flag is for testing purposes ONLY. Don't change it.
+     * @param writeSoundLog value, indicating recorded sound will be saved in storage (if possible)
+     */
+    public void setWriteSoundLog(final boolean writeSoundLog) {
+        this.writeSoundLog = writeSoundLog;
+    }
+
+    /**
+     * This flag is for testing purposes ONLY. Don't use it in your code.
+     * @return value, indicating recorded sound will be saved in storage  (if possible)
+     */
+    public boolean isWriteSoundLog() {
+        return writeSoundLog;
     }
 
     public String getQuestionUrl() {
