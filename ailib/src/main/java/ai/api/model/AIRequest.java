@@ -26,6 +26,8 @@ import android.text.TextUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AIRequest extends QuestionMetadata implements Serializable {
 
@@ -34,6 +36,12 @@ public class AIRequest extends QuestionMetadata implements Serializable {
 
     @SerializedName("confidence")
     private float[] confidence;
+
+    @SerializedName("contexts")
+    private ArrayList<String> contexts;
+
+    @SerializedName("resetContexts")
+    private Boolean resetContexts;
 
     public void setQuery(final String query) {
         if (TextUtils.isEmpty(query)) {
@@ -67,5 +75,33 @@ public class AIRequest extends QuestionMetadata implements Serializable {
 
     public void setConfidence(final float[] confidence) {
         this.confidence = confidence;
+    }
+
+    public void setResetContexts(final Boolean resetContexts) {
+        this.resetContexts = resetContexts;
+    }
+
+    public Boolean getResetContexts() {
+        return resetContexts;
+    }
+
+    public void setContexts(final List<AIContext> contexts) {
+        if (contexts == null) {
+            this.contexts = null;
+            return;
+        }
+
+        this.contexts = new ArrayList<>();
+        for (final AIContext c : contexts) {
+            this.contexts.add(c.getName());
+        }
+    }
+
+    public void addContext(final AIContext aiContext) {
+        if (contexts == null) {
+            contexts = new ArrayList<>(1);
+        }
+
+        contexts.add(aiContext.getName());
     }
 }
