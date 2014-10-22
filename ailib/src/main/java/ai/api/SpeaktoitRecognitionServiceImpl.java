@@ -49,8 +49,6 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     private volatile boolean isRecording = false;
 
-    private ByteArrayOutputStream outputStream;
-
     protected SpeaktoitRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config, context);
 
@@ -60,7 +58,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
     }
 
     private void initMediaRecorder() {
-        int minBufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
+        final int minBufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
         mediaRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 SAMPLE_RATE_IN_HZ,
                 CHANNEL_CONFIG,
@@ -70,15 +68,12 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     @Override
     public void startListening() {
-        outputStream = new ByteArrayOutputStream();
-
         mediaRecorder.startRecording();
         isRecording = true;
 
         onListeningStarted();
 
         new RequestTask(new RecorderWrapper(mediaRecorder)).execute();
-
     }
 
     @Override
