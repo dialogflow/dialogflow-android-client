@@ -30,8 +30,8 @@ import android.util.Log;
 
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
+import ai.api.util.VoiceActivityDetector;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -49,6 +49,8 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     private volatile boolean isRecording = false;
 
+    private final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE_IN_HZ);
+
     protected SpeaktoitRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config, context);
 
@@ -64,10 +66,26 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
                 CHANNEL_CONFIG,
                 AUDIO_FORMAT,
                 minBufferSize);
+
+        voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
+            @Override
+            public void onSpeechBegin() {
+
+            }
+
+            @Override
+            public void onSpeechEnd() {
+                if (mediaRecorder != null) {
+                    mediaRecorder.stop();
+                }
+            }
+        });
     }
 
     @Override
     public void startListening() {
+        voiceActivityDetector.reset();
+
         mediaRecorder.startRecording();
         isRecording = true;
 
@@ -131,7 +149,9 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
         @Override
         public int read(final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
             Log.v(TAG, "RecorderWrapper: read");
-            return audioRecord.read(buffer, byteOffset, byteCount);
+            final int bytesRead = audioRecord.read(buffer, byteOffset, byteCount);
+            voiceActivityDetector.processBuffer(buffer, bytesRead);
+            return bytesRead;
         }
     }
 

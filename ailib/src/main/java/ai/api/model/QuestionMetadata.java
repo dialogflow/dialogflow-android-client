@@ -21,6 +21,8 @@ package ai.api.model;
  *
  ***********************************************************************************************************************/
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -68,6 +70,10 @@ public class QuestionMetadata implements Serializable {
     }
 
     public void setLanguage(final String language) {
+        if (TextUtils.isEmpty(language)) {
+            throw new IllegalArgumentException("language must not be null");
+        }
+
         this.language = language;
     }
 }
