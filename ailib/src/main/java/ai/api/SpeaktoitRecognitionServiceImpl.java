@@ -34,6 +34,9 @@ import ai.api.util.VoiceActivityDetector;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class SpeaktoitRecognitionServiceImpl extends AIService {
 
@@ -44,6 +47,9 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
 
     private AudioRecord mediaRecorder;
+    private final Object mediaRecorderLock = new Object();
+
+    private final ExecutorService eventsExecutor = Executors.newSingleThreadExecutor();
 
     private final AIDataService aiDataService;
 
@@ -67,59 +73,87 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
                 AUDIO_FORMAT,
                 minBufferSize);
 
+        voiceActivityDetector.setMinAudioBufferSize(minBufferSize);
+
         voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
             @Override
             public void onSpeechBegin() {
-
+                Log.v(TAG, "onSpeechBegin event");
             }
 
             @Override
             public void onSpeechEnd() {
-                if (mediaRecorder != null) {
-                    mediaRecorder.stop();
-                }
+                Log.v(TAG, "onSpeechEnd event");
+                eventsExecutor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopListening();
+                    }
+                });
             }
         });
     }
 
     @Override
     public void startListening() {
-        voiceActivityDetector.reset();
+        Log.v(TAG, "startListening");
+        synchronized (mediaRecorderLock) {
+            if (!isRecording) {
+                voiceActivityDetector.reset();
 
-        mediaRecorder.startRecording();
-        isRecording = true;
+                mediaRecorder.startRecording();
+                isRecording = true;
 
-        onListeningStarted();
+                onListeningStarted();
 
-        new RequestTask(new RecorderWrapper(mediaRecorder)).execute();
+                new RequestTask(new RecorderWrapper(mediaRecorder)).execute();
+            } else {
+                Log.w(TAG, "Trying start listening when it already active");
+            }
+        }
     }
 
     @Override
     public void stopListening() {
-        if (isRecording) {
-            mediaRecorder.stop();
-            isRecording = false;
+        Log.v(TAG, "stopListening");
+        synchronized (mediaRecorderLock) {
+            if (isRecording) {
+                try {
+                    mediaRecorder.stop();
+                    isRecording = false;
 
-            onListeningFinished();
+                    onListeningFinished();
+                } catch (final IllegalStateException e) {
+                    Log.w(TAG, "Attempt to stop mediaRecorder when it is stopped");
+                }
+            }
         }
     }
 
     @Override
     public void cancel() {
-        if (isRecording) {
-            mediaRecorder.stop();
-            isRecording = false;
+        synchronized (mediaRecorderLock) {
+            if (isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
 
-            onListeningFinished();
+                onListeningFinished();
+            }
         }
     }
 
     @Override
     public void pause() {
         super.pause();
-        mediaRecorder.stop();
-        mediaRecorder.release();
-        mediaRecorder = null;
+
+        synchronized (mediaRecorderLock) {
+            if (isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+            }
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
     }
 
     @Override
@@ -150,7 +184,9 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
         public int read(final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
             Log.v(TAG, "RecorderWrapper: read");
             final int bytesRead = audioRecord.read(buffer, byteOffset, byteCount);
-            voiceActivityDetector.processBuffer(buffer, bytesRead);
+            if (bytesRead > 0) {
+                voiceActivityDetector.processBuffer(buffer, bytesRead);
+            }
             return bytesRead;
         }
     }
