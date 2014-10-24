@@ -27,18 +27,39 @@ import java.io.Serializable;
 
 public class Metadata implements Serializable {
 
+    /**
+     * Name of the intent that produced this result
+     */
     @SerializedName("intentName")
     private String intentName;
 
+    /**
+     * Id of the intent that produced this result
+     */
     @SerializedName("intentId")
     private String intentId;
 
+    /**
+     * Contexts that were matched by the intent
+     */
     @SerializedName("inputContexts")
     private String[] inputContexts;
 
+    /**
+     * Contexts that were added by the intent
+     */
+    @SerializedName("outputContexts")
+    private String[] outputContexts;
+
+    /**
+     * Currently active contexts
+     */
     @SerializedName("contexts")
     private String[] contexts;
 
+    /**
+     * Name of the intent that produced this result
+     */
     public String getIntentName() {
         return intentName;
     }
@@ -47,6 +68,9 @@ public class Metadata implements Serializable {
         this.intentName = intentName;
     }
 
+    /**
+     * Id of the intent that produced this result
+     */
     public String getIntentId() {
         return intentId;
     }
@@ -55,11 +79,24 @@ public class Metadata implements Serializable {
         this.intentId = intentId;
     }
 
+    /**
+     * Contexts that were matched by the intent
+     */
     public String[] getInputContexts() {
         return inputContexts;
     }
 
+    /**
+     * Currently active contexts
+     */
     public String[] getContexts() {
         return contexts;
+    }
+
+    /**
+     * Contexts that were added by the intent
+     */
+    public String[] getOutputContexts() {
+        return outputContexts;
     }
 }

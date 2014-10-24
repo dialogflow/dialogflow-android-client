@@ -27,6 +27,9 @@ import java.io.Serializable;
 
 public class Status implements Serializable {
 
+    /**
+     * HTTP Status Code
+     */
     @SerializedName("code")
     private Integer code;
 
@@ -39,6 +42,9 @@ public class Status implements Serializable {
     @SerializedName("errorID")
     private String errorID;
 
+    /**
+     * HTTP Status Code
+     */
     public Integer getCode() {
         return code;
     }

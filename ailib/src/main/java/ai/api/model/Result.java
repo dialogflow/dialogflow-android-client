@@ -44,6 +44,9 @@ public class Result implements Serializable {
     @SerializedName("metadata")
     private Metadata metadata;
 
+    /**
+     * The query that was used to produce this result
+     */
     @SerializedName("resolvedQuery")
     private String resolvedQuery;
 
@@ -75,6 +78,9 @@ public class Result implements Serializable {
         return parameters;
     }
 
+    /**
+     * The query that was used to produce this result
+     */
     public String getResolvedQuery() {
         return resolvedQuery;
     }

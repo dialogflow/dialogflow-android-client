@@ -28,18 +28,27 @@ import java.util.Date;
 
 public class AIResponse implements Serializable {
 
+    /**
+     * Unique identifier of the result.
+     */
     @SerializedName("id")
     private String id;
 
     @SerializedName("timestamp")
     private Date timestamp;
 
+    /**
+     * Result object
+     */
     @SerializedName("result")
     private Result result;
 
     @SerializedName("status")
     private Status status;
 
+    /**
+     * Unique identifier of the result.
+     */
     public String getId() {
         return id;
     }
@@ -56,6 +65,9 @@ public class AIResponse implements Serializable {
         this.timestamp = timestamp;
     }
 
+    /**
+     * Result object
+     */
     public Result getResult() {
         return result;
     }
