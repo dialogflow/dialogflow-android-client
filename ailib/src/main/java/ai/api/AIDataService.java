@@ -29,6 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import ai.api.http.HttpClient;
+import ai.api.model.AIContext;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
@@ -43,6 +44,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Do simple requests to the AI Service
@@ -112,6 +114,19 @@ public class AIDataService {
             Log.e(TAG, "Malformed url should not be raised", e);
             throw new AIServiceException("Wrong configuration. Please, connect to AI Service support", e);
         } catch (final IOException e) {
+
+            if (connection != null) {
+                try {
+                    final String errorString = IOUtils.toString(connection.getErrorStream(), Charsets.UTF_8);
+                    Log.d(TAG, "" + errorString);
+                    if (!TextUtils.isEmpty(errorString)) {
+                        final AIResponse errorResponse = gson.fromJson(errorString, AIResponse.class);
+                        return errorResponse;
+                    }
+                } catch (final IOException ex) {
+                }
+            }
+
             Log.e(TAG, "Can't make request to the Speaktoit AI service. Please, check connection settings and API access token.", e);
             throw new AIServiceException("Can't make request to the AI service. Please, check connection settings and API access token.", e);
         } catch (final JsonSyntaxException je) {
@@ -130,7 +145,7 @@ public class AIDataService {
      * @return response object from service
      * @throws AIServiceException
      */
-    public AIResponse voiceRequest(final InputStream voiceStream) throws AIServiceException {
+    public AIResponse voiceRequest(final InputStream voiceStream, final List<AIContext> aiContexts) throws AIServiceException {
         final Gson gson = GsonFactory.getGson();
 
         HttpURLConnection connection = null;
@@ -145,6 +160,10 @@ public class AIDataService {
             request.setLanguage(config.getLanguage());
             request.setAgentId(config.getAgentId());
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
+
+            if (context != null) {
+                request.setContexts(aiContexts);
+            }
 
             final String queryData = gson.toJson(request);
 
@@ -182,7 +201,8 @@ public class AIDataService {
                 final String errorString = httpClient.getErrorString();
                 Log.d(TAG, "" + errorString);
                 if (!TextUtils.isEmpty(errorString)) {
-
+                    final AIResponse errorResponse = gson.fromJson(errorString, AIResponse.class);
+                    return errorResponse;
                 }
             }
 

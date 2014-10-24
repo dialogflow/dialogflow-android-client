@@ -65,5 +65,13 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/resultTextView" />
 
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/contextTextView"
+            android:hint="add Context here"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            />
+
     </LinearLayout>
 </RelativeLayout>

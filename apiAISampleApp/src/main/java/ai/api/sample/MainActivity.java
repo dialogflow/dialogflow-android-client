@@ -23,6 +23,7 @@ package ai.api.sample;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,16 +35,17 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import ai.api.AIConfiguration;
 import ai.api.AIListener;
 import ai.api.AIService;
 import ai.api.GsonFactory;
+import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
-
 
 public class MainActivity extends ActionBarActivity implements AIListener {
 
@@ -58,6 +60,7 @@ public class MainActivity extends ActionBarActivity implements AIListener {
     private ImageView recIndicator;
     private TextView resultTextView;
     private Gson gson;
+    private TextView contextTextView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -70,6 +73,7 @@ public class MainActivity extends ActionBarActivity implements AIListener {
         recIndicator.setVisibility(View.INVISIBLE);
 
         resultTextView = (TextView) findViewById(R.id.resultTextView);
+        contextTextView = (TextView) findViewById(R.id.contextTextView);
 
         gson = GsonFactory.getGson();
 
@@ -129,7 +133,18 @@ public class MainActivity extends ActionBarActivity implements AIListener {
     }
 
     public void buttonListenOnClick(final View view) {
-        aiService.startListening();
+        final String contextString = String.valueOf(contextTextView.getText());
+        if (!TextUtils.isEmpty(contextString)) {
+
+            final AIContext aiContext = new AIContext(contextString);
+            final List<AIContext> contexts = new ArrayList<AIContext>();
+            contexts.add(aiContext);
+            aiService.startListening(contexts);
+
+        } else {
+            aiService.startListening();
+        }
+
     }
 
     public void buttonStopListenOnClick(final View view) {

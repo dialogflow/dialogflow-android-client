@@ -32,6 +32,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 
+import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
@@ -39,6 +40,7 @@ import ai.api.util.RecognizerChecker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GoogleRecognitionServiceImpl extends AIService {
@@ -62,6 +64,8 @@ public class GoogleRecognitionServiceImpl extends AIService {
         errorMessages.put(8, "RecognitionService busy.");
         errorMessages.put(9, "Insufficient permissions.");
     }
+
+    private List<AIContext> contexts;
 
     protected GoogleRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config, context);
@@ -119,7 +123,14 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
     @Override
     public void startListening() {
+        startListening(null);
+    }
+
+    @Override
+    public void startListening(final List<AIContext> contexts) {
         if (!recognitionActive) {
+            this.contexts = contexts;
+
             final Intent sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -135,7 +146,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
         } else {
             Log.w(TAG, "Trying to start recognition while another recognition active");
         }
-
     }
 
     @Override
@@ -242,6 +252,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     } else {
                         aiRequest.setQuery(recognitionResults.get(0));
                     }
+
+                    if (contexts != null) {
+                        aiRequest.setContexts(contexts);
+                    }
+
                     GoogleRecognitionServiceImpl.this.sendRequest(aiRequest);
                 }
             }

@@ -93,7 +93,7 @@ public class ProtocolTest {
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("log.raw");
 
         try {
-            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream);
+            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
             assertNotNull(aiResponse);
             assertFalse(aiResponse.isError());
             assertFalse(TextUtils.isEmpty(aiResponse.getId()));
@@ -124,6 +124,8 @@ public class ProtocolTest {
         String action;
 
         try {
+            cleanContexts(aiDataService);
+
             aiResponse = makeRequest(aiDataService, aiRequest);
             action = aiResponse.getResult().getAction();
             assertEquals("greeting", action);
@@ -132,6 +134,8 @@ public class ProtocolTest {
             aiResponse = makeRequest(aiDataService, aiRequest);
             action = aiResponse.getResult().getAction();
             assertEquals("firstGreeting", action);
+            assertArrayContains("firstContext", aiResponse.getResult().getMetadata().getInputContexts());
+            //assertArrayContains("firstContext", aiResponse.getResult().getMetadata().getContexts());
 
             aiRequest.setResetContexts(true);
             aiRequest.setContexts(null);
@@ -139,11 +143,27 @@ public class ProtocolTest {
             aiResponse = makeRequest(aiDataService, aiRequest);
             action = aiResponse.getResult().getAction();
             assertEquals("secondGreeting", action);
+            assertArrayNotContains("firstContext", aiResponse.getResult().getMetadata().getInputContexts());
+            assertArrayContains("secondContext", aiResponse.getResult().getMetadata().getInputContexts());
+            //assertArrayNotContains("firstContext", aiResponse.getResult().getMetadata().getContexts());
+            //assertArrayContains("secondContext", aiResponse.getResult().getMetadata().getContexts());
+
+            cleanContexts(aiDataService);
 
         } catch (final AIServiceException e) {
             e.printStackTrace();
             assertTrue(e.getMessage(), false);
         }
+    }
+
+    /**
+     * Cleanup contexts to prevent Tests correlation
+     */
+    private void cleanContexts(final AIDataService aiDataService) throws AIServiceException {
+        final AIRequest cleanRequest = new AIRequest();
+        cleanRequest.setResetContexts(true);
+        final AIResponse response = aiDataService.request(cleanRequest);
+        assertFalse(response.isError());
     }
 
     private AIResponse makeRequest(final AIDataService aiDataService, final AIRequest aiRequest) throws AIServiceException {
@@ -153,5 +173,27 @@ public class ProtocolTest {
         assertFalse(TextUtils.isEmpty(aiResponse.getId()));
         assertNotNull(aiResponse.getResult());
         return aiResponse;
+    }
+
+    private void assertArrayContains(final String expected, final String[] array) {
+        assertNotNull(array);
+        boolean exist = false;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equalsIgnoreCase(expected)) {
+                exist = true;
+            }
+        }
+        assertTrue(exist);
+    }
+
+    private void assertArrayNotContains(final String expected, final String[] array) {
+        assertNotNull(array);
+        boolean exist = false;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equalsIgnoreCase(expected)) {
+                exist = true;
+            }
+        }
+        assertFalse(exist);
     }
 }

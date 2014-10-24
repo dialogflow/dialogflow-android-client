@@ -28,15 +28,16 @@ import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 import ai.api.util.VoiceActivityDetector;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class SpeaktoitRecognitionServiceImpl extends AIService {
 
@@ -96,6 +97,11 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     @Override
     public void startListening() {
+        startListening(null);
+    }
+
+    @Override
+    public void startListening(final List<AIContext> contexts) {
         Log.v(TAG, "startListening");
         synchronized (mediaRecorderLock) {
             if (!isRecording) {
@@ -106,7 +112,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
                 onListeningStarted();
 
-                new RequestTask(new RecorderWrapper(mediaRecorder)).execute();
+                new RequestTask(new RecorderWrapper(mediaRecorder), contexts).execute();
             } else {
                 Log.w(TAG, "Trying start listening when it already active");
             }
@@ -194,16 +200,25 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
     private class RequestTask extends AsyncTask<Void, Void, AIResponse> {
 
         private final RecorderWrapper recorderWrapper;
+        private final List<AIContext> contexts;
+
         private AIError aiError;
+
 
         private RequestTask(final RecorderWrapper recorderWrapper) {
             this.recorderWrapper = recorderWrapper;
+            contexts = null;
+        }
+
+        private RequestTask(final RecorderWrapper recorderWrapper, final List<AIContext> contexts) {
+            this.recorderWrapper = recorderWrapper;
+            this.contexts = contexts;
         }
 
         @Override
         protected AIResponse doInBackground(final Void... params) {
             try {
-                final AIResponse aiResponse = aiDataService.voiceRequest(recorderWrapper);
+                final AIResponse aiResponse = aiDataService.voiceRequest(recorderWrapper, contexts);
                 return aiResponse;
             } catch (final AIServiceException e) {
                 aiError = new AIError("Wrong answer from server " + e.toString());

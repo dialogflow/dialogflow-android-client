@@ -23,6 +23,9 @@ package ai.api;
 
 import android.content.Context;
 
+import java.util.List;
+
+import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 
@@ -61,6 +64,11 @@ public abstract class AIService {
      * Starts listening process
      */
     public abstract void startListening();
+
+    /**
+     * Starts listening process. Request to the AI service will be done with specified contexts.
+     */
+    public abstract void startListening(List<AIContext> contexts);
 
     /**
      * Stop listening and start request to the AI service with current recognition results
