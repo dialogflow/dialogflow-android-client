@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -60,7 +61,8 @@ public class MainActivity extends ActionBarActivity implements AIListener {
     private ImageView recIndicator;
     private TextView resultTextView;
     private Gson gson;
-    private TextView contextTextView;
+    private EditText contextTextView;
+    private EditText agentTextView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -73,7 +75,7 @@ public class MainActivity extends ActionBarActivity implements AIListener {
         recIndicator.setVisibility(View.INVISIBLE);
 
         resultTextView = (TextView) findViewById(R.id.resultTextView);
-        contextTextView = (TextView) findViewById(R.id.contextTextView);
+        contextTextView = (EditText) findViewById(R.id.contextTextView);
 
         gson = GsonFactory.getGson();
 

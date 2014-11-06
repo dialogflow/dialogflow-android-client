@@ -47,9 +47,9 @@ import static org.junit.Assert.assertTrue;
 @RunWith(RobolectricTestRunner.class)
 public class ProtocolTest {
 
-    private static final String ACCESS_TOKEN = "YOUR_ACCESS_TOKEN_HERE";
-    private static final String SUBSCRIPTION_KEY = "INSERT_SUBSCRIPTION_KEY_HERE";
-
+    // Testing keys
+    private static final String ACCESS_TOKEN = "3485a96fb27744db83e78b8c4bc9e7b7";
+    private static final String SUBSCRIPTION_KEY = "cb9693af-85ce-4fbf-844a-5563722fc27f";
 
     @Test
     public void testCheck() {
@@ -156,11 +156,66 @@ public class ProtocolTest {
         }
     }
 
+    @Test
+    public void differentAgentsTest() {
+
+        final String query = "I want pizza";
+
+        {
+            final AIConfiguration config = new AIConfiguration("3485a96fb27744db83e78b8c4bc9e7b7", SUBSCRIPTION_KEY,
+                    AIConfiguration.SupportedLanguages.English,
+                    AIConfiguration.RecognitionEngine.Google);
+
+            config.setWriteSoundLog(false);
+
+            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+            final AIRequest aiRequest = new AIRequest();
+            aiRequest.setQuery(query);
+
+            try {
+                final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+                assertNotNull(aiResponse.getResult());
+                assertEquals("pizza", aiResponse.getResult().getAction());
+
+            } catch (final AIServiceException e) {
+                e.printStackTrace();
+                assertTrue(e.getMessage(), false);
+            }
+        }
+
+        {
+            final AIConfiguration secondConfig = new AIConfiguration("968235e8e4954cf0bb0dc07736725ecd", SUBSCRIPTION_KEY,
+                    AIConfiguration.SupportedLanguages.English,
+                    AIConfiguration.RecognitionEngine.Google);
+
+            secondConfig.setWriteSoundLog(false);
+
+            final AIDataService aiDataService = new AIDataService(Robolectric.application, secondConfig);
+
+            final AIRequest aiRequest = new AIRequest();
+            aiRequest.setQuery(query);
+
+            try {
+                final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+                assertNotNull(aiResponse.getResult());
+                assertTrue(TextUtils.isEmpty(aiResponse.getResult().getAction()));
+
+            } catch (final AIServiceException e) {
+                e.printStackTrace();
+                assertTrue(e.getMessage(), false);
+            }
+        }
+    }
+
     /**
      * Cleanup contexts to prevent Tests correlation
      */
     private void cleanContexts(final AIDataService aiDataService) throws AIServiceException {
         final AIRequest cleanRequest = new AIRequest();
+        cleanRequest.setQuery("q"); // TODO remove it after protocol fix
         cleanRequest.setResetContexts(true);
         final AIResponse response = aiDataService.request(cleanRequest);
         assertFalse(response.isError());

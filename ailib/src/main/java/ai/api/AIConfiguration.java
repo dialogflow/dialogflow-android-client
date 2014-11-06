@@ -32,10 +32,6 @@ public class AIConfiguration {
 
     private String serviceUrl;
 
-    public String getAgentId() {
-        return "Assistant";
-    }
-
     public enum RecognitionEngine {
 
         /**

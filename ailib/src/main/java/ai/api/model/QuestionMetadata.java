@@ -29,9 +29,6 @@ import java.io.Serializable;
 
 public class QuestionMetadata implements Serializable {
 
-    @SerializedName("agent_id")
-    private String agentId;
-
     @SerializedName("user_id")
     private String userId;
 
@@ -40,14 +37,6 @@ public class QuestionMetadata implements Serializable {
 
     @SerializedName("lang")
     private String language;
-
-    public String getAgentId() {
-        return agentId;
-    }
-
-    public void setAgentId(final String agentId) {
-        this.agentId = agentId;
-    }
 
     public String getUserId() {
         return userId;

@@ -80,7 +80,6 @@ public class AIDataService {
             final URL url = new URL(config.getQuestionUrl());
 
             request.setLanguage(config.getLanguage());
-            request.setAgentId(config.getAgentId());
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
             final String queryData = gson.toJson(request);
@@ -158,7 +157,6 @@ public class AIDataService {
             final URL url = new URL(config.getQuestionUrl());
 
             request.setLanguage(config.getLanguage());
-            request.setAgentId(config.getAgentId());
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
             if (context != null) {
