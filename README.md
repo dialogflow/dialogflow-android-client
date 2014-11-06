@@ -38,7 +38,7 @@ This section describes what you need to do to get started with your own app that
 To create your own app, you must first add the API.AI SDK library to your project. There are two ways to accomplish this. The first way is simpler.
 
 * Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
-        compile 'ai.api:sdk:1.0.1'
+        compile 'ai.api:sdk:1.1.0'
 * Download the library source code from github, and attach it to your project.
 
 Now you can create your own app, using either integrated speech recognition or using your own speech recognition.
@@ -118,7 +118,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
         <uses-permission android:name="android.permission.RECORD_AUDIO" />
 3. Save **AndroidManifest.xml**.
 4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](readmeImages/Dependencies.png)
-5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.0.1** item then click OK.<br/> ![Add dependency](readmeImages/SearchApiAi.png)
+5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.1.0** item then click OK.<br/> ![Add dependency](readmeImages/SearchApiAi.png)
 5. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
 6. Expand the import section and add the following lines to import the necessary API.AI classes:
 
