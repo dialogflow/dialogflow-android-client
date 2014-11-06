@@ -45,6 +45,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Do simple requests to the AI Service
@@ -56,9 +57,13 @@ public class AIDataService {
     private final Context context;
     private final AIConfiguration config;
 
+    private final String sessionId;
+
     public AIDataService(final Context context, final AIConfiguration config) {
         this.context = context;
         this.config = config;
+
+        sessionId = UUID.randomUUID().toString();
     }
 
     /**
@@ -80,6 +85,7 @@ public class AIDataService {
             final URL url = new URL(config.getQuestionUrl());
 
             request.setLanguage(config.getLanguage());
+            request.setSessionId(sessionId);
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
             final String queryData = gson.toJson(request);
@@ -157,6 +163,7 @@ public class AIDataService {
             final URL url = new URL(config.getQuestionUrl());
 
             request.setLanguage(config.getLanguage());
+            request.setSessionId(sessionId);
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
             if (context != null) {

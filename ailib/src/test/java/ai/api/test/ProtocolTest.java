@@ -41,6 +41,7 @@ import java.io.InputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @Config(emulateSdk = 18, manifest = Config.NONE)
@@ -208,6 +209,46 @@ public class ProtocolTest {
                 assertTrue(e.getMessage(), false);
             }
         }
+    }
+
+    @Test
+    public void sessionTest() {
+        final AIConfiguration config = new AIConfiguration("3485a96fb27744db83e78b8c4bc9e7b7", SUBSCRIPTION_KEY,
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.Google);
+
+        try {
+
+            final AIDataService firstService = new AIDataService(Robolectric.application, config);
+            final AIDataService secondService = new AIDataService(Robolectric.application, config);
+
+            {
+                final AIRequest weatherRequest = new AIRequest();
+                weatherRequest.setQuery("weather");
+                final AIResponse weatherResponse = makeRequest(firstService, weatherRequest);
+            }
+
+            {
+                final AIRequest checkSecondRequest = new AIRequest();
+                checkSecondRequest.setQuery("check weather");
+                final AIResponse checkSecondResponse = makeRequest(secondService, checkSecondRequest);
+                assertNull(checkSecondResponse.getResult().getAction());
+            }
+
+            {
+                final AIRequest checkFirstRequest = new AIRequest();
+                checkFirstRequest.setQuery("check weather");
+                final AIResponse checkFirstResponse = makeRequest(firstService, checkFirstRequest);
+                assertNotNull(checkFirstResponse.getResult().getAction());
+                assertTrue(checkFirstResponse.getResult().getAction().equalsIgnoreCase("checked"));
+            }
+
+        }
+        catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
+        }
+
     }
 
     /**

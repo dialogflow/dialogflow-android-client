@@ -29,22 +29,14 @@ import java.io.Serializable;
 
 public class QuestionMetadata implements Serializable {
 
-    @SerializedName("user_id")
-    private String userId;
-
     @SerializedName("timezone")
     private String timezone;
 
     @SerializedName("lang")
     private String language;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(final String userId) {
-        this.userId = userId;
-    }
+    @SerializedName("sessionId")
+    private String sessionId;
 
     public String getTimezone() {
         return timezone;
@@ -64,5 +56,13 @@ public class QuestionMetadata implements Serializable {
         }
 
         this.language = language;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(final String sessionId) {
+        this.sessionId = sessionId;
     }
 }
