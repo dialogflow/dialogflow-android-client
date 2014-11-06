@@ -62,7 +62,6 @@ public class MainActivity extends ActionBarActivity implements AIListener {
     private TextView resultTextView;
     private Gson gson;
     private EditText contextTextView;
-    private EditText agentTextView;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
