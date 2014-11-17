@@ -62,3 +62,12 @@ idea {
 }
 
 apply from: '../gradle-mvn-push.gradle'
+
+// block for building library jars
+android.libraryVariants.all { variant ->
+  def name = variant.buildType.name
+  def task = project.tasks.create "jar${name.capitalize()}", Jar
+  task.dependsOn variant.javaCompile
+  task.from variant.javaCompile.destinationDir
+  artifacts.add('archives', task);
+}
