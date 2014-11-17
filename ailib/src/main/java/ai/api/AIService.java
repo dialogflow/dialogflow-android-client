@@ -27,6 +27,7 @@ import java.util.List;
 
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
+import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
 /**
@@ -36,6 +37,9 @@ public abstract class AIService {
 
     protected final AIConfiguration config;
     protected final Context context;
+
+    protected final AIDataService aiDataService;
+
     private AIListener listener;
 
     /**
@@ -58,6 +62,8 @@ public abstract class AIService {
     protected AIService(final AIConfiguration config, final Context context) {
         this.config = config;
         this.context = context;
+
+        aiDataService = new AIDataService(context, config);
     }
 
     /**
@@ -124,5 +130,9 @@ public abstract class AIService {
 
     public void resume(){
 
+    }
+
+    public AIResponse textRequest(final AIRequest request) throws AIServiceException {
+        return aiDataService.request(request);
     }
 }

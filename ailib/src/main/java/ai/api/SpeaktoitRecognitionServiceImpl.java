@@ -52,8 +52,6 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     private final ExecutorService eventsExecutor = Executors.newSingleThreadExecutor();
 
-    private final AIDataService aiDataService;
-
     private volatile boolean isRecording = false;
 
     private final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE_IN_HZ);
@@ -62,8 +60,6 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
         super(config, context);
 
         initMediaRecorder();
-
-        aiDataService = new AIDataService(context, config);
     }
 
     private void initMediaRecorder() {

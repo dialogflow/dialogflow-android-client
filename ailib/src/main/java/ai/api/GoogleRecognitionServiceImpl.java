@@ -49,7 +49,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
     private SpeechRecognizer speechRecognizer;
     private volatile boolean recognitionActive = false;
-    private final AIDataService aiDataService;
 
     private final Map<Integer, String> errorMessages = new HashMap<>();
 
@@ -77,8 +76,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context, googleRecognizerComponent);
         speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
-
-        aiDataService = new AIDataService(context, config);
     }
 
     /**
