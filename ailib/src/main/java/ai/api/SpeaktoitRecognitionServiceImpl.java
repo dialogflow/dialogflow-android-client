@@ -88,6 +88,11 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
                     }
                 });
             }
+
+            @Override
+            public void onAudioLevelChanged(final double energy) {
+                SpeaktoitRecognitionServiceImpl.this.onAudioLevelChanged((float) energy);
+            }
         });
     }
 

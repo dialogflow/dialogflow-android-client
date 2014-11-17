@@ -78,14 +78,14 @@ public class VoiceActivityDetector {
         this.sampleRate = sampleRate;
     }
 
-    public void processBuffer(byte[] buffer, int bytesRead) {
+    public void processBuffer(final byte[] buffer, final int bytesRead) {
 
-        ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead);
-        ShortBuffer shorts = byteBuffer.asShortBuffer();
+        final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead);
+        final ShortBuffer shorts = byteBuffer.asShortBuffer();
 
-        boolean active = isFrameActive(shorts);
+        final boolean active = isFrameActive(shorts);
 
-        int frameSize = bytesRead / 2; // 16 bit encoding
+        final int frameSize = bytesRead / 2; // 16 bit encoding
         time = time + (frameSize * 1000) / sampleRate; // because of sampleRate given for seconds
 
         if (active) {
@@ -155,6 +155,8 @@ public class VoiceActivityDetector {
             lastSign = sign;
         }
 
+        onChangeLevel(Math.sqrt(energy / frameSize) / 10 /* normalization value */);
+
         boolean result = false;
         if (time < startNoiseInterval) {
             averageNoiseEnergy = (averageNoiseEnergy + energy) / 2.0;
@@ -171,6 +173,12 @@ public class VoiceActivityDetector {
 
         return result;
 
+    }
+
+    private void onChangeLevel(final double energy) {
+        if (eventsListener != null) {
+            eventsListener.onAudioLevelChanged(energy);
+        }
     }
 
     public void reset() {
@@ -217,5 +225,7 @@ public class VoiceActivityDetector {
     public interface SpeechEventsListener {
         void onSpeechBegin();
         void onSpeechEnd();
+
+        void onAudioLevelChanged(double energy);
     }
 }
