@@ -223,6 +223,8 @@ public class MainActivity extends ActionBarActivity implements AIListener {
                 }
 
                 progressBar.setProgress((int) positiveLevel);
+
+                Log.d(TAG, "Sound level:" + level);
             }
         });
     }

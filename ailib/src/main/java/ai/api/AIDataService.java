@@ -129,6 +129,7 @@ public class AIDataService {
                         return errorResponse;
                     }
                 } catch (final IOException ex) {
+                    Log.w(TAG, "Wrong error format", ex);
                 }
             }
 

@@ -59,6 +59,11 @@ public class VADTest {
             public void onSpeechEnd() {
                 voiceDetected = true;
             }
+
+            @Override
+            public void onAudioLevelChanged(double energy) {
+
+            }
         });
 
         try {
@@ -101,6 +106,11 @@ public class VADTest {
             public void onSpeechEnd() {
                 voiceDetected = true;
             }
+
+            @Override
+            public void onAudioLevelChanged(double energy) {
+
+            }
         });
 
         try {
@@ -139,6 +149,11 @@ public class VADTest {
             @Override
             public void onSpeechEnd() {
                 voiceDetected = true;
+            }
+
+            @Override
+            public void onAudioLevelChanged(double energy) {
+
             }
         });
 
