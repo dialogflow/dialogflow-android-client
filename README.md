@@ -222,8 +222,4 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 
 ### Troubleshooting
 
-* If you get an error when debugging that says "INSTALL_FAILED_OLDER_SDK", then you need to choose the appropriate API version for your device. You can do this is the **build.gradle** file. For example, these lines work for an older device that can only handle API 19.
-
-        compileSdkVersion 19
-        buildToolsVersion '19.1.0'
-        
+* If you get an error when trying to install app that says "INSTALL_FAILED_OLDER_SDK", then check you have Android SDK 19 and build tools 19.1 installed.
