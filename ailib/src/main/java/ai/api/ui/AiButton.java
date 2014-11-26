@@ -34,6 +34,9 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import ai.api.AIConfiguration;
 import ai.api.AIListener;
 import ai.api.AIService;
@@ -48,9 +51,6 @@ public class AIButton extends SoundLevelButton implements AIListener {
         public void onError(final AIError error);
     }
 
-    private AIService aiService;
-    private AIButtonListener resultsListener;
-
     private static final String TAG = AIButton.class.getName();
 
 	protected static final int[] STATE_WAITING = {R.attr.state_waiting};
@@ -60,9 +60,21 @@ public class AIButton extends SoundLevelButton implements AIListener {
 	private boolean animationSecondPhase = false;
 	private final WaitingAnimation animation = new WaitingAnimation();
 
+    private AIService aiService;
+    private AIButtonListener resultsListener;
+
+    private final ExecutorService eventsExecutor = Executors.newSingleThreadExecutor();
+
     @Override
     public void onResult(final AIResponse result) {
-        changeState(MicState.normal);
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.normal);
+            }
+        });
+
         if (resultsListener != null) {
             resultsListener.onResult(result);
         }
@@ -70,7 +82,13 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onError(final AIError error) {
-        changeState(MicState.normal);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.normal);
+            }
+        });
+
         if (resultsListener != null) {
             resultsListener.onError(error);
         }
@@ -83,12 +101,22 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onListeningStarted() {
-        changeState(MicState.listening);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.listening);
+            }
+        });
     }
 
     @Override
     public void onListeningFinished() {
-        changeState(MicState.busy);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.busy);
+            }
+        });
     }
 
     public enum MicState {
@@ -148,11 +176,22 @@ public class AIButton extends SoundLevelButton implements AIListener {
     @Override
     protected void onClick(final View v) {
         super.onClick(v);
+
         if (aiService != null) {
             if (currentState != MicState.normal) {
-                aiService.cancel();
+                eventsExecutor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        aiService.cancel();
+                    }
+                });
             } else {
-                aiService.startListening();
+                eventsExecutor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        aiService.startListening();
+                    }
+                });
             }
         }
 

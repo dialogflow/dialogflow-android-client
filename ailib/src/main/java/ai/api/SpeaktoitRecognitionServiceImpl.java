@@ -189,7 +189,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
         @Override
         public int read(final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
-            Log.v(TAG, "RecorderWrapper: read");
+            //Log.v(TAG, "RecorderWrapper: read");
             final int bytesRead = audioRecord.read(buffer, byteOffset, byteCount);
             if (bytesRead > 0) {
                 voiceActivityDetector.processBuffer(buffer, bytesRead);

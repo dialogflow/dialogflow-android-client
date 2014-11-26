@@ -102,10 +102,10 @@ public class VoiceActivityDetector {
 
                     speechActive = true;
 
-                    Log.d(TAG, "LAST SPEECH " + time);
+                    //Log.d(TAG, "LAST SPEECH " + time);
                     lastSequenceTime = time;
                     silenceLengthMilis = Math.max(minSilenceLengthMilis, silenceLengthMilis - (maxSilenceLengthMilis - minSilenceLengthMilis) / 4);
-                    Log.d(TAG, "SM:" + silenceLengthMilis);
+                    //Log.d(TAG, "SM:" + silenceLengthMilis);
 
                 }
             } else {
@@ -115,14 +115,14 @@ public class VoiceActivityDetector {
         } else {
             if (time - lastSequenceTime > silenceLengthMilis) {
                 if (lastSequenceTime > 0) {
-                    Log.d(TAG, "TERMINATE: " + time);
+                    //Log.d(TAG, "TERMINATE: " + time);
                     if (speechActive) {
                         speechActive = false;
                         onSpeechEnd();
                     }
 
                 } else {
-                    Log.d(TAG, "NOSPEECH: " + time);
+                    //Log.d(TAG, "NOSPEECH: " + time);
                 }
             }
         }
