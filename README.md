@@ -115,16 +115,19 @@ Follow these steps to set up your environment and create new android app with AP
 Next you will integrate with the SDK to be able to make calls. Follow these steps:
 
 1. Open **AndroidManifest.xml** under **app/src/main**. 
-2. Just above the `<activity>` tag, add these line in order to give the app permission to access the internet and the microphone: </br>
+2. Just above the `<activity>` tag, add these line in order to give the app permission to access the internet and the microphone:
+
     ```xml
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     ```
+    
 3. Save **AndroidManifest.xml**.
 4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](readmeImages/Dependencies.png)
 5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.1.0** item then click OK.<br/> ![Add dependency](readmeImages/SearchApiAi.png)
-5. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
-6. Expand the import section and add the following lines to import the necessary API.AI classes:
+6. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
+7. Expand the import section and add the following lines to import the necessary API.AI classes:
+    
     ```java
     import ai.api.AIConfiguration;
     import ai.api.AIListener;
@@ -134,71 +137,82 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     import ai.api.model.AIResponse;
     import ai.api.model.Result;
     ```
+    
 ### Create the user interface
 1. Open **activity_main.xml** under **app/src/main/res/layout**. This will open the layout in the designer.<br/>![activity_main.xml in Designer](readmeImages/LayoutDesigner.png)
 2. Select and delete the "Hello World" TextView.
 3. Drag a Button (under Widgets) to the top of the screen. Change the **id** property to "listenButton" and the **text** property to "Listen".<br/>![Listen button](readmeImages/ListenButton.png)
 4. Drag a Plain TextView (under Widgets) under the button. Expand it so that it covers the rest of the bottom of the screen. Change the **id** property to "resultTextView" and the **text** property to an empty string.<br/>![Result TextView](readmeImages/ResultViewText.png)
 6. Now return to the MainActivity.java file. Add three import statements to access our widgets:
+    
     ```java
     import android.view.View;
     import android.widget.Button;
     import android.widget.TextView;
     ```
+    
 7. Create two private members in MainActivity for the widgets:
+   
     ```java
     private Button processButton;
     private TextView resultTextView;
     ```
+    
 8. At the end of the OnCreate method, add these lines to initialize the widgets:
+    
     ```java
     processButton = (Button) findViewById(R.id.processButton);
     resultTextView = (TextView) findViewById(R.id.resultTextView);
     ```
-
+    
 ### Create the AI Service and Listener
+
 1. Use the MainActivity as the class that will be called when events occur by having it implement the AIListener class. Replace the class declaration with this:
+    
     ```
     public class MainActivity extends ActionBarActivity implements AIListener {
     ```
-
+    
 2. In the MainActivity class, create a private member for the **AIService** class named `aiService`.
+    
     ```java
     private AIService aiService;
     ```
-
+    
 3. In the OnCreate method, add the following line to set up the configuration to use Google speech recognition. Replace CLIENT_ACCESS_TOKEN and SUBSCRIPTION KEY with your client access token and subscription key. When it asks to add `import java.util.Locale`, say OK. 
+    
     ```java
      final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
             "SUBSCRIPTION_KEY", AIConfiguration.SupportedLanguages.English,
             AIConfiguration.RecognitionEngine.Google);
     ```
-
+    
     ![Api keys](readmeImages/apiKeys.png)
-
+    
 4. Below this line, initialize the AI service and add this instance as the listener to handle events.
+    
     ```java
     aiService = AIService.getService(this, config);
     aiService.setListener(this);
     ```
-
+    
 5. Add method to start listening on the button click:
-```java
-public void listenButtonOnClick(final View view) {
-    aiService.startListening();
-}
-```
-
+    ```java
+    public void listenButtonOnClick(final View view) {
+        aiService.startListening();
+    }
+    ```
+    
 6. Return to activity_main.xml and click on the Listen button. In the properties pane, set the onClick property to listenButtonOnClick.
-
 7. Add the following method to show the results when the listening is complete:
+    
     ```java
     public void onResult(final AIResponse response) {
         if (response.isError()) {
             resultTextView.setText("Error: " + response.getStatus().getErrorDetails());
         } else {
             Result result = response.getResult();
-
+    
             // Get parameters
             String parameterString = "";
             if (result.getParameters() != null && !result.getParameters().isEmpty()) {
@@ -206,7 +220,7 @@ public void listenButtonOnClick(final View view) {
                     parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
                 }
             }
-
+    
             // Show results in TextView.
             resultTextView.setText("Query:" + result.getResolvedQuery() +
                 "\nAction: " + result.getAction() +
@@ -214,27 +228,28 @@ public void listenButtonOnClick(final View view) {
         }
     }
     ```
-
+    
 8. Add the following method to handle errors:
+    
     ```java
     @Override
     public void onError(final AIError error) {
         resultTextView.setText(error.toString());
     }
     ```
-
+    
 9. Add the following empty methods to implement the AIListener interface:
     ```java
     @Override
     public void onListeningStarted() {}
-
+    
     @Override
     public void onListeningFinished() {}
-
+    
     @Override
     public void onAudioLevel(final float level) {}
     ```
-
+    
 ### Run the App
 1. Attach an Android device to your computer or have a virtual device ready.
 2. Make sure that your module is selected in the dropdown, and then click the Debug button.<br/>![Debug button](readmeImages/DebugButton.png)
