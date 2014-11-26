@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ai.api.sample"
-    >
+    package="ai.api.sample" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -22,6 +20,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="ai.api.sample.AIButtonSampleActivity"
+            android:label="@string/title_activity_aibutton_sample"
+            android:parentActivityName="ai.api.sample.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ai.api.sample.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".AIServiceSampleActivity"
+            android:label="@string/title_activity_aiservice_sample"
+            android:parentActivityName="ai.api.sample.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ai.api.sample.MainActivity" />
+        </activity>
+
     </application>
 
 </manifest>

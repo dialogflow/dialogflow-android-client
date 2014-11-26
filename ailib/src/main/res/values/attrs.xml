@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<declare-styleable name="MaskedColorView">
+		<attr name="mainColor" format="color|reference"/>
+	</declare-styleable>
+
+	<declare-styleable name="SoundLevelButton">
+	    <attr name="minRadius" format="dimension"/>
+	    <attr name="maxRadius" format="dimension"/>
+	    <attr name="circleCenterX" format="dimension"/>
+	    <attr name="circleCenterY" format="dimension"/>
+	    <attr name="centerColor" format="color"/>
+	    <attr name="haloColor" format="color"/>
+	    <attr name="state_listening" format="boolean"/>
+	    <attr name="state_waiting" format="boolean"/>
+	    <attr name="state_speaking" format="boolean"/>
+	</declare-styleable>
+</resources>

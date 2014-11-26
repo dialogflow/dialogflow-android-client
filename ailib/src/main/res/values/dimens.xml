@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="mic_button_size">152dp</dimen>
+    <dimen name="mic_button_halo_radius_min">35dp</dimen>
+    <dimen name="mic_button_halo_radius_max">76dp</dimen>
+</resources>

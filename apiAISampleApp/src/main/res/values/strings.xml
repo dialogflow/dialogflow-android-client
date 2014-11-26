@@ -4,4 +4,9 @@
     <string name="app_name">ApiAISampleApp</string>
     <string name="action_settings">Settings</string>
 
+    <string name="title_activity_aibutton_sample">AIButtonSampleActivity</string>
+    <string name="title_activity_aiservice_sample">AIServiceSample</string>
+    <string name="service_sample_text">Service sample</string>
+    <string name="button_sample_text">Button sample</string>
+
 </resources>

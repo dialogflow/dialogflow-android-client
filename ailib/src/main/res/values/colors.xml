@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="icon_orange_color">#f26c29</color>
+    <color name="mic_button_halo">#20000000</color>
+    <color name="main_bg_color">#FF2a91be</color>
+</resources>
