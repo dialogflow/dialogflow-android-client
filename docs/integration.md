@@ -75,7 +75,7 @@ Use the following steps:
 
 1. Use one of your application's Activity as the class that will be called when events occur by having it implement the AIListener class. Replace the class declaration with this:
     
-    ```
+    ```java
     public class MainActivity extends ActionBarActivity implements AIListener {
     ```
 
@@ -110,7 +110,7 @@ Use the following steps:
     }
     ```
     
-6. Add the following method to show the results when the listening is complete. *Make sure you interact with the UI in UI thread.*
+6. Add the following method to show the results when the listening is complete. *Make sure you interact with UI in the UI thread.*
     
     ```java
     public void onResult(final AIResponse response) {
@@ -140,7 +140,7 @@ Use the following steps:
     }
     ```
     
-7. Add the following method to handle errors. *Make sure you interact with the UI in UI thread.*
+7. Add the following method to handle errors. *Make sure you interact with UI in the UI thread.*
     
     ```java
     @Override
