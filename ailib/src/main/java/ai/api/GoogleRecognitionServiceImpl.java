@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -49,6 +50,8 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
     private SpeechRecognizer speechRecognizer;
     private volatile boolean recognitionActive = false;
+
+    private final Handler handler;
 
     private final Map<Integer, String> errorMessages = new HashMap<>();
 
@@ -76,13 +79,10 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context, googleRecognizerComponent);
         speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
+
+        handler = new Handler(context.getMainLooper());
     }
 
-    /**
-     * This method must be called from UI Thread
-     *
-     * @param aiRequest
-     */
     private void sendRequest(final AIRequest aiRequest) {
 
         if (aiRequest == null) {
@@ -138,8 +138,14 @@ public class GoogleRecognitionServiceImpl extends AIService {
             // TODO Must be removed after fix in Android
             sttIntent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{});
 
-            speechRecognizer.startListening(sttIntent);
-            recognitionActive = true;
+            runInUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    speechRecognizer.startListening(sttIntent);
+                    recognitionActive = true;
+                }
+            });
+
         } else {
             Log.w(TAG, "Trying to start recognition while another recognition active");
         }
@@ -148,8 +154,15 @@ public class GoogleRecognitionServiceImpl extends AIService {
     @Override
     public void stopListening() {
         if (recognitionActive) {
-            speechRecognizer.stopListening();
-            recognitionActive = false;
+            runInUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (recognitionActive) {
+                        speechRecognizer.stopListening();
+                        recognitionActive = false;
+                    }
+                }
+            });
         } else {
             Log.w(TAG, "Trying to stop listening while not active recognition");
         }
@@ -158,11 +171,22 @@ public class GoogleRecognitionServiceImpl extends AIService {
     @Override
     public void cancel() {
         if (recognitionActive) {
-            speechRecognizer.cancel();
-            recognitionActive = false;
+            runInUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (recognitionActive) {
+                        speechRecognizer.cancel();
+                        recognitionActive = false;
+                    }
+                }
+            });
+
         }
     }
 
+    /**
+     * This method must be called from UI thread
+     */
     @Override
     public void pause() {
         super.pause();
@@ -173,6 +197,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
         }
     }
 
+    /**
+     * This method must be called from UI thread
+     */
     @Override
     public void resume() {
         super.resume();
@@ -181,6 +208,10 @@ public class GoogleRecognitionServiceImpl extends AIService {
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
             speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
         }
+    }
+
+    private void runInUiThread(final Runnable runnable) {
+        handler.post(runnable);
     }
 
     private class InternalRecognitionListener implements RecognitionListener {
