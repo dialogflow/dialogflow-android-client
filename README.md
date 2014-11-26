@@ -33,6 +33,8 @@ The API.AI Android SDK comes with a simple sample that illustrates how voice com
 
 This section describes what you need to do to get started with your own app that uses the API.AI Android SDK. The first part provides an overview of how to use the SDK, and the second part is a tutorial with detailed step-by-step instructions for creating your own app.
 
+If you are an experienced developer you might use [brief integration instruction](docs/integration.md).
+
 ## Overview
 
 To create your own app, you must first add the API.AI SDK library to your project. There are two ways to accomplish this. The first way is simpler.
