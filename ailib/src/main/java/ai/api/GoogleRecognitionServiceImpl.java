@@ -21,6 +21,7 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -256,6 +257,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
             GoogleRecognitionServiceImpl.this.onError(aiError);
         }
 
+        @TargetApi(14)
         @Override
         public void onResults(final Bundle results) {
             if (recognitionActive) {

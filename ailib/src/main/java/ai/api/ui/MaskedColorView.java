@@ -21,6 +21,7 @@ package ai.api.ui;
  *
  ***********************************************************************************************************************/
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -53,6 +54,7 @@ public class MaskedColorView extends ImageView {
 		configure(attrs);
 	}
 
+    @TargetApi(11)
 	@Override
 	protected void drawableStateChanged() {
 		super.drawableStateChanged();
