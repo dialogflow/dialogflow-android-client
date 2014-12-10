@@ -77,7 +77,8 @@ This section assumes that you have performed your own speech recognition and tha
 The following example code sends a query with the text "Hello":
 
     final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY, 
-        Locale.US.toString(), AIConfiguration.RecognitionEngine.Google);
+        AIConfiguration.SupportedLanguages.English, 
+        AIConfiguration.RecognitionEngine.Google);
     final AIDataService aiDataService = new AIDataService(config);
     
     final AIRequest aiRequest = new AIRequest();
@@ -156,10 +157,10 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 2. In the MainActivity class, create a private member for the **AIService** class named `aiService`.
 
          private AIService aiService;
-3. In the OnCreate method, add the following line to set up the configuration to use Google speech recognition. Replace CLIENT_ACCESS_TOKEN and SUBSCRIPTION KEY with your client access token and subscription key. When it asks to add `import java.util.Locale`, say OK. 
+3. In the OnCreate method, add the following line to set up the configuration to use Google speech recognition. Replace CLIENT_ACCESS_TOKEN and SUBSCRIPTION KEY with your client access token and subscription key. 
 
          final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
-                "SUBSCRIPTION_KEY", Locale.US.toString(),
+                "SUBSCRIPTION_KEY", AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Google);
     
     ![Api keys](readmeImages/apiKeys.png)
