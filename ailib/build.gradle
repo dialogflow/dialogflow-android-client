@@ -44,9 +44,8 @@ dependencies {
         mavenCentral()
     }
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:19.+'
-    compile 'com.android.support:appcompat-v7:19.+'
-    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.google.code.gson:gson:2.2.4'
     compile 'commons-io:commons-io:2.4'
     androidTestCompile 'org.robolectric:robolectric:2.4'
     androidTestCompile 'com.squareup:fest-android:1.0.+'
