@@ -40,7 +40,7 @@ public class AIConfiguration {
         Google,
 
         /**
-         * Not implemented yet. Do not use.
+         * Speaktoit recognition engine
          */
         Speaktoit
     }
