@@ -59,7 +59,7 @@ public class AIButtonSampleActivity extends ActionBarActivity implements AIButto
 
         final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.Speaktoit);
+                AIConfiguration.RecognitionEngine.System);
 
         aiButton = (AIButton) findViewById(R.id.micButton);
 
