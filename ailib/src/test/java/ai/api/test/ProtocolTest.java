@@ -100,7 +100,10 @@ public class ProtocolTest {
             assertFalse(TextUtils.isEmpty(aiResponse.getId()));
             assertNotNull(aiResponse.getResult());
 
-            assertEquals("what does it mean", aiResponse.getResult().getResolvedQuery());
+            final String resolvedQuery = aiResponse.getResult().getResolvedQuery();
+            assertFalse(TextUtils.isEmpty(resolvedQuery));
+            assertTrue(resolvedQuery.contains("what is your"));
+            assertTrue(resolvedQuery.contains("name"));
 
         } catch (final AIServiceException e) {
             e.printStackTrace();
