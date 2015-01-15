@@ -45,8 +45,11 @@ public class AIConfiguration {
         Speaktoit
     }
 
+    /**
+     * Currently supported languages
+     */
     public enum SupportedLanguages {
-        English("en");
+        English("en"), Russian("ru"), German("de"), Portuguese("pt");
 
         private final String languageTag;
 
