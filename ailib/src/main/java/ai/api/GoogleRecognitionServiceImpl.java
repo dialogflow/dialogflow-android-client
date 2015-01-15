@@ -34,22 +34,24 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.util.RecognizerChecker;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class GoogleRecognitionServiceImpl extends AIService {
 
     private static final String TAG = GoogleRecognitionServiceImpl.class.getName();
 
     private SpeechRecognizer speechRecognizer;
+    private final Object speechRecognizerLock = new Object();
+
     private volatile boolean recognitionActive = false;
 
     private final Handler handler;
@@ -78,10 +80,37 @@ public class GoogleRecognitionServiceImpl extends AIService {
             Log.w(TAG, "Google Recognizer application not found on device. Quality of the recognition may be low. Please check if Google Search application installed and enabled.");
         }
 
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context, googleRecognizerComponent);
-        speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
-
         handler = new Handler(context.getMainLooper());
+    }
+
+    protected void initializeRecognizer() {
+        synchronized (speechRecognizerLock) {
+            if (speechRecognizer != null) {
+                speechRecognizer.destroy();
+                speechRecognizer = null;
+            }
+
+            final ComponentName googleRecognizerComponent = RecognizerChecker.findGoogleRecognizer(context);
+
+            if (googleRecognizerComponent == null) {
+                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+            } else {
+                speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context, googleRecognizerComponent);
+            }
+
+            speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
+        }
+    }
+
+    protected void clearRecognizer() {
+        if (speechRecognizer != null) {
+            synchronized (speechRecognizerLock) {
+                if (speechRecognizer != null) {
+                    speechRecognizer.destroy();
+                    speechRecognizer = null;
+                }
+            }
+        }
     }
 
     private void sendRequest(final AIRequest aiRequest) {
@@ -142,6 +171,8 @@ public class GoogleRecognitionServiceImpl extends AIService {
             runInUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    initializeRecognizer();
+
                     speechRecognizer.startListening(sttIntent);
                     recognitionActive = true;
                 }
@@ -158,9 +189,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
             runInUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (recognitionActive) {
-                        speechRecognizer.stopListening();
-                        recognitionActive = false;
+                    synchronized (speechRecognizerLock) {
+                        if (recognitionActive) {
+                            speechRecognizer.stopListening();
+                            recognitionActive = false;
+                        }
                     }
                 }
             });
@@ -175,9 +208,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
             runInUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (recognitionActive) {
-                        speechRecognizer.cancel();
-                        recognitionActive = false;
+                    synchronized (speechRecognizerLock) {
+                        if (recognitionActive) {
+                            speechRecognizer.cancel();
+                            recognitionActive = false;
+                        }
                     }
                 }
             });
@@ -192,10 +227,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
     public void pause() {
         super.pause();
 
-        if (speechRecognizer != null) {
-            speechRecognizer.destroy();
-            speechRecognizer = null;
-        }
+        clearRecognizer();
     }
 
     /**
@@ -204,11 +236,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
     @Override
     public void resume() {
         super.resume();
-
-        if (speechRecognizer == null) {
-            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
-            speechRecognizer.setRecognitionListener(new InternalRecognitionListener());
-        }
     }
 
     private void runInUiThread(final Runnable runnable) {
@@ -288,6 +315,8 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     }
 
                     GoogleRecognitionServiceImpl.this.sendRequest(aiRequest);
+
+                    clearRecognizer();
                 }
             }
         }
