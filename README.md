@@ -1,6 +1,8 @@
 api-ai-android-sdk
 ==================
 
+dev: ![Dev status](https://travis-ci.org/api-ai/api-ai-android-sdk.svg?branch=dev)
+
 The API.AI Android SDK makes it easy to integrate speech recognition with [API.AI](http://www.api.ai) natural language processing API on Android devices. API.AI allows using voice commands and integration with dialog scenarios defined for a particular agent in API.AI.
 
 Two permissions are required to use the API.AI Android SDK:
