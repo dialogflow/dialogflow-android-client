@@ -28,11 +28,6 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import ai.api.http.HttpClient;
-import ai.api.model.AIContext;
-import ai.api.model.AIRequest;
-import ai.api.model.AIResponse;
-
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 
@@ -46,6 +41,11 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
+
+import ai.api.http.HttpClient;
+import ai.api.model.AIContext;
+import ai.api.model.AIRequest;
+import ai.api.model.AIResponse;
 
 /**
  * Do simple requests to the AI Service
@@ -77,6 +77,8 @@ public class AIDataService {
             throw new IllegalArgumentException("Request argument must not be null");
         }
 
+        Log.d(TAG, "Starting request: " + request);
+
         final Gson gson = GsonFactory.getGson();
 
         HttpURLConnection connection = null;
@@ -89,6 +91,8 @@ public class AIDataService {
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
             final String queryData = gson.toJson(request);
+
+            Log.v(TAG, "Request json: " + queryData);
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -112,7 +116,12 @@ public class AIDataService {
                 throw new AIServiceException("Empty response from ai service. Please check configuration.");
             }
 
+            Log.v(TAG, "Service response json: " + response);
+
             final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
+
+            Log.d(TAG, "Response: " + response);
+
             return aiResponse;
 
         } catch (final MalformedURLException e) {

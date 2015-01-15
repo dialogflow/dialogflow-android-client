@@ -65,4 +65,9 @@ public class QuestionMetadata implements Serializable {
     public void setSessionId(final String sessionId) {
         this.sessionId = sessionId;
     }
+
+    @Override
+    public String toString() {
+        return String.format("QuestionMetadata{language='%s', timezone='%s'}", language, timezone);
+    }
 }

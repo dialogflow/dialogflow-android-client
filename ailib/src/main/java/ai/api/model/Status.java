@@ -76,4 +76,12 @@ public class Status implements Serializable {
     public void setErrorID(final String errorID) {
         this.errorID = errorID;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Status{code=%d, errorType='%s', errorDetails='%s'}",
+                code,
+                errorType,
+                errorDetails);
+    }
 }

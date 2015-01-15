@@ -88,4 +88,12 @@ public class Result implements Serializable {
     public void setResolvedQuery(final String resolvedQuery) {
         this.resolvedQuery = resolvedQuery;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Result {speech='%s', action='%s', resolvedQuery='%s'}",
+                speech,
+                action,
+                resolvedQuery);
+    }
 }

@@ -27,6 +27,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AIRequest extends QuestionMetadata implements Serializable {
@@ -103,5 +104,14 @@ public class AIRequest extends QuestionMetadata implements Serializable {
         }
 
         contexts.add(aiContext.getName());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("AIRequest{query=%s, resetContexts=%s, language='%s', timezone='%s'}",
+                Arrays.toString(query),
+                resetContexts,
+                getLanguage(),
+                getTimezone());
     }
 }

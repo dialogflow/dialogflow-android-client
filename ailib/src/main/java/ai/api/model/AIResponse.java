@@ -91,4 +91,13 @@ public class AIResponse implements Serializable {
 
         return false;
     }
+
+    @Override
+    public String toString() {
+        return String.format("AIResponse{id='%s', timestamp=%s, result=%s, status=%s}",
+                id,
+                timestamp,
+                result,
+                status);
+    }
 }
