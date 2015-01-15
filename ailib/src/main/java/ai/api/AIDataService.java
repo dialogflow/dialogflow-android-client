@@ -77,7 +77,7 @@ public class AIDataService {
             throw new IllegalArgumentException("Request argument must not be null");
         }
 
-        Log.d(TAG, "Starting request: " + request);
+        Log.d(TAG, "Start request");
 
         final Gson gson = GsonFactory.getGson();
 
@@ -92,7 +92,7 @@ public class AIDataService {
 
             final String queryData = gson.toJson(request);
 
-            Log.v(TAG, "Request json: " + queryData);
+            Log.d(TAG, "Request json: " + queryData);
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
@@ -116,11 +116,9 @@ public class AIDataService {
                 throw new AIServiceException("Empty response from ai service. Please check configuration.");
             }
 
-            Log.v(TAG, "Service response json: " + response);
+            Log.d(TAG, "Response json: " + response);
 
             final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
-
-            Log.d(TAG, "Response: " + response);
 
             return aiResponse;
 
@@ -167,6 +165,8 @@ public class AIDataService {
 
         HttpClient httpClient = null;
 
+        Log.d(TAG, "Start voice request");
+
         try {
             final AIRequest request = new AIRequest();
 
@@ -181,6 +181,8 @@ public class AIDataService {
             }
 
             final String queryData = gson.toJson(request);
+
+            Log.d(TAG, "Request json: " + queryData);
 
             connection = (HttpURLConnection) url.openConnection();
             connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
@@ -203,6 +205,8 @@ public class AIDataService {
             if (TextUtils.isEmpty(response)) {
                 throw new AIServiceException("Empty response from ai service. Please check configuration.");
             }
+
+            Log.d(TAG, "Response json: " + response);
 
             final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
             return aiResponse;
