@@ -12,7 +12,7 @@ Also SDK library must be in your app dependencies (see **build.gradle**)
 ```
 dependencies {
     // some another dependencies...
-    compile 'ai.api:sdk:1.2.0'
+    compile 'ai.api:sdk:1.2.0@aar'
 }
 ```
 

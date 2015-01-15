@@ -42,7 +42,7 @@ If you are an experienced developer you might use [brief integration instruction
 To create your own app, you must first add the API.AI SDK library to your project. There are two ways to accomplish this. The first way is simpler.
 
 * Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
-        compile 'ai.api:sdk:1.1.0'
+        compile 'ai.api:sdk:1.2.0@aar'
 * Download the library source code from github, and attach it to your project.
 
 Now you can create your own app, using either integrated speech recognition or using your own speech recognition.
@@ -108,9 +108,9 @@ Follow these steps to set up your environment and create new android app with AP
 
 1. Create an API.AI agent with entities and intents, or use one that you've already created. See the API.AI documentation for instructions on how to do this. 
 2. Open [Android Studio](https://developer.android.com/sdk/installing/studio.html). (Download it if you don't have it.)
-3. From the start screen (or **File** menu) , choose **New Project...**.<br/> ![New Project](readmeImages/NewProject.png)
-4. In the New Project dialog, fill **Application name** and **Company Domain**, then click **Next**.<br/> ![New project dialog](readmeImages/NewProjectDialog.png)
-5. Choose minimum SDK for project, minimum supported by API.AI SDK is **9 Gingerbread**. Click **Next**.<br/> ![Min SDK](readmeImages/MinSDK.png)
+3. From the start screen (or **File** menu) , choose **New Project...**.<br/> ![New Project](docs/images/NewProject.png)
+4. In the New Project dialog, fill **Application name** and **Company Domain**, then click **Next**.<br/> ![New project dialog](docs/images/NewProjectDialog.png)
+5. Choose minimum SDK for project, minimum supported by API.AI SDK is **9 Gingerbread**. Click **Next**.<br/> ![Min SDK](docs/images/MinSDK.png)
 6. Select **Blank Activity** and click **Next**.
 7. Enter the main activity name and click **Finish**.
 
@@ -127,8 +127,8 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     ```
     
 3. Save **AndroidManifest.xml**.
-4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](readmeImages/Dependencies.png)
-5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.1.0** item then click OK.<br/> ![Add dependency](readmeImages/SearchApiAi.png)
+4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](docs/images/Dependencies.png)
+5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.1.0** item then click OK.<br/> ![Add dependency](docs/images/SearchApiAi.png)
 6. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
 7. Expand the import section and add the following lines to import the necessary API.AI classes:
     
@@ -143,10 +143,10 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     ```
     
 ### Create the user interface
-1. Open **activity_main.xml** under **app/src/main/res/layout**. This will open the layout in the designer.<br/>![activity_main.xml in Designer](readmeImages/LayoutDesigner.png)
+1. Open **activity_main.xml** under **app/src/main/res/layout**. This will open the layout in the designer.<br/>![activity_main.xml in Designer](docs/images/LayoutDesigner.png)
 2. Select and delete the "Hello World" TextView.
-3. Drag a Button (under Widgets) to the top of the screen. Change the **id** property to "listenButton" and the **text** property to "Listen".<br/>![Listen button](readmeImages/ListenButton.png)
-4. Drag a Plain TextView (under Widgets) under the button. Expand it so that it covers the rest of the bottom of the screen. Change the **id** property to "resultTextView" and the **text** property to an empty string.<br/>![Result TextView](readmeImages/ResultViewText.png)
+3. Drag a Button (under Widgets) to the top of the screen. Change the **id** property to "listenButton" and the **text** property to "Listen".<br/>![Listen button](docs/images/ListenButton.png)
+4. Drag a Plain TextView (under Widgets) under the button. Expand it so that it covers the rest of the bottom of the screen. Change the **id** property to "resultTextView" and the **text** property to an empty string.<br/>![Result TextView](docs/images/ResultViewText.png)
 6. Now return to the MainActivity.java file. Add three import statements to access our widgets:
     
     ```java
@@ -191,7 +191,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
             AIConfiguration.RecognitionEngine.Google);
     ```
     
-    ![Api keys](readmeImages/apiKeys.png)
+    ![Api keys](docs/images/apiKeys.png)
     
 4. Below this line, initialize the AI service and add this instance as the listener to handle events.
     
@@ -256,8 +256,8 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     
 ### Run the App
 1. Attach an Android device to your computer or have a virtual device ready.
-2. Make sure that your module is selected in the dropdown, and then click the Debug button.<br/>![Debug button](readmeImages/DebugButton.png)
-3. The app should now be running on your device or virtual device. Click the **Listen** button and then speak a phrase that will work with your intent. Wait a few seconds. The result should appear in the result TextView. <br/>![Result](readmeImages/AppScreenshot.png)
+2. Make sure that your module is selected in the dropdown, and then click the Debug button.<br/>![Debug button](docs/images/DebugButton.png)
+3. The app should now be running on your device or virtual device. Click the **Listen** button and then speak a phrase that will work with your intent. Wait a few seconds. The result should appear in the result TextView. <br/>![Result](docs/images/AppScreenshot.png)
 
 ### Troubleshooting
 
