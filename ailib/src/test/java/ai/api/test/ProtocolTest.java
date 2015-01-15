@@ -61,7 +61,7 @@ public class ProtocolTest {
     public void AIDataServiceDebugTest() {
         final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY,
                 AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.Google);
+                AIConfiguration.RecognitionEngine.System);
 
         config.setWriteSoundLog(false);
 
@@ -115,7 +115,7 @@ public class ProtocolTest {
     public void ContextTest() {
         final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY,
                 AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.Google);
+                AIConfiguration.RecognitionEngine.System);
 
         config.setWriteSoundLog(false);
 
@@ -168,7 +168,7 @@ public class ProtocolTest {
         {
             final AIConfiguration config = new AIConfiguration("3485a96fb27744db83e78b8c4bc9e7b7", SUBSCRIPTION_KEY,
                     AIConfiguration.SupportedLanguages.English,
-                    AIConfiguration.RecognitionEngine.Google);
+                    AIConfiguration.RecognitionEngine.System);
 
             config.setWriteSoundLog(false);
 
@@ -192,7 +192,7 @@ public class ProtocolTest {
         {
             final AIConfiguration secondConfig = new AIConfiguration("968235e8e4954cf0bb0dc07736725ecd", SUBSCRIPTION_KEY,
                     AIConfiguration.SupportedLanguages.English,
-                    AIConfiguration.RecognitionEngine.Google);
+                    AIConfiguration.RecognitionEngine.System);
 
             secondConfig.setWriteSoundLog(false);
 
@@ -218,7 +218,7 @@ public class ProtocolTest {
     public void sessionTest() {
         final AIConfiguration config = new AIConfiguration("3485a96fb27744db83e78b8c4bc9e7b7", SUBSCRIPTION_KEY,
                 AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.Google);
+                AIConfiguration.RecognitionEngine.System);
 
         try {
 

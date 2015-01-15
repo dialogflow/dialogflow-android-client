@@ -36,8 +36,16 @@ public class AIConfiguration {
 
         /**
          * Google Speech Recognition integrated into Android OS
+         *
+         * @deprecated Use System instead
          */
+        @Deprecated
         Google,
+
+        /**
+         * Default system recognition
+         */
+        System,
 
         /**
          * Speaktoit recognition engine

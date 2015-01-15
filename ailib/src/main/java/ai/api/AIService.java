@@ -52,6 +52,9 @@ public abstract class AIService {
         if (config.getRecognitionEngine() == AIConfiguration.RecognitionEngine.Google) {
             return new GoogleRecognitionServiceImpl(context, config);
         }
+        if (config.getRecognitionEngine() == AIConfiguration.RecognitionEngine.System) {
+            return new GoogleRecognitionServiceImpl(context, config);
+        }
         else if (config.getRecognitionEngine() == AIConfiguration.RecognitionEngine.Speaktoit) {
             return new SpeaktoitRecognitionServiceImpl(context, config);
         } else {
