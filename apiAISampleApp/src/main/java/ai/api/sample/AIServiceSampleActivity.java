@@ -28,9 +28,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -59,6 +62,7 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
     private TextView resultTextView;
     private Gson gson;
     private EditText contextTextView;
+    private Spinner selectLanguageSpinner;
 
 
     @Override
@@ -74,16 +78,46 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
 
         resultTextView = (TextView) findViewById(R.id.resultTextView);
         contextTextView = (EditText) findViewById(R.id.contextTextView);
+        selectLanguageSpinner = (Spinner) findViewById(R.id.selectLanguageSpinner);
 
+        final String[] languages = new String[] { "en","ru","de","pt","pt-BR"};
+        final ArrayAdapter<String> languagesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, languages);
+        selectLanguageSpinner.setAdapter(languagesAdapter);
+        selectLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
+                final String selectedLanguage = (String) parent.getItemAtPosition(position);
+                languageChanged(selectedLanguage);
+            }
+
+            @Override
+            public void onNothingSelected(final AdapterView<?> parent) {
+
+            }
+        });
 
         gson = GsonFactory.getGson();
 
         final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.Speaktoit);
+                AIConfiguration.RecognitionEngine.System);
 
         // TODO remove before publish
         //config.setWriteSoundLog(true);
+
+        aiService = AIService.getService(this, config);
+        aiService.setListener(this);
+    }
+
+    private void languageChanged(final String selectedLanguage) {
+        final AIConfiguration.SupportedLanguages lang = AIConfiguration.SupportedLanguages.fromLanguageTag(selectedLanguage);
+        final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
+                Config.SUBSCRIPTION_KEY, lang,
+                AIConfiguration.RecognitionEngine.System);
+
+        if (aiService != null) {
+            aiService.pause();
+        }
 
         aiService = AIService.getService(this, config);
         aiService.setListener(this);

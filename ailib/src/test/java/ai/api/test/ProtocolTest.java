@@ -74,6 +74,8 @@ public class ProtocolTest {
             final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("greeting", aiResponse.getResult().getAction());
+            assertEquals("Hi! How are you?", aiResponse.getResult().getSpeech());
 
         } catch (final AIServiceException e) {
             e.printStackTrace();
@@ -252,6 +254,56 @@ public class ProtocolTest {
             assertTrue(e.getMessage(), false);
         }
 
+    }
+
+    @Test
+    public void testRussianLanguage() {
+        final AIConfiguration config = new AIConfiguration("07806228a357411d83064309a279c7fd", SUBSCRIPTION_KEY,
+                AIConfiguration.SupportedLanguages.Russian,
+                AIConfiguration.RecognitionEngine.System);
+
+        try {
+            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+            final AIRequest aiRequest = new AIRequest();
+            aiRequest.setQuery("привет");
+
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+
+            assertEquals("helloAction", aiResponse.getResult().getAction());
+            assertEquals("Добрый день", aiResponse.getResult().getSpeech());
+
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
+        }
+    }
+
+    @Test
+    public void testBrazilLanguage(){
+        final AIConfiguration config = new AIConfiguration("42db6ad6a51c47088318a8104833b66c", SUBSCRIPTION_KEY,
+                AIConfiguration.SupportedLanguages.PortugueseBrazil,
+                AIConfiguration.RecognitionEngine.System);
+
+        try {
+            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+            final AIRequest aiRequest = new AIRequest();
+            aiRequest.setQuery("oi");
+
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+
+            assertEquals("helloAction", aiResponse.getResult().getAction());
+            assertEquals("como você está", aiResponse.getResult().getSpeech());
+
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
+        }
     }
 
     /**

@@ -57,12 +57,29 @@ public class AIConfiguration {
      * Currently supported languages
      */
     public enum SupportedLanguages {
-        English("en"), Russian("ru"), German("de"), Portuguese("pt");
+        English("en"), Russian("ru"), German("de"), Portuguese("pt"), PortugueseBrazil("pt-BR");
 
         private final String languageTag;
 
         private SupportedLanguages(final String languageTag) {
             this.languageTag = languageTag;
+        }
+
+        public static SupportedLanguages fromLanguageTag(final String languageTag) {
+            switch (languageTag) {
+                case "en":
+                    return English;
+                case "ru":
+                    return Russian;
+                case "de":
+                    return German;
+                case "pt":
+                    return Portuguese;
+                case "pt-BR":
+                    return PortugueseBrazil;
+                default:
+                    return English;
+            }
         }
     }
 
