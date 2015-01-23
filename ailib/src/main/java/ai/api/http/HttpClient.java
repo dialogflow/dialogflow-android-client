@@ -37,6 +37,7 @@ import java.net.HttpURLConnection;
 public class HttpClient {
 
     public static final String TAG = HttpClient.class.getName();
+    private static final int CHUNK_LENGTH = 2048;
 
     private final HttpURLConnection connection;
     private OutputStream os;
@@ -53,6 +54,7 @@ public class HttpClient {
     public void connectForMultipart() throws IOException {
         connection.setRequestProperty("Connection", "Keep-Alive");
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+        connection.setChunkedStreamingMode(CHUNK_LENGTH);
         connection.connect();
         os = connection.getOutputStream();
     }
