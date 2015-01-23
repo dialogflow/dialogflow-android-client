@@ -57,7 +57,19 @@ public class AIConfiguration {
      * Currently supported languages
      */
     public enum SupportedLanguages {
-        English("en"), Russian("ru"), German("de"), Portuguese("pt"), PortugueseBrazil("pt-BR");
+        English("en"),
+        Russian("ru"),
+        German("de"),
+        Portuguese("pt"),
+        PortugueseBrazil("pt-BR"),
+        Spanish("es"),
+        French("fr"),
+        Italian("it"),
+        Japanese("ja"),
+        Korean("ko"),
+        ChineseChina("zh-CN"),
+        ChineseHongKong("zh-HK"),
+        ChineseTaiwan("zh-TW");
 
         private final String languageTag;
 
@@ -77,6 +89,22 @@ public class AIConfiguration {
                     return Portuguese;
                 case "pt-BR":
                     return PortugueseBrazil;
+                case "es":
+                    return Spanish;
+                case "fr":
+                    return French;
+                case "it":
+                    return Italian;
+                case "ja":
+                    return Japanese;
+                case "ko":
+                    return Korean;
+                case "zh-CN":
+                    return ChineseChina;
+                case "zh-HK":
+                    return ChineseHongKong;
+                case "zh-TW":
+                    return ChineseTaiwan;
                 default:
                     return English;
             }

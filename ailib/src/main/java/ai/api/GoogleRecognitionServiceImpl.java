@@ -161,8 +161,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
             final Intent sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, config.getLanguage());
-            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, config.getLanguage());
+
+            final String language = config.getLanguage().replace('-','_');
+
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language);
+            sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, language);
 
             // WORKAROUND for https://code.google.com/p/android/issues/detail?id=75347
             // TODO Must be removed after fix in Android
