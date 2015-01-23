@@ -21,9 +21,11 @@ package ai.api.model;
  *
  ***********************************************************************************************************************/
 
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class Metadata implements Serializable {
 
@@ -40,22 +42,10 @@ public class Metadata implements Serializable {
     private String intentId;
 
     /**
-     * Contexts that were matched by the intent
-     */
-    @SerializedName("inputContexts")
-    private String[] inputContexts;
-
-    /**
-     * Contexts that were added by the intent
-     */
-    @SerializedName("outputContexts")
-    private String[] outputContexts;
-
-    /**
      * Currently active contexts
      */
     @SerializedName("contexts")
-    private String[] contexts;
+    private HashMap<String, JsonObject> contexts;
 
     /**
      * Name of the intent that produced this result
@@ -80,23 +70,10 @@ public class Metadata implements Serializable {
     }
 
     /**
-     * Contexts that were matched by the intent
-     */
-    public String[] getInputContexts() {
-        return inputContexts;
-    }
-
-    /**
      * Currently active contexts
      */
-    public String[] getContexts() {
+    public HashMap<String, JsonObject> getContexts() {
         return contexts;
     }
 
-    /**
-     * Contexts that were added by the intent
-     */
-    public String[] getOutputContexts() {
-        return outputContexts;
-    }
 }
