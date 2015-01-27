@@ -46,6 +46,7 @@ If you are an experienced developer you might use [brief integration instruction
 To create your own app, you must first add the API.AI SDK library to your project. There are two ways to accomplish this. The first way is simpler.
 
 * Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
+
     ```
     compile 'ai.api:sdk:1.2.0@aar'
     // api.ai SDK dependencies
@@ -53,6 +54,7 @@ To create your own app, you must first add the API.AI SDK library to your projec
     compile 'com.google.code.gson:gson:2.3'
     compile 'commons-io:commons-io:2.4'
     ```
+    
 * Download the library source code from github, and attach it to your project.
 
 Now you can create your own app, using either integrated speech recognition or using your own speech recognition.
