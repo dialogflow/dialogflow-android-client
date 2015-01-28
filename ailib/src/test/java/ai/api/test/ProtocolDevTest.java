@@ -49,6 +49,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
     protected static final String ACCESS_TOKEN = "9586504322be4f8ba31cfdebc40eb76f";
     protected static final String SUBSCRIPTION_KEY = "cb9693af-85ce-4fbf-844a-5563722fc27f";
 
+    @Override
     protected String getAccessToken() {
         return ACCESS_TOKEN;
     }
@@ -58,20 +59,29 @@ public class ProtocolDevTest extends ProtocolTestBase {
         return "e807a6a95b15400a8ad18de3c577955e";
     }
 
+    @Override
     protected String getSubscriptionKey() {
         return SUBSCRIPTION_KEY;
     }
 
+    @Override
     protected String getRuAccessToken(){
         return "43a7541fb0a94fae8f1bef406a2d9ca8";
     }
 
+    @Override
     protected String getBrAccessToken(){
         return "";
     }
 
+    @Override
     protected String getPtBrAccessToken(){
         return "521282797a864a029e1f965fa973cf61";
+    }
+
+    @Override
+    protected String getJaAccessToken() {
+        return "c82b0a650c9a4758984fb53411f271e4";
     }
 
     @Override

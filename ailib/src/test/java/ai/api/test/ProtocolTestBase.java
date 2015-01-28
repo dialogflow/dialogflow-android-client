@@ -23,21 +23,17 @@ package ai.api.test;
 
 import android.text.TextUtils;
 
+import org.junit.Test;
+import org.robolectric.Robolectric;
+
+import java.io.InputStream;
+
 import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import ai.api.AIServiceException;
 import ai.api.model.AIContext;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
-
-import java.io.InputStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -54,6 +50,7 @@ public abstract class ProtocolTestBase {
     protected abstract String getRuAccessToken();
     protected abstract String getBrAccessToken();
     protected abstract String getPtBrAccessToken();
+    protected abstract String getJaAccessToken();
 
     protected abstract boolean isDevTest();
 

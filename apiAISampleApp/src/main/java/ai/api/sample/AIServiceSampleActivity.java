@@ -70,7 +70,6 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aiservice_sample);
 
-
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         recIndicator = (ImageView) findViewById(R.id.recIndicator);
@@ -80,14 +79,29 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         contextTextView = (EditText) findViewById(R.id.contextTextView);
         selectLanguageSpinner = (Spinner) findViewById(R.id.selectLanguageSpinner);
 
-        final String[] languages = new String[] { "en","ru","de","pt","pt-BR"};
-        final ArrayAdapter<String> languagesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, languages);
+        final LanguageConfig[] languages = new LanguageConfig[] {
+                new LanguageConfig("en","92fa31b4e15c4ffca80dca2942deb6d3"),
+                new LanguageConfig("ru","bb93d0b7620141c98cd305fbaf989481"),
+                new LanguageConfig("de","b3de3bd82cd54254bbe35fd25d1f81bc"),
+                new LanguageConfig("pt","3f71440584844f048bad712daf9e19de"),
+                new LanguageConfig("pt-BR", "1d093587fc4f48c5a3529c6fb48c3291"),
+                new LanguageConfig("es", "b64ea3877df54cd7a0adc7f3a97929da"),
+                new LanguageConfig("fr","53c95265e618448f909b9562a7f2b29e"),
+                new LanguageConfig("it","700e909d22a344c7b405a5ca82e37d68"),
+                new LanguageConfig("ja", "f36555bbfff7480ea6b26e4c6a370077"),
+                new LanguageConfig("ko", "27865280e7fd436b8523938f40fc5b9d"),
+                new LanguageConfig("zh-CN","2feb604b0f59447db2f64a2c8a7c271d"),
+                new LanguageConfig("zh-HK", "e0caf8e54b1041bc8955e44e69304026"),
+                new LanguageConfig("zh-TW", "b0df697344d142f4a1597250741d0ed8"),
+        };
+
+        final ArrayAdapter<LanguageConfig> languagesAdapter = new ArrayAdapter<LanguageConfig>(this, android.R.layout.simple_spinner_dropdown_item, languages);
         selectLanguageSpinner.setAdapter(languagesAdapter);
         selectLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-                final String selectedLanguage = (String) parent.getItemAtPosition(position);
-                languageChanged(selectedLanguage);
+                final LanguageConfig selectedLanguage = (LanguageConfig) parent.getItemAtPosition(position);
+                initService(selectedLanguage);
             }
 
             @Override
@@ -97,23 +111,15 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         });
 
         gson = GsonFactory.getGson();
-
-        final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
-                Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        // TODO remove before publish
-        //config.setWriteSoundLog(true);
-
-        aiService = AIService.getService(this, config);
-        aiService.setListener(this);
     }
 
-    private void languageChanged(final String selectedLanguage) {
-        final AIConfiguration.SupportedLanguages lang = AIConfiguration.SupportedLanguages.fromLanguageTag(selectedLanguage);
-        final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
+    private void initService(final LanguageConfig selectedLanguage) {
+        final AIConfiguration.SupportedLanguages lang = AIConfiguration.SupportedLanguages.fromLanguageTag(selectedLanguage.getLanguageCode());
+        final AIConfiguration config = new AIConfiguration(selectedLanguage.getAccessToken(),
                 Config.SUBSCRIPTION_KEY, lang,
                 AIConfiguration.RecognitionEngine.System);
+
+        config.setDebug(true);
 
         if (aiService != null) {
             aiService.pause();

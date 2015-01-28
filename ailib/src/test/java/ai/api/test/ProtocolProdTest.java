@@ -52,11 +52,18 @@ public class ProtocolProdTest extends ProtocolTestBase {
     }
 
     protected String getBrAccessToken(){
+        // TODO
         return "";
     }
 
     protected String getPtBrAccessToken(){
         return "42db6ad6a51c47088318a8104833b66c";
+    }
+
+    @Override
+    protected String getJaAccessToken() {
+        // TODO
+        return "";
     }
 
     protected boolean isDevTest() {
