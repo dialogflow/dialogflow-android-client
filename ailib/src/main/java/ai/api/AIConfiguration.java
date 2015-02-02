@@ -111,10 +111,10 @@ public class AIConfiguration {
         }
     }
 
-    private String apiKey;
+    private final String apiKey;
     private final String subscriptionKey;
-    private String language;
-    private RecognitionEngine recognitionEngine;
+    private final String language;
+    private final RecognitionEngine recognitionEngine;
 
     private boolean debug;
     private boolean writeSoundLog;
@@ -125,15 +125,16 @@ public class AIConfiguration {
         this.language = language.languageTag;
         this.recognitionEngine = recognitionEngine;
 
+        if (recognitionEngine == RecognitionEngine.Speaktoit
+                && language == SupportedLanguages.Korean) {
+            throw new UnsupportedOperationException("Only System recognition supported for Korean language");
+        }
+
         serviceUrl = SERVICE_PROD_URL;
     }
 
     public String getApiKey() {
         return apiKey;
-    }
-
-    public void setApiKey(final String apiKey) {
-        this.apiKey = apiKey;
     }
 
     public String getSubscriptionKey() {
@@ -144,16 +145,8 @@ public class AIConfiguration {
         return language;
     }
 
-    public void setLanguage(final String language) {
-        this.language = language;
-    }
-
     public RecognitionEngine getRecognitionEngine() {
         return recognitionEngine;
-    }
-
-    public void setRecognitionEngine(final RecognitionEngine recognitionEngine) {
-        this.recognitionEngine = recognitionEngine;
     }
 
     /**
