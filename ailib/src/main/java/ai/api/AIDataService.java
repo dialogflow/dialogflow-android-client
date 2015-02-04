@@ -140,10 +140,10 @@ public class AIDataService {
                 }
             }
 
-            Log.e(TAG, "Can't make request to the Speaktoit AI service. Please, check connection settings and API access token.", e);
-            throw new AIServiceException("Can't make request to the AI service. Please, check connection settings and API access token.", e);
+            Log.e(TAG, "Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
+            throw new AIServiceException("Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
         } catch (final JsonSyntaxException je) {
-            throw new AIServiceException("Wrong service answer format. Please, connect to AI Service support", je);
+            throw new AIServiceException("Wrong service answer format. Please, connect to API.AI Service support", je);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -225,10 +225,10 @@ public class AIDataService {
                 }
             }
 
-            Log.e(TAG, "Can't make request to the Speaktoit AI service. Please, check connection settings and API access token.", e);
-            throw new AIServiceException("Can't make request to the AI service. Please, check connection settings and API access token.", e);
+            Log.e(TAG, "Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
+            throw new AIServiceException("Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
         } catch (final JsonSyntaxException je) {
-            throw new AIServiceException("Wrong service answer format. Please, connect to AI Service support", je);
+            throw new AIServiceException("Wrong service answer format. Please, connect to API.AI Service support", je);
         } finally {
             if (connection != null) {
                 connection.disconnect();
