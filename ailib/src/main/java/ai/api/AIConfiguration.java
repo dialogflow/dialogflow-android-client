@@ -206,6 +206,7 @@ public class AIConfiguration {
 
     /**
      * Set protocol version for API queries. Must be in YYYYMMDD format.
+     * This option for special cases only, should not be used in usual cases.
      * @param protocolVersion Protocol version in YYYYMMDD format or empty string for the oldest version.
      *                        Check list of supported protocol versions on the api.ai website.
      */
