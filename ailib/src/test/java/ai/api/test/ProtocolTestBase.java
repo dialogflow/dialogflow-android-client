@@ -477,11 +477,7 @@ public abstract class ProtocolTestBase {
      * Cleanup contexts to prevent Tests correlation
      */
     protected void cleanContexts(final AIDataService aiDataService) throws AIServiceException {
-        final AIRequest cleanRequest = new AIRequest();
-        cleanRequest.setQuery("q"); // TODO remove it after protocol fix
-        cleanRequest.setResetContexts(true);
-        final AIResponse response = aiDataService.request(cleanRequest);
-        assertFalse(response.isError());
+        aiDataService.resetContexts();
     }
 
     protected AIResponse makeRequest(final AIDataService aiDataService, final AIRequest aiRequest) throws AIServiceException {
