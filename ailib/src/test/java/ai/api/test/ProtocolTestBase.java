@@ -45,12 +45,17 @@ import static org.junit.Assert.assertTrue;
 public abstract class ProtocolTestBase {
 
     protected abstract String getAccessToken();
+
     protected abstract String getSecondAccessToken();
 
     protected abstract String getSubscriptionKey();
+
     protected abstract String getRuAccessToken();
+
     protected abstract String getBrAccessToken();
+
     protected abstract String getPtBrAccessToken();
+
     protected abstract String getJaAccessToken();
 
     protected abstract boolean isDevTest();
@@ -128,71 +133,66 @@ public abstract class ProtocolTestBase {
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
-        if (isDevTest()) {
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("Hello");
 
-            final AIRequest aiRequest = new AIRequest();
-            aiRequest.setQuery("Hello");
+        AIResponse aiResponse;
+        String action;
 
-            AIResponse aiResponse;
-            String action;
+        try {
+            cleanContexts(aiDataService);
 
-            try {
-                cleanContexts(aiDataService);
+            aiResponse = makeRequest(aiDataService, aiRequest);
+            action = aiResponse.getResult().getAction();
+            assertEquals("greeting", action);
 
-                aiResponse = makeRequest(aiDataService, aiRequest);
-                action = aiResponse.getResult().getAction();
-                assertEquals("greeting", action);
+            aiRequest.addContext(new AIContext("firstContext"));
+            aiResponse = makeRequest(aiDataService, aiRequest);
+            action = aiResponse.getResult().getAction();
+            assertEquals("firstGreeting", action);
 
-                aiRequest.addContext(new AIContext("firstContext"));
-                aiResponse = makeRequest(aiDataService, aiRequest);
-                action = aiResponse.getResult().getAction();
-                assertEquals("firstGreeting", action);
+            aiRequest.setResetContexts(true);
+            aiRequest.setContexts(null);
+            aiRequest.addContext(new AIContext("secondContext"));
+            aiResponse = makeRequest(aiDataService, aiRequest);
+            action = aiResponse.getResult().getAction();
+            assertEquals("secondGreeting", action);
 
-                aiRequest.setResetContexts(true);
-                aiRequest.setContexts(null);
-                aiRequest.addContext(new AIContext("secondContext"));
-                aiResponse = makeRequest(aiDataService, aiRequest);
-                action = aiResponse.getResult().getAction();
-                assertEquals("secondGreeting", action);
+            cleanContexts(aiDataService);
 
-                cleanContexts(aiDataService);
-
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
-            }
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
         }
     }
 
     @Test
     public void outputContextTest() {
-        if (isDevTest()) {
-            final AIConfiguration config = new AIConfiguration(getAccessToken(),
-                    getSubscriptionKey(),
-                    AIConfiguration.SupportedLanguages.English,
-                    AIConfiguration.RecognitionEngine.System);
+        final AIConfiguration config = new AIConfiguration(getAccessToken(),
+                getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
 
-            config.setDebug(isDevTest());
+        config.setDebug(isDevTest());
 
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
-            final AIRequest aiRequest = new AIRequest();
-            aiRequest.setQuery("weather");
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("weather");
 
-            try {
-                cleanContexts(aiDataService);
+        try {
+            cleanContexts(aiDataService);
 
-                final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
-                final String action = aiResponse.getResult().getAction();
-                assertEquals("showWeather", action);
-                assertNotNull(aiResponse.getResult().getContexts());
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+            final String action = aiResponse.getResult().getAction();
+            assertEquals("showWeather", action);
+            assertNotNull(aiResponse.getResult().getContexts());
 
-                assertContainsContext(aiResponse, "weather");
+            assertContainsContext(aiResponse, "weather");
 
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
-            }
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
         }
     }
 
@@ -218,35 +218,33 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void outputContextVoiceTest() {
-        if (isDevTest()) {
-            final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                    AIConfiguration.SupportedLanguages.English,
-                    AIConfiguration.RecognitionEngine.Speaktoit);
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.Speaktoit);
 
-            config.setWriteSoundLog(false);
-            config.setDebug(isDevTest());
+        config.setWriteSoundLog(false);
+        config.setDebug(isDevTest());
 
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
-            final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("log.raw");
+        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("log.raw");
 
-            try {
-                final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
-                assertNotNull(aiResponse);
-                assertFalse(aiResponse.isError());
-                assertFalse(TextUtils.isEmpty(aiResponse.getId()));
-                assertNotNull(aiResponse.getResult());
+        try {
+            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
+            assertNotNull(aiResponse);
+            assertFalse(aiResponse.isError());
+            assertFalse(TextUtils.isEmpty(aiResponse.getId()));
+            assertNotNull(aiResponse.getResult());
 
-                final String resolvedQuery = aiResponse.getResult().getResolvedQuery();
-                assertFalse(TextUtils.isEmpty(resolvedQuery));
-                assertTrue(resolvedQuery.contains("what is your"));
+            final String resolvedQuery = aiResponse.getResult().getResolvedQuery();
+            assertFalse(TextUtils.isEmpty(resolvedQuery));
+            assertTrue(resolvedQuery.contains("what is your"));
 
-                assertContainsContext(aiResponse, "name_question");
+            assertContainsContext(aiResponse, "name_question");
 
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
-            }
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
         }
     }
 
@@ -314,38 +312,35 @@ public abstract class ProtocolTestBase {
 
         config.setDebug(isDevTest());
 
-        if (isDevTest()) {
+        try {
 
-            try {
+            final AIDataService firstService = new AIDataService(Robolectric.application, config);
+            final AIDataService secondService = new AIDataService(Robolectric.application, config);
 
-                final AIDataService firstService = new AIDataService(Robolectric.application, config);
-                final AIDataService secondService = new AIDataService(Robolectric.application, config);
-
-                {
-                    final AIRequest weatherRequest = new AIRequest();
-                    weatherRequest.setQuery("weather");
-                    final AIResponse weatherResponse = makeRequest(firstService, weatherRequest);
-                }
-
-                {
-                    final AIRequest checkSecondRequest = new AIRequest();
-                    checkSecondRequest.setQuery("check weather");
-                    final AIResponse checkSecondResponse = makeRequest(secondService, checkSecondRequest);
-                    assertNull(checkSecondResponse.getResult().getAction());
-                }
-
-                {
-                    final AIRequest checkFirstRequest = new AIRequest();
-                    checkFirstRequest.setQuery("check weather");
-                    final AIResponse checkFirstResponse = makeRequest(firstService, checkFirstRequest);
-                    assertNotNull(checkFirstResponse.getResult().getAction());
-                    assertTrue(checkFirstResponse.getResult().getAction().equalsIgnoreCase("checked"));
-                }
-
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
+            {
+                final AIRequest weatherRequest = new AIRequest();
+                weatherRequest.setQuery("weather");
+                final AIResponse weatherResponse = makeRequest(firstService, weatherRequest);
             }
+
+            {
+                final AIRequest checkSecondRequest = new AIRequest();
+                checkSecondRequest.setQuery("check weather");
+                final AIResponse checkSecondResponse = makeRequest(secondService, checkSecondRequest);
+                assertNull(checkSecondResponse.getResult().getAction());
+            }
+
+            {
+                final AIRequest checkFirstRequest = new AIRequest();
+                checkFirstRequest.setQuery("check weather");
+                final AIResponse checkFirstResponse = makeRequest(firstService, checkFirstRequest);
+                assertNotNull(checkFirstResponse.getResult().getAction());
+                assertTrue(checkFirstResponse.getResult().getAction().equalsIgnoreCase("checked"));
+            }
+
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
         }
 
     }
@@ -379,7 +374,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void testBrazilLanguage(){
+    public void testBrazilLanguage() {
         final AIConfiguration config = new AIConfiguration(getPtBrAccessToken(),
                 getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.PortugueseBrazil,
@@ -438,37 +433,35 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void resetContextsTest() {
-        if (isDevTest()) {
-            final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                    AIConfiguration.SupportedLanguages.English,
-                    AIConfiguration.RecognitionEngine.Speaktoit);
-            config.setDebug(isDevTest());
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.Speaktoit);
+        config.setDebug(isDevTest());
 
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
-            try {
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        try {
 
-                {
-                    final AIRequest aiRequest = new AIRequest("what is your name");
+            {
+                final AIRequest aiRequest = new AIRequest("what is your name");
 
-                    final AIResponse aiResponse = aiDataService.request(aiRequest);
-                    assertContainsContext(aiResponse, "name_question");
+                final AIResponse aiResponse = aiDataService.request(aiRequest);
+                assertContainsContext(aiResponse, "name_question");
 
-                    final boolean resetSucceed = aiDataService.resetContexts();
-                    assertTrue(resetSucceed);
-                }
-
-                {
-                    final AIRequest aiRequest = new AIRequest("hello");
-                    final AIResponse aiResponse = aiDataService.request(aiRequest);
-                    assertNotNull(aiResponse);
-                    assertFalse(aiResponse.isError());
-                    assertNotContainsContext(aiResponse, "name_question");
-                }
-
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
+                final boolean resetSucceed = aiDataService.resetContexts();
+                assertTrue(resetSucceed);
             }
+
+            {
+                final AIRequest aiRequest = new AIRequest("hello");
+                final AIResponse aiResponse = aiDataService.request(aiRequest);
+                assertNotNull(aiResponse);
+                assertFalse(aiResponse.isError());
+                assertNotContainsContext(aiResponse, "name_question");
+            }
+
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
         }
     }
 
