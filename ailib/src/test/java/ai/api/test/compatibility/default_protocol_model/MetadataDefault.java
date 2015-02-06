@@ -1,4 +1,4 @@
-package ai.api.model;
+package ai.api.test.compatibility.default_protocol_model;
 
 /***********************************************************************************************************************
  *
@@ -25,7 +25,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Metadata implements Serializable {
+public class MetadataDefault implements Serializable {
 
     /**
      * Name of the intent that produced this result
@@ -38,6 +38,12 @@ public class Metadata implements Serializable {
      */
     @SerializedName("intentId")
     private String intentId;
+
+    /**
+     * Currently active contexts
+     */
+    @SerializedName("contexts")
+    private String[] contexts;
 
     /**
      * Name of the intent that produced this result
@@ -59,5 +65,9 @@ public class Metadata implements Serializable {
 
     public void setIntentId(final String intentId) {
         this.intentId = intentId;
+    }
+
+    public String[] getContexts() {
+        return contexts;
     }
 }

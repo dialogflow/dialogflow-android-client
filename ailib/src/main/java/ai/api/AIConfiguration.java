@@ -21,12 +21,14 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
+import android.text.TextUtils;
+
 public class AIConfiguration {
 
     private static final String SERVICE_PROD_URL="https://api.api.ai/v1/";
     private static final String SERVICE_DEV_URL = "https://dev.api.ai/api/";
 
-    protected static String PROTOCOL_VERSION = "v1";
+    protected static final String CURRENT_PROTOCOL_VERSION = "20150204";
 
     protected static final String QUESTION_ENDPOINT = "query";
 
@@ -116,6 +118,11 @@ public class AIConfiguration {
     private final String language;
     private final RecognitionEngine recognitionEngine;
 
+    /**
+     * Protocol version used for api queries. Can be changed if old protocol version required.
+     */
+    private String protocolVersion;
+
     private boolean debug;
     private boolean writeSoundLog;
 
@@ -124,6 +131,8 @@ public class AIConfiguration {
         this.subscriptionKey = subscriptionKey;
         this.language = language.languageTag;
         this.recognitionEngine = recognitionEngine;
+
+        protocolVersion = CURRENT_PROTOCOL_VERSION;
 
         if (recognitionEngine == RecognitionEngine.Speaktoit
                 && language == SupportedLanguages.Korean) {
@@ -187,7 +196,28 @@ public class AIConfiguration {
         return writeSoundLog;
     }
 
+    /**
+     * Check list of supported protocol versions on the api.ai website.
+     * @return protocol version in YYYYMMDD format
+     */
+    public String getProtocolVersion() {
+        return protocolVersion;
+    }
+
+    /**
+     * Set protocol version for API queries. Must be in YYYYMMDD format.
+     * @param protocolVersion Protocol version in YYYYMMDD format or empty string for the oldest version.
+     *                        Check list of supported protocol versions on the api.ai website.
+     */
+    public void setProtocolVersion(final String protocolVersion) {
+        this.protocolVersion = protocolVersion;
+    }
+
     public String getQuestionUrl() {
-        return String.format("%s%s", serviceUrl, QUESTION_ENDPOINT);
+        if (!TextUtils.isEmpty(protocolVersion)) {
+            return String.format("%s%s?v=%s", serviceUrl, QUESTION_ENDPOINT, protocolVersion);
+        } else {
+            return String.format("%s%s", serviceUrl, QUESTION_ENDPOINT);
+        }
     }
 }

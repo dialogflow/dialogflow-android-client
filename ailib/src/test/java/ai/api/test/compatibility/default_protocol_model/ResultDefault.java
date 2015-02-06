@@ -1,4 +1,4 @@
-package ai.api.model;
+package ai.api.test.compatibility.default_protocol_model;
 
 /***********************************************************************************************************************
  *
@@ -22,13 +22,12 @@ package ai.api.model;
  ***********************************************************************************************************************/
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
-public class Result implements Serializable {
+public class ResultDefault implements Serializable {
 
     @SerializedName("speech")
     private String speech;
@@ -42,15 +41,8 @@ public class Result implements Serializable {
     @SerializedName("parameters")
     private HashMap<String, JsonElement> parameters;
 
-    /**
-     * Currently active contexts
-     */
-    @SerializedName("contexts")
-    private AIOutputContext[] contexts;
-
-
     @SerializedName("metadata")
-    private Metadata metadata;
+    private MetadataDefault metadata;
 
     /**
      * The query that was used to produce this result
@@ -74,20 +66,16 @@ public class Result implements Serializable {
         this.action = action;
     }
 
-    public Metadata getMetadata() {
+    public MetadataDefault getMetadata() {
         return metadata;
     }
 
-    public void setMetadata(final Metadata metadata) {
+    public void setMetadata(final MetadataDefault metadata) {
         this.metadata = metadata;
     }
 
     public HashMap<String, JsonElement> getParameters() {
         return parameters;
-    }
-
-    public AIOutputContext[] getContexts() {
-        return contexts;
     }
 
     /**

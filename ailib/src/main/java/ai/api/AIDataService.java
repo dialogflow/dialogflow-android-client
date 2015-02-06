@@ -22,6 +22,7 @@ package ai.api;
  ***********************************************************************************************************************/
 
 import android.content.Context;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -81,10 +82,7 @@ public class AIDataService {
 
         final Gson gson = GsonFactory.getGson();
 
-        HttpURLConnection connection = null;
-
         try {
-            final URL url = new URL(config.getQuestionUrl());
 
             request.setLanguage(config.getLanguage());
             request.setSessionId(sessionId);
@@ -94,23 +92,7 @@ public class AIDataService {
 
             Log.d(TAG, "Request json: " + queryData);
 
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.setDoOutput(true);
-            connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
-            connection.addRequestProperty("ocp-apim-subscription-key", config.getSubscriptionKey());
-            connection.addRequestProperty("Content-Type","application/json; charset=utf-8");
-            connection.addRequestProperty("Accept","application/json");
-
-            connection.connect();
-
-            final BufferedOutputStream outputStream = new BufferedOutputStream(connection.getOutputStream());
-            IOUtils.write(queryData, outputStream, Charsets.UTF_8);
-            outputStream.close();
-
-            final InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-            final String response = IOUtils.toString(inputStream, Charsets.UTF_8);
-            inputStream.close();
+            final String response = doTextRequest(queryData);
 
             if (TextUtils.isEmpty(response)) {
                 throw new AIServiceException("Empty response from ai service. Please check configuration.");
@@ -124,30 +106,9 @@ public class AIDataService {
 
         } catch (final MalformedURLException e) {
             Log.e(TAG, "Malformed url should not be raised", e);
-            throw new AIServiceException("Wrong configuration. Please, connect to AI Service support", e);
-        } catch (final IOException e) {
-
-            if (connection != null) {
-                try {
-                    final String errorString = IOUtils.toString(connection.getErrorStream(), Charsets.UTF_8);
-                    Log.d(TAG, "" + errorString);
-                    if (!TextUtils.isEmpty(errorString)) {
-                        final AIResponse errorResponse = gson.fromJson(errorString, AIResponse.class);
-                        return errorResponse;
-                    }
-                } catch (final IOException ex) {
-                    Log.w(TAG, "Wrong error format", ex);
-                }
-            }
-
-            Log.e(TAG, "Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
-            throw new AIServiceException("Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
+            throw new AIServiceException("Wrong configuration. Please, connect to API.AI Service support", e);
         } catch (final JsonSyntaxException je) {
             throw new AIServiceException("Wrong service answer format. Please, connect to API.AI Service support", je);
-        } finally {
-            if (connection != null) {
-                connection.disconnect();
-            }
         }
 
     }
@@ -161,28 +122,107 @@ public class AIDataService {
     public AIResponse voiceRequest(final InputStream voiceStream, final List<AIContext> aiContexts) throws AIServiceException {
         final Gson gson = GsonFactory.getGson();
 
-        HttpURLConnection connection = null;
-
-        HttpClient httpClient = null;
-
         Log.d(TAG, "Start voice request");
 
         try {
             final AIRequest request = new AIRequest();
 
-            final URL url = new URL(config.getQuestionUrl());
-
             request.setLanguage(config.getLanguage());
             request.setSessionId(sessionId);
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
-            if (context != null) {
+            if (aiContexts != null) {
                 request.setContexts(aiContexts);
             }
 
             final String queryData = gson.toJson(request);
 
             Log.d(TAG, "Request json: " + queryData);
+
+            final String response = doSoundRequest(voiceStream, queryData);
+
+            if (TextUtils.isEmpty(response)) {
+                throw new AIServiceException("Empty response from ai service. Please check configuration.");
+            }
+
+            Log.d(TAG, "Response json: " + response);
+
+            final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
+            return aiResponse;
+
+        } catch (final MalformedURLException e) {
+            Log.e(TAG, "Malformed url should not be raised", e);
+            throw new AIServiceException("Wrong configuration. Please, connect to AI Service support", e);
+        } catch (final JsonSyntaxException je) {
+            throw new AIServiceException("Wrong service answer format. Please, connect to API.AI Service support", je);
+        }
+    }
+
+    /**
+     * Method extracted for testing purposes
+     */
+    protected String doTextRequest(final String requestJson) throws MalformedURLException, AIServiceException {
+
+        HttpURLConnection connection = null;
+
+        try {
+
+            final URL url = new URL(config.getQuestionUrl());
+
+            final String queryData = requestJson;
+
+            Log.d(TAG, "Request json: " + queryData);
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
+            connection.addRequestProperty("ocp-apim-subscription-key", config.getSubscriptionKey());
+            connection.addRequestProperty("Content-Type", "application/json; charset=utf-8");
+            connection.addRequestProperty("Accept", "application/json");
+
+            connection.connect();
+
+            final BufferedOutputStream outputStream = new BufferedOutputStream(connection.getOutputStream());
+            IOUtils.write(queryData, outputStream, Charsets.UTF_8);
+            outputStream.close();
+
+            final InputStream inputStream = new BufferedInputStream(connection.getInputStream());
+            final String response = IOUtils.toString(inputStream, Charsets.UTF_8);
+            inputStream.close();
+
+            return response;
+        } catch (final IOException e) {
+            if (connection != null) {
+                try {
+                    final String errorString = IOUtils.toString(connection.getErrorStream(), Charsets.UTF_8);
+                    Log.d(TAG, "" + errorString);
+                    return errorString;
+                } catch (final IOException ex) {
+                    Log.w(TAG, "Can't read error response", ex);
+                }
+            }
+            Log.e(TAG, "Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
+            throw new AIServiceException("Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
+
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+
+    }
+
+    /**
+     * Method extracted for testing purposes
+     */
+    protected String doSoundRequest(final InputStream voiceStream, final String queryData) throws MalformedURLException, AIServiceException {
+
+        HttpURLConnection connection = null;
+        HttpClient httpClient = null;
+
+        try {
+            final URL url = new URL(config.getQuestionUrl());
 
             connection = (HttpURLConnection) url.openConnection();
             connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
@@ -201,34 +241,20 @@ public class AIDataService {
             httpClient.finishMultipart();
 
             final String response = httpClient.getResponse();
+            return response;
 
-            if (TextUtils.isEmpty(response)) {
-                throw new AIServiceException("Empty response from ai service. Please check configuration.");
-            }
-
-            Log.d(TAG, "Response json: " + response);
-
-            final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
-            return aiResponse;
-
-        } catch (final MalformedURLException e) {
-            Log.e(TAG, "Malformed url should not be raised", e);
-            throw new AIServiceException("Wrong configuration. Please, connect to AI Service support", e);
         } catch (final IOException e) {
 
             if (httpClient != null) {
                 final String errorString = httpClient.getErrorString();
                 Log.d(TAG, "" + errorString);
                 if (!TextUtils.isEmpty(errorString)) {
-                    final AIResponse errorResponse = gson.fromJson(errorString, AIResponse.class);
-                    return errorResponse;
+                    return errorString;
                 }
             }
 
             Log.e(TAG, "Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
             throw new AIServiceException("Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
-        } catch (final JsonSyntaxException je) {
-            throw new AIServiceException("Wrong service answer format. Please, connect to API.AI Service support", je);
         } finally {
             if (connection != null) {
                 connection.disconnect();

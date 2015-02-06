@@ -32,6 +32,7 @@ import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import ai.api.AIServiceException;
 import ai.api.model.AIContext;
+import ai.api.model.AIOutputContext;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
@@ -58,7 +59,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void AIDataServiceTest() {
+    public void textRequestTest() {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
@@ -85,7 +86,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void AIServiceSpeaktoitVoiceRequestTest() {
+    public void voiceRequestTest() {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);
@@ -116,7 +117,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void contextTest() {
+    public void inputContextTest() {
         final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
@@ -155,6 +156,82 @@ public abstract class ProtocolTestBase {
                 assertEquals("secondGreeting", action);
 
                 cleanContexts(aiDataService);
+
+            } catch (final AIServiceException e) {
+                e.printStackTrace();
+                assertTrue(e.getMessage(), false);
+            }
+        }
+    }
+
+    @Test
+    public void outputContextTest() {
+        if (isDevTest()) {
+            final AIConfiguration config = new AIConfiguration(getAccessToken(),
+                    getSubscriptionKey(),
+                    AIConfiguration.SupportedLanguages.English,
+                    AIConfiguration.RecognitionEngine.System);
+
+            config.setDebug(isDevTest());
+
+            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+            final AIRequest aiRequest = new AIRequest();
+            aiRequest.setQuery("weather");
+
+            try {
+                cleanContexts(aiDataService);
+
+                final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+                final String action = aiResponse.getResult().getAction();
+                assertEquals("showWeather", action);
+                assertNotNull(aiResponse.getResult().getContexts());
+
+                assertContainsContext(aiResponse, "weather");
+
+            } catch (final AIServiceException e) {
+                e.printStackTrace();
+                assertTrue(e.getMessage(), false);
+            }
+        }
+    }
+
+    private void assertContainsContext(final AIResponse aiResponse, final String contextName) {
+        boolean contextExist = false;
+        for (final AIOutputContext outputContext : aiResponse.getResult().getContexts()) {
+            if (outputContext.getName().equalsIgnoreCase(contextName)) {
+                contextExist = true;
+            }
+        }
+        assertTrue(contextExist);
+    }
+
+    @Test
+    public void outputContextVoiceTest() {
+        if (isDevTest()) {
+            final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                    AIConfiguration.SupportedLanguages.English,
+                    AIConfiguration.RecognitionEngine.Speaktoit);
+
+            config.setWriteSoundLog(false);
+            config.setDebug(isDevTest());
+
+            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+            final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("log.raw");
+
+            try {
+                final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
+                assertNotNull(aiResponse);
+                assertFalse(aiResponse.isError());
+                assertFalse(TextUtils.isEmpty(aiResponse.getId()));
+                assertNotNull(aiResponse.getResult());
+
+                final String resolvedQuery = aiResponse.getResult().getResolvedQuery();
+                assertFalse(TextUtils.isEmpty(resolvedQuery));
+                assertTrue(resolvedQuery.contains("what is your"));
+
+                assertContainsContext(aiResponse, "name_question");
 
             } catch (final AIServiceException e) {
                 e.printStackTrace();
@@ -317,6 +394,36 @@ public abstract class ProtocolTestBase {
             e.printStackTrace();
             assertTrue(e.getMessage(), false);
         }
+    }
+
+    @Test
+    public void errorTextRequestTest() {
+        final AIConfiguration config = new AIConfiguration("WRONG_ACCESS_TOKEN", getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        config.setDebug(isDevTest());
+
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("Hello");
+
+        try {
+            final AIResponse aiResponse = aiDataService.request(aiRequest);
+
+            assertTrue(aiResponse.isError());
+            assertNull(aiResponse.getResult());
+            assertNotNull(aiResponse.getStatus().getErrorID());
+
+            assertEquals(401, (int) aiResponse.getStatus().getCode());
+            assertEquals("unauthorized", aiResponse.getStatus().getErrorType());
+
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
+        }
+
     }
 
 

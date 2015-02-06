@@ -21,43 +21,33 @@ package ai.api.model;
  *
  ***********************************************************************************************************************/
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
-public class Metadata implements Serializable {
+public class AIOutputContext implements Serializable {
 
-    /**
-     * Name of the intent that produced this result
-     */
-    @SerializedName("intentName")
-    private String intentName;
+    @SerializedName("name")
+    private String name;
 
-    /**
-     * Id of the intent that produced this result
-     */
-    @SerializedName("intentId")
-    private String intentId;
+    @SerializedName("parameters")
+    private HashMap<String, JsonElement> parameters;
 
-    /**
-     * Name of the intent that produced this result
-     */
-    public String getIntentName() {
-        return intentName;
+    public String getName() {
+        return name;
     }
 
-    public void setIntentName(final String intentName) {
-        this.intentName = intentName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    /**
-     * Id of the intent that produced this result
-     */
-    public String getIntentId() {
-        return intentId;
+    public HashMap<String, JsonElement> getParameters() {
+        return parameters;
     }
 
-    public void setIntentId(final String intentId) {
-        this.intentId = intentId;
+    public void setParameters(HashMap<String, JsonElement> parameters) {
+        this.parameters = parameters;
     }
 }
