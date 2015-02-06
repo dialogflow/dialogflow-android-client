@@ -80,19 +80,19 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         selectLanguageSpinner = (Spinner) findViewById(R.id.selectLanguageSpinner);
 
         final LanguageConfig[] languages = new LanguageConfig[] {
-                new LanguageConfig("en","92fa31b4e15c4ffca80dca2942deb6d3"),
-                new LanguageConfig("ru","bb93d0b7620141c98cd305fbaf989481"),
-                new LanguageConfig("de","b3de3bd82cd54254bbe35fd25d1f81bc"),
-                new LanguageConfig("pt","3f71440584844f048bad712daf9e19de"),
-                new LanguageConfig("pt-BR", "1d093587fc4f48c5a3529c6fb48c3291"),
-                new LanguageConfig("es", "b64ea3877df54cd7a0adc7f3a97929da"),
-                new LanguageConfig("fr","53c95265e618448f909b9562a7f2b29e"),
-                new LanguageConfig("it","700e909d22a344c7b405a5ca82e37d68"),
-                new LanguageConfig("ja", "f36555bbfff7480ea6b26e4c6a370077"),
-                new LanguageConfig("ko", "27865280e7fd436b8523938f40fc5b9d"),
-                new LanguageConfig("zh-CN","2feb604b0f59447db2f64a2c8a7c271d"),
-                new LanguageConfig("zh-HK", "e0caf8e54b1041bc8955e44e69304026"),
-                new LanguageConfig("zh-TW", "b0df697344d142f4a1597250741d0ed8"),
+                new LanguageConfig("en","327bf2eb54904e508362f6fb528ce00a"),
+                new LanguageConfig("ru","adcb900f02594f4186420c082e44173e"),
+                new LanguageConfig("de","96807aac0e98426eaf684f4081b7e431"),
+                new LanguageConfig("pt","4c4a2277516041f6a1c909163ebfed39"),
+                new LanguageConfig("pt-BR", "6076377eea9e4291854204795b55eee9"),
+                new LanguageConfig("es", "430d461ea8e64c09a4459560353a5b1d"),
+                new LanguageConfig("fr","d6434b3bf49d4a93a25679782619f39d"),
+                new LanguageConfig("it","4319f7aa1765468194d9761432e4db36"),
+                new LanguageConfig("ja", "6cab6813dc8c416f92c3c2e2b4a7bc27"),
+                new LanguageConfig("ko", "b0219c024ee848eaa7cfb17dceb9934a"),
+                new LanguageConfig("zh-CN","2b575c06deb246d2abe4bf769eb3200b"),
+                new LanguageConfig("zh-HK", "00ef32d3e35f43178405c046a16f3843"),
+                new LanguageConfig("zh-TW", "dd7ebc8a02974155aeffec26b21b55cf"),
         };
 
         final ArrayAdapter<LanguageConfig> languagesAdapter = new ArrayAdapter<LanguageConfig>(this, android.R.layout.simple_spinner_dropdown_item, languages);
@@ -116,7 +116,7 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
     private void initService(final LanguageConfig selectedLanguage) {
         final AIConfiguration.SupportedLanguages lang = AIConfiguration.SupportedLanguages.fromLanguageTag(selectedLanguage.getLanguageCode());
         final AIConfiguration config = new AIConfiguration(selectedLanguage.getAccessToken(),
-                Config.SUBSCRIPTION_KEY, lang,
+                "62f2522a-7404-4c28-b9ac-097ca5d8b32d", lang,
                 AIConfiguration.RecognitionEngine.System);
 
         if (aiService != null) {

@@ -23,6 +23,6 @@ package ai.api.sample;
 
 public abstract class Config {
     // copy this keys from your developer dashboard
-    public static final String ACCESS_TOKEN = "INSERT_CLIENT_ACCESS_TOKEN_HERE";
-    public static final String SUBSCRIPTION_KEY = "INSERT_SUBSCRIPTION_KEY_HERE";
+    public static final String ACCESS_TOKEN = "327bf2eb54904e508362f6fb528ce00a";
+    public static final String SUBSCRIPTION_KEY = "62f2522a-7404-4c28-b9ac-097ca5d8b32d";
 }
