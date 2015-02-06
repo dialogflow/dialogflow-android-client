@@ -438,35 +438,37 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void resetContextsTest() {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.Speaktoit);
-        config.setDebug(isDevTest());
+        if (isDevTest()) {
+            final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                    AIConfiguration.SupportedLanguages.English,
+                    AIConfiguration.RecognitionEngine.Speaktoit);
+            config.setDebug(isDevTest());
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
-        try {
+            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+            try {
 
-            {
-                final AIRequest aiRequest = new AIRequest("what is your name");
+                {
+                    final AIRequest aiRequest = new AIRequest("what is your name");
 
-                final AIResponse aiResponse = aiDataService.request(aiRequest);
-                assertContainsContext(aiResponse, "name_question");
+                    final AIResponse aiResponse = aiDataService.request(aiRequest);
+                    assertContainsContext(aiResponse, "name_question");
 
-                final boolean resetSucceed = aiDataService.resetContexts();
-                assertTrue(resetSucceed);
+                    final boolean resetSucceed = aiDataService.resetContexts();
+                    assertTrue(resetSucceed);
+                }
+
+                {
+                    final AIRequest aiRequest = new AIRequest("hello");
+                    final AIResponse aiResponse = aiDataService.request(aiRequest);
+                    assertNotNull(aiResponse);
+                    assertFalse(aiResponse.isError());
+                    assertNotContainsContext(aiResponse, "name_question");
+                }
+
+            } catch (final AIServiceException e) {
+                e.printStackTrace();
+                assertTrue(e.getMessage(), false);
             }
-
-            {
-                final AIRequest aiRequest = new AIRequest("hello");
-                final AIResponse aiResponse = aiDataService.request(aiRequest);
-                assertNotNull(aiResponse);
-                assertFalse(aiResponse.isError());
-                assertNotContainsContext(aiResponse, "name_question");
-            }
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
         }
     }
 
