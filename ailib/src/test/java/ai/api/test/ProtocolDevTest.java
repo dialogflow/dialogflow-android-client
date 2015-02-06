@@ -85,19 +85,19 @@ public class ProtocolDevTest extends ProtocolTestBase {
     }
 
     @Override
-    protected boolean isDevTest() {
+    protected boolean isExperimentalTest() {
         return true;
     }
 
     @Test
     public void AIDataServiceDevRuTest() {
-        if (isDevTest()) {
+        if (isExperimentalTest()) {
             final AIConfiguration config = new AIConfiguration("43a7541fb0a94fae8f1bef406a2d9ca8", getSubscriptionKey(),
                     AIConfiguration.SupportedLanguages.Russian,
                     AIConfiguration.RecognitionEngine.System);
 
             config.setWriteSoundLog(false);
-            config.setDebug(isDevTest());
+            config.setExperimental(isExperimentalTest());
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -122,13 +122,13 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     @Test
     public void AIDataServiceDevTest() {
-        if (isDevTest()) {
+        if (isExperimentalTest()) {
             final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                     AIConfiguration.SupportedLanguages.English,
                     AIConfiguration.RecognitionEngine.System);
 
             config.setWriteSoundLog(false);
-            config.setDebug(isDevTest());
+            config.setExperimental(isExperimentalTest());
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 

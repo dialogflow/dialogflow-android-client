@@ -119,8 +119,6 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
                 Config.SUBSCRIPTION_KEY, lang,
                 AIConfiguration.RecognitionEngine.System);
 
-        config.setDebug(true);
-
         if (aiService != null) {
             aiService.pause();
         }

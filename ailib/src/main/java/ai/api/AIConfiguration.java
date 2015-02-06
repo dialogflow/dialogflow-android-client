@@ -123,7 +123,7 @@ public class AIConfiguration {
      */
     private String protocolVersion;
 
-    private boolean debug;
+    private boolean experimental;
     private boolean writeSoundLog;
 
     public AIConfiguration(final String apiKey, final String subscriptionKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
@@ -160,20 +160,20 @@ public class AIConfiguration {
 
     /**
      * This flag is for testing purposes ONLY. Don't change it.
-     * @return value indicating used service address
+     * @return value indicating that experimental service version used
      */
-    public boolean isDebug() {
-        return debug;
+    public boolean isExperimental() {
+        return experimental;
     }
 
     /**
      * This flag is for testing purposes ONLY. Don't use it in your code.
-     * @param debug value indicating used service address
+     * @param experimental value indicating used service address
      */
-    public void setDebug(final boolean debug) {
-        this.debug = debug;
+    public void setExperimental(final boolean experimental) {
+        this.experimental = experimental;
 
-        if (debug) {
+        if (experimental) {
             serviceUrl = SERVICE_DEV_URL;
         } else {
             serviceUrl = SERVICE_PROD_URL;

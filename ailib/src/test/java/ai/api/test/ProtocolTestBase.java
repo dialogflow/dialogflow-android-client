@@ -58,7 +58,11 @@ public abstract class ProtocolTestBase {
 
     protected abstract String getJaAccessToken();
 
-    protected abstract boolean isDevTest();
+    /**
+     * Test for experimental service version or not
+     * @return true, if test experimental service version
+     */
+    protected abstract boolean isExperimentalTest();
 
     protected ProtocolTestBase() {
     }
@@ -70,7 +74,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.System);
 
         config.setWriteSoundLog(false);
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -97,7 +101,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.Speaktoit);
 
         config.setWriteSoundLog(false);
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -129,7 +133,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.System);
 
         config.setWriteSoundLog(false);
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -173,7 +177,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -223,7 +227,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.Speaktoit);
 
         config.setWriteSoundLog(false);
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -259,7 +263,7 @@ public abstract class ProtocolTestBase {
                     AIConfiguration.RecognitionEngine.System);
 
             config.setWriteSoundLog(false);
-            config.setDebug(isDevTest());
+            config.setExperimental(isExperimentalTest());
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -284,7 +288,7 @@ public abstract class ProtocolTestBase {
                     AIConfiguration.RecognitionEngine.System);
 
             secondConfig.setWriteSoundLog(false);
-            secondConfig.setDebug(isDevTest());
+            secondConfig.setExperimental(isExperimentalTest());
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, secondConfig);
 
@@ -310,7 +314,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         try {
 
@@ -352,7 +356,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.SupportedLanguages.Russian,
                 AIConfiguration.RecognitionEngine.System);
 
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         try {
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
@@ -380,7 +384,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.SupportedLanguages.PortugueseBrazil,
                 AIConfiguration.RecognitionEngine.System);
 
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         try {
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
@@ -407,7 +411,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -436,7 +440,7 @@ public abstract class ProtocolTestBase {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);
-        config.setDebug(isDevTest());
+        config.setExperimental(isExperimentalTest());
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
         try {
