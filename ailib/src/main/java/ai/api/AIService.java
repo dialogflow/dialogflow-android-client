@@ -35,6 +35,8 @@ import ai.api.model.AIResponse;
  */
 public abstract class AIService {
 
+    private static final String TAG = AIService.class.getName();
+
     protected final AIConfiguration config;
     protected final Context context;
 
@@ -137,5 +139,13 @@ public abstract class AIService {
 
     public AIResponse textRequest(final AIRequest request) throws AIServiceException {
         return aiDataService.request(request);
+    }
+
+    /**
+     * Forget all old contexts
+     * @return true if operation succeed, false otherwise
+     */
+    public boolean resetContexts() {
+        return aiDataService.resetContexts();
     }
 }

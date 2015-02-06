@@ -44,6 +44,13 @@ public class AIRequest extends QuestionMetadata implements Serializable {
     @SerializedName("resetContexts")
     private Boolean resetContexts;
 
+    public AIRequest() {
+    }
+
+    public AIRequest(final String query) {
+        setQuery(query);
+    }
+
     public void setQuery(final String query) {
         if (TextUtils.isEmpty(query)) {
             throw new IllegalStateException("Query must not be empty");

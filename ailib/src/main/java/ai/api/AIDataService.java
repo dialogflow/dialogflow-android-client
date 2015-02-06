@@ -159,6 +159,23 @@ public class AIDataService {
     }
 
     /**
+     * Forget all old contexts
+     * @return true if operation succeed, false otherwise
+     */
+    public boolean resetContexts() {
+        final AIRequest cleanRequest = new AIRequest();
+        cleanRequest.setQuery("empty_query_for_resetting_contexts"); // TODO remove it after protocol fix
+        cleanRequest.setResetContexts(true);
+        try {
+            final AIResponse response = request(cleanRequest);
+            return response != null && !response.isError();
+        } catch (final AIServiceException e) {
+            Log.e(TAG, "Exception while contexts clean.", e);
+            return false;
+        }
+    }
+
+    /**
      * Method extracted for testing purposes
      */
     protected String doTextRequest(final String requestJson) throws MalformedURLException, AIServiceException {
