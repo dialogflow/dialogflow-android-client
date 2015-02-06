@@ -14,13 +14,19 @@ Two permissions are required to use the API.AI Android SDK:
 * **android.permission.INTERNET** for internet access
 * **android.permission.RECORD_AUDIO** for microphone access
 
-Currently, speech recognition is performed using Google's Android SDK, either on the client device or in the cloud. Recognized text is passed to the API.AI through HTTP requests. In the future, your client app will be able to use the SDK to send an audio file or stream to the API.AI server so that it can be processed there.
+Currently, speech recognition is performed using Google's Android SDK, either on the client device or in the cloud. Recognized text is passed to the API.AI through HTTP requests. Also you can try Speaktoit recognition engine (Use [AIConfiguration.RecognitionEngine.Speaktoit](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java#L37)).
 
 Authentication is accomplished through setting the client access token when initializing an **AIConfiguration** object. The client access token specifies which agent will be used for natural language processing.
 
 **Note:** The API.AI Android SDK only makes query requests, and cannot be used to manage entities and intents. Instead, use the API.AI user interface or REST API to  create, retreive, update, and delete entities and intents.
 
-# Running the Sample Code
+* [Running the Sample Code](#running_sample)
+* [Getting Started with Your Own App](#getting_started)
+* [Tutorial](#tutorial)
+* [Brief Integration Instruction (for experienced developers)](docs/integration.md).
+* [Troubleshooting](#troubleshooting)
+
+# <a name="running_sample" />Running the Sample Code
 
 The API.AI Android SDK comes with a simple sample that illustrates how voice commands can be integrated with API.AI. Use the following steps to run the sample code:
 
@@ -35,7 +41,7 @@ The API.AI Android SDK comes with a simple sample that illustrates how voice com
 9. You should see an app running with three buttons: **Listen**, **StopListen**, and **Cancel**.
 10. Click **Listen** and say a phrase that will be understood by your agent. Wait a few seconds. The Java will appear that is returned by the API.AI service.
 
-# Getting Started with Your Own App
+# <a name="getting_started" />Getting Started with Your Own App
 
 This section describes what you need to do to get started with your own app that uses the API.AI Android SDK. The first part provides an overview of how to use the SDK, and the second part is a tutorial with detailed step-by-step instructions for creating your own app.
 
@@ -110,11 +116,11 @@ try {
 }
 ```
     
-## Tutorial
+# <a name="tutorial" />Tutorial
 
 This section contains a detailed tutorial about creating new app and connect it to API.AI.
 
-### Create a new app
+## Create a new app
 
 Follow these steps to set up your environment and create new android app with API.AI integration:
 
@@ -126,7 +132,7 @@ Follow these steps to set up your environment and create new android app with AP
 6. Select **Blank Activity** and click **Next**.
 7. Enter the main activity name and click **Finish**.
 
-### Integrate with the SDK
+## Integrate with the SDK
 
 Next you will integrate with the SDK to be able to make calls. Follow these steps:
 
@@ -155,7 +161,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     import ai.api.model.Result;
     ```
     
-### Create the user interface
+## Create the user interface
 1. Open **activity_main.xml** under **app/src/main/res/layout**. This will open the layout in the designer.<br/>![activity_main.xml in Designer](docs/images/LayoutDesigner.png)
 2. Select and delete the "Hello World" TextView.
 3. Drag a Button (under Widgets) to the top of the screen. Change the **id** property to "listenButton" and the **text** property to "Listen".<br/>![Listen button](docs/images/ListenButton.png)
@@ -182,7 +188,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     resultTextView = (TextView) findViewById(R.id.resultTextView);
     ```
     
-### Create the AI Service and Listener
+## Create the AI Service and Listener
 
 1. Use the MainActivity as the class that will be called when events occur by having it implement the AIListener class. Replace the class declaration with this:
     
@@ -267,11 +273,11 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     public void onAudioLevel(final float level) {}
     ```
     
-### Run the App
+## Run the App
 1. Attach an Android device to your computer or have a virtual device ready.
 2. Make sure that your module is selected in the dropdown, and then click the Debug button.<br/>![Debug button](docs/images/DebugButton.png)
 3. The app should now be running on your device or virtual device. Click the **Listen** button and then speak a phrase that will work with your intent. Wait a few seconds. The result should appear in the result TextView. <br/>![Result](docs/images/AppScreenshot.png)
 
-### Troubleshooting
+# <a name="troubleshooting" />Troubleshooting
 
 * If you get an error when trying to install app that says "INSTALL_FAILED_OLDER_SDK", then check you have Android SDK 19 and build tools 19.1 installed.
