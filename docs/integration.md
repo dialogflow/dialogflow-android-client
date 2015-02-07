@@ -12,7 +12,7 @@ Also SDK library must be in your app dependencies (see **build.gradle**)
 ```
 dependencies {
     // some another dependencies...
-    compile 'ai.api:sdk:1.2.0@aar'
+    compile 'ai.api:sdk:1.3.0@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.code.gson:gson:2.3'
@@ -39,7 +39,7 @@ Use this type of integration if you want quickly integrate natural language proc
     ```java
     final AIConfiguration config = new AIConfiguration("YOUR_ACCESS_TOKEN", "YOUR_SUBSCRIPTION_KEY", 
                     AIConfiguration.SupportedLanguages.English,
-                    AIConfiguration.RecognitionEngine.Google);
+                    AIConfiguration.RecognitionEngine.System);
 
     aiButton = (AIButton) findViewById(R.id.micButton);
 
@@ -54,7 +54,7 @@ Use this type of integration if you want quickly integrate natural language proc
                     // TODO process response here
                 }
             });
-        }
+        }de
 
         @Override
         public void onError(final AIError error) {
@@ -95,7 +95,7 @@ Use the following steps:
      final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
             "SUBSCRIPTION_KEY", 
             AIConfiguration.SupportedLanguages.English,
-            AIConfiguration.RecognitionEngine.Google);
+            AIConfiguration.RecognitionEngine.System);
     ```
     
     ![Api keys](images/apiKeys.png)
