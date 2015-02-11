@@ -54,7 +54,7 @@ To create your own app, you must first add the API.AI SDK library to your projec
 * Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
 
     ```
-    compile 'ai.api:sdk:1.2.0@aar'
+    compile 'ai.api:sdk:1.3.0@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.code.gson:gson:2.3'
