@@ -112,7 +112,7 @@ public class DefaultProtocolTest {
 
         final DefaultProtocolTestingService aiDataService = new DefaultProtocolTestingService(Robolectric.application, config);
 
-        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("log.raw");
+        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
         try {
 

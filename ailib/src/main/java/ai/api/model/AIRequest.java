@@ -99,7 +99,7 @@ public class AIRequest extends QuestionMetadata implements Serializable {
             return;
         }
 
-        this.contexts = new ArrayList<>();
+        this.contexts = new ArrayList<String>();
         for (final AIContext c : contexts) {
             this.contexts.add(c.getName());
         }
@@ -107,7 +107,7 @@ public class AIRequest extends QuestionMetadata implements Serializable {
 
     public void addContext(final AIContext aiContext) {
         if (contexts == null) {
-            contexts = new ArrayList<>(1);
+            contexts = new ArrayList<String>(1);
         }
 
         contexts.add(aiContext.getName());

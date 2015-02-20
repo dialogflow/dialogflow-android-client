@@ -23,6 +23,8 @@ package ai.api.test;
 
 import android.text.TextUtils;
 
+import com.google.gson.JsonElement;
+
 import org.junit.Test;
 import org.robolectric.Robolectric;
 
@@ -105,7 +107,7 @@ public abstract class ProtocolTestBase {
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
-        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("log.raw");
+        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
         try {
             final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
@@ -231,7 +233,7 @@ public abstract class ProtocolTestBase {
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
-        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("log.raw");
+        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
         try {
             final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
@@ -347,6 +349,34 @@ public abstract class ProtocolTestBase {
             assertTrue(e.getMessage(), false);
         }
 
+    }
+
+    @Test
+    public void testParameters(){
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        config.setExperimental(isExperimentalTest());
+
+        try {
+            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+            final AIResponse response = aiDataService.request(new AIRequest("what is your name"));
+
+            assertNotNull(response.getResult().getParameters());
+            assertFalse(response.getResult().getParameters().isEmpty());
+
+            final AIOutputContext context = response.getResult().getContexts()[0];
+            assertNotNull(context.getParameters());
+
+            assertTrue(context.getParameters().containsKey("param"));
+            final JsonElement contextParam = context.getParameters().get("param");
+            assertEquals("blabla", contextParam.getAsString());
+
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
+        }
     }
 
     @Test

@@ -56,7 +56,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
     private final Handler handler;
 
-    private final Map<Integer, String> errorMessages = new HashMap<>();
+    private final Map<Integer, String> errorMessages = new HashMap<Integer, String>();
 
     {
         errorMessages.put(1, "Network operation timed out.");
