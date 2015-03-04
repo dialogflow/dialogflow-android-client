@@ -112,7 +112,7 @@ public abstract class ProtocolTestBase {
         try {
             final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
             assertNotNull(aiResponse);
-            assertFalse(aiResponse.isError());
+            assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
             assertFalse(TextUtils.isEmpty(aiResponse.getId()));
             assertNotNull(aiResponse.getResult());
 
@@ -238,7 +238,7 @@ public abstract class ProtocolTestBase {
         try {
             final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
             assertNotNull(aiResponse);
-            assertFalse(aiResponse.isError());
+            assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
             assertFalse(TextUtils.isEmpty(aiResponse.getId()));
             assertNotNull(aiResponse.getResult());
 
@@ -489,7 +489,7 @@ public abstract class ProtocolTestBase {
                 final AIRequest aiRequest = new AIRequest("hello");
                 final AIResponse aiResponse = aiDataService.request(aiRequest);
                 assertNotNull(aiResponse);
-                assertFalse(aiResponse.isError());
+                assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
                 assertNotContainsContext(aiResponse, "name_question");
             }
 
@@ -510,7 +510,7 @@ public abstract class ProtocolTestBase {
     protected AIResponse makeRequest(final AIDataService aiDataService, final AIRequest aiRequest) throws AIServiceException {
         final AIResponse aiResponse = aiDataService.request(aiRequest);
         assertNotNull(aiResponse);
-        assertFalse(aiResponse.isError());
+        assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
         assertFalse(TextUtils.isEmpty(aiResponse.getId()));
         assertNotNull(aiResponse.getResult());
         return aiResponse;

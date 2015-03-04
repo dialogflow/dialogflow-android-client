@@ -127,6 +127,9 @@ public class DefaultProtocolTest {
 
             assertNotNull(aiResponse);
 
+            assertNotNull(aiResponse.getResult());
+            assertNotNull(aiResponse.getResult().getMetadata());
+
             final String[] contexts = aiResponse.getResult().getMetadata().getContexts();
             assertNotNull(contexts);
             boolean contextLoaded = false;
