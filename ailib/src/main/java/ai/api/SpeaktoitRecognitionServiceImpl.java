@@ -71,6 +71,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
                 minBufferSize);
 
         voiceActivityDetector.setMinAudioBufferSize(minBufferSize);
+        voiceActivityDetector.setEnabled(config.isVoiceActivityDetectionEnabled());
 
         voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
             @Override

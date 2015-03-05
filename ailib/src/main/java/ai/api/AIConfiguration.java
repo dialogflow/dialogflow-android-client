@@ -126,6 +126,8 @@ public class AIConfiguration {
     private boolean experimental;
     private boolean writeSoundLog;
 
+    private boolean voiceActivityDetectionEnabled = true;
+
     public AIConfiguration(final String apiKey, final String subscriptionKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
         this.apiKey = apiKey;
         this.subscriptionKey = subscriptionKey;
@@ -156,6 +158,19 @@ public class AIConfiguration {
 
     public RecognitionEngine getRecognitionEngine() {
         return recognitionEngine;
+    }
+
+    public boolean isVoiceActivityDetectionEnabled() {
+        return voiceActivityDetectionEnabled;
+    }
+
+    /**
+     * With setting this field to false you can disable voice activity detection for Speaktoit recognition.
+     * This option does not affect System recognition.
+     * @param voiceActivityDetectionEnabled
+     */
+    public void setVoiceActivityDetectionEnabled(final boolean voiceActivityDetectionEnabled) {
+        this.voiceActivityDetectionEnabled = voiceActivityDetectionEnabled;
     }
 
     /**

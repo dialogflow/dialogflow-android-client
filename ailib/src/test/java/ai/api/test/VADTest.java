@@ -40,6 +40,7 @@ public class VADTest {
     private static final int SAMPLE_RATE = 16000;
 
     boolean voiceDetected = false;
+    boolean speechStarted = false;
 
     @Test
     public void testSpeechDetect() {
@@ -48,11 +49,12 @@ public class VADTest {
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("speech.raw");
 
         voiceDetected = false;
+        speechStarted = false;
 
         voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
             @Override
             public void onSpeechBegin() {
-
+                speechStarted = true;
             }
 
             @Override
@@ -80,6 +82,7 @@ public class VADTest {
                 bytesRead = inputStream.read(buffer, 0, bufferSize);
             }
 
+            assertTrue(speechStarted);
             assertTrue(voiceDetected);
 
         } catch (final Exception e) {
@@ -168,6 +171,56 @@ public class VADTest {
                 bytesRead = inputStream.read(buffer, 0, bufferSize);
             }
 
+            assertFalse(voiceDetected);
+
+        } catch (final Exception e) {
+            e.printStackTrace();
+            assertTrue(e.getMessage(), false);
+        }
+    }
+
+    @Test
+    public void testEnabled() {
+        final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE);
+        voiceActivityDetector.setEnabled(false);
+
+        final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("speech.raw");
+
+        voiceDetected = false;
+        speechStarted = false;
+
+        voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
+            @Override
+            public void onSpeechBegin() {
+                speechStarted = true;
+            }
+
+            @Override
+            public void onSpeechEnd() {
+                voiceDetected = true;
+            }
+
+            @Override
+            public void onAudioLevelChanged(double energy) {
+
+            }
+        });
+
+        try {
+
+            final int bufferSize = 1096;
+            final byte[] buffer = new byte[bufferSize];
+
+            int bytesRead = 0;
+
+            bytesRead = inputStream.read(buffer, 0, bufferSize);
+
+            while (bytesRead >= 0) {
+                voiceActivityDetector.processBuffer(buffer, bytesRead);
+                bytesRead = inputStream.read(buffer, 0, bufferSize);
+            }
+
+            assertTrue(speechStarted);
             assertFalse(voiceDetected);
 
         } catch (final Exception e) {

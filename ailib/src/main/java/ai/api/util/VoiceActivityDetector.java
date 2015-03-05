@@ -73,6 +73,7 @@ public class VoiceActivityDetector {
      */
     private final int startNoiseInterval = 150;
     private int minAudioBufferSize = 1920;
+    private boolean enabled = true;
 
     public VoiceActivityDetector(final int sampleRate) {
         this.sampleRate = sampleRate;
@@ -199,8 +200,10 @@ public class VoiceActivityDetector {
 
     private void onSpeechEnd() {
         Log.v(TAG, "onSpeechEnd");
-        if (eventsListener != null) {
-            eventsListener.onSpeechEnd();
+        if (enabled) {
+            if (eventsListener != null) {
+                eventsListener.onSpeechEnd();
+            }
         }
     }
 
@@ -217,6 +220,24 @@ public class VoiceActivityDetector {
      */
     public void setMinAudioBufferSize(final int minAudioBufferSize) {
         this.minAudioBufferSize = minAudioBufferSize;
+    }
+
+    /**
+     * If enabled, voice activity detector fires onSpeechEnd events.
+     * This option does not affect onSpeechBegin and onChangeLevel events
+     * @param enabled new option values
+     */
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    /**
+     * If enabled, voice activity detector fires onSpeechEnd events.
+     * This option does not affect onSpeechBegin and onChangeLevel events
+     * @return current option value
+     */
+    public boolean isEnabled() {
+        return enabled;
     }
 
     /**
