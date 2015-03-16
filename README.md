@@ -1,4 +1,4 @@
-api-ai-android-sdk
+Android SDK for api.ai
 ==================
 
 release:<br/>
