@@ -101,6 +101,9 @@ public class AIDataService {
             Log.d(TAG, "Response json: " + response);
 
             final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
+            if (aiResponse != null) {
+                aiResponse.cleanup();
+            }
 
             return aiResponse;
 
@@ -148,6 +151,10 @@ public class AIDataService {
             Log.d(TAG, "Response json: " + response);
 
             final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
+            if (aiResponse != null) {
+                aiResponse.cleanup();
+            }
+
             return aiResponse;
 
         } catch (final MalformedURLException e) {

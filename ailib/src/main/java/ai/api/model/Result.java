@@ -21,12 +21,16 @@ package ai.api.model;
  *
  ***********************************************************************************************************************/
 
+import android.text.TextUtils;
+
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Result implements Serializable {
 
@@ -99,6 +103,23 @@ public class Result implements Serializable {
 
     public void setResolvedQuery(final String resolvedQuery) {
         this.resolvedQuery = resolvedQuery;
+    }
+
+    void trimParameters() {
+        if (parameters != null) {
+            final List<String> parametersToTrim = new LinkedList<String>();
+            for (final String key : parameters.keySet()) {
+                final JsonElement jsonElement = parameters.get(key);
+                if (jsonElement != null && jsonElement.isJsonPrimitive()) {
+                    if (((JsonPrimitive) jsonElement).isString() && TextUtils.isEmpty(jsonElement.getAsString())) {
+                        parametersToTrim.add(key);
+                    }
+                }
+            }
+            for (final String key : parametersToTrim) {
+                parameters.remove(key);
+            }
+        }
     }
 
     @Override

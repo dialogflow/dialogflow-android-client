@@ -100,4 +100,10 @@ public class AIResponse implements Serializable {
                 result,
                 status);
     }
+
+    public void cleanup() {
+        if (result != null) {
+            result.trimParameters();
+        }
+    }
 }
