@@ -4,6 +4,6 @@
     <color name="mic_button_halo">#20000000</color>
     <color name="main_bg_color">#FF2a91be</color>
 
-    <color name="aidialog_background">#ffd1ffdb</color>
+    <color name="aidialog_background">#ffffffff</color>
 
 </resources>
