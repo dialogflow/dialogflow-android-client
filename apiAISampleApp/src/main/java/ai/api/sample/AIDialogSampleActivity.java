@@ -42,6 +42,7 @@ public class AIDialogSampleActivity extends ActionBarActivity {
     private static final String TAG = AIDialogSampleActivity.class.getName();
 
     private TextView resultTextView;
+    private AIDialog aiDialog;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -49,16 +50,13 @@ public class AIDialogSampleActivity extends ActionBarActivity {
         setContentView(R.layout.activity_aidialog_sample);
 
         resultTextView = (TextView) findViewById(R.id.resultTextView);
-    }
 
-    public void buttonListenOnClick(final View view) {
         final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
         config.setExperimental(true);
 
-        final AIDialog aiDialog = new AIDialog(this, config);
-
+        aiDialog = new AIDialog(this, config);
         aiDialog.setResultsListener(new AIDialog.AIDialogListener() {
             @Override
             public void onResult(final AIResponse response) {
@@ -96,7 +94,7 @@ public class AIDialogSampleActivity extends ActionBarActivity {
 
                             if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
                                 Log.i(TAG, "Parameters: ");
-                                for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()){
+                                for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()) {
                                     Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
                                 }
                             }
@@ -116,8 +114,9 @@ public class AIDialogSampleActivity extends ActionBarActivity {
                 });
             }
         });
+    }
 
+    public void buttonListenOnClick(final View view) {
         aiDialog.showAndListen();
-
     }
 }
