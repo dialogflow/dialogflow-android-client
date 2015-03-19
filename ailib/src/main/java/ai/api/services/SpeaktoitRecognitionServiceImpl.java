@@ -59,7 +59,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     private final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE_IN_HZ);
 
-    protected SpeaktoitRecognitionServiceImpl(final Context context, final AIConfiguration config) {
+    public SpeaktoitRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config, context);
 
         initMediaRecorder();

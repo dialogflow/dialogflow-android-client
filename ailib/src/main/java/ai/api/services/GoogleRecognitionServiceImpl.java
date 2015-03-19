@@ -77,7 +77,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
     private List<AIContext> contexts;
     private PartialResultsListener partialResultsListener;
 
-    protected GoogleRecognitionServiceImpl(final Context context, final AIConfiguration config) {
+    public GoogleRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config, context);
 
         final ComponentName googleRecognizerComponent = RecognizerChecker.findGoogleRecognizer(context);
