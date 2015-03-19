@@ -167,6 +167,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language);
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, language);
+            sttIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
 
             // WORKAROUND for https://code.google.com/p/android/issues/detail?id=75347
             // TODO Must be removed after fix in Android
@@ -337,7 +338,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         @Override
         public void onPartialResults(final Bundle partialResults) {
-            Log.v(TAG, "onPartialResults");
             final ArrayList<String> partialRecognitionResults = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             if (partialRecognitionResults != null && !partialRecognitionResults.isEmpty()) {
                 GoogleRecognitionServiceImpl.this.onPartialResults(partialRecognitionResults);

@@ -27,6 +27,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -126,15 +127,16 @@ public class AIDialog {
             @Override
             public void onPartialResults(final List<String> partialResults) {
                 final String result = partialResults.get(0);
-                Log.v(TAG, "onPartialResults: " + result);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (partialResultsTextView != null) {
-                            partialResultsTextView.setText(result);
+                if (!TextUtils.isEmpty(result)) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (partialResultsTextView != null) {
+                                partialResultsTextView.setText(result);
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
         });
 
