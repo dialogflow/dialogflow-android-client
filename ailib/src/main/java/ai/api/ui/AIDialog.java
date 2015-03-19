@@ -85,6 +85,7 @@ public class AIDialog {
     }
 
     private void showInUIThread(final int customLayout) {
+        dialog.setCanceledOnTouchOutside(true);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.aidialog);
 
@@ -94,10 +95,6 @@ public class AIDialog {
         aiButton.initialize(config);
         setAIButtonCallback(aiButton);
 
-        final Window window = dialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-        //window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
 
         startListening();

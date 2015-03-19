@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical|center_horizontal"
+    android:background="@color/aidialog_background">
+
 
     <RelativeLayout
         android:id="@+id/micContainer"
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:layout_centerInParent="true">
 
         <ai.api.ui.AIButton
@@ -13,17 +17,30 @@
             android:layout_height="152dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-
             style="@style/ApiAi.Microphone"
-
             />
 
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textAppearance="?android:attr/textAppearanceLarge"
+
+        android:text="@string/default_aidialog_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp" />
+
+    <TextView
         android:id="@+id/partialResultsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+
+        android:layout_below="@+id/micContainer"
+        android:layout_marginBottom="15dp" />
 
 </RelativeLayout>

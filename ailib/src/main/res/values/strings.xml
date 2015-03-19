@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AILib</string>
+
+    <string name="default_aidialog_title">Speak</string>
 </resources>
