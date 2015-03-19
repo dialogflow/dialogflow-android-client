@@ -34,12 +34,15 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import ai.api.AIConfiguration;
 import ai.api.AIListener;
 import ai.api.AIService;
+import ai.api.GoogleRecognitionServiceImpl;
+import ai.api.PartialResultsListener;
 import ai.api.R;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
@@ -62,6 +65,7 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     private AIService aiService;
     private AIButtonListener resultsListener;
+    private PartialResultsListener partialResultsListener;
 
     private final ExecutorService eventsExecutor = Executors.newSingleThreadExecutor();
 
@@ -167,10 +171,38 @@ public class AIButton extends SoundLevelButton implements AIListener {
     public void initialize(final AIConfiguration config) {
         aiService = AIService.getService(getContext(), config);
         aiService.setListener(this);
+
+        if (aiService instanceof GoogleRecognitionServiceImpl) {
+            ((GoogleRecognitionServiceImpl)aiService).setPartialResultsListener(new PartialResultsListener() {
+                @Override
+                public void onPartialResults(final List<String> partialResults) {
+                    if (partialResultsListener != null) {
+                        partialResultsListener.onPartialResults(partialResults);
+                    }
+                }
+            });
+        }
     }
 
     public void setResultsListener(final AIButtonListener resultsListener) {
         this.resultsListener = resultsListener;
+    }
+
+    public void setPartialResultsListener(final PartialResultsListener partialResultsListener) {
+        this.partialResultsListener = partialResultsListener;
+    }
+
+    public void startListening() {
+        if (aiService != null) {
+            if (currentState == MicState.normal) {
+                eventsExecutor.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        aiService.startListening();
+                    }
+                });
+            }
+        }
     }
 
     @Override

@@ -5,7 +5,7 @@ package ai.api;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -71,6 +71,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
     }
 
     private List<AIContext> contexts;
+    private PartialResultsListener partialResultsListener;
 
     protected GoogleRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config, context);
@@ -241,6 +242,16 @@ public class GoogleRecognitionServiceImpl extends AIService {
         super.resume();
     }
 
+    public void setPartialResultsListener(PartialResultsListener partialResultsListener) {
+        this.partialResultsListener = partialResultsListener;
+    }
+
+    protected void onPartialResults(final List<String> partialResults) {
+        if (partialResultsListener != null) {
+            partialResultsListener.onPartialResults(partialResults);
+        }
+    }
+
     private void runInUiThread(final Runnable runnable) {
         handler.post(runnable);
     }
@@ -326,7 +337,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         @Override
         public void onPartialResults(final Bundle partialResults) {
-
+            Log.v(TAG, "onPartialResults");
+            final ArrayList<String> partialRecognitionResults = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            if (partialRecognitionResults != null && !partialRecognitionResults.isEmpty()) {
+                GoogleRecognitionServiceImpl.this.onPartialResults(partialRecognitionResults);
+            }
         }
 
         @Override
@@ -334,6 +349,5 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         }
     }
-
 
 }

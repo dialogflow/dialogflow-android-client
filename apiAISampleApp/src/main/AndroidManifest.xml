@@ -39,6 +39,14 @@
                 android:value="ai.api.sample.MainActivity" />
         </activity>
 
+        <activity android:name=".AIDialogSampleActivity"
+            android:label="@string/title_activity_aidialog_sample"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ai.api.sample.MainActivity" />
+            </activity>
+
     </application>
 
 </manifest>

@@ -5,7 +5,7 @@ package ai.api;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -21,6 +21,8 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
-public class AudioRequestTask {
+import java.util.List;
 
+public interface PartialResultsListener {
+    void onPartialResults(final List<String> partialResults);
 }

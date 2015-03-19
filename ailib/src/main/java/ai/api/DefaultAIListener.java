@@ -5,7 +5,7 @@ package ai.api;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -21,6 +21,23 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
-public abstract class RecognitionEngine {
+/**
+ * Use this class instead of AIListener if you don't want to process all recognition events. Only onResult and onError required.
+ */
+public abstract class DefaultAIListener implements AIListener {
 
+    @Override
+    public void onAudioLevel(final float level) {
+
+    }
+
+    @Override
+    public void onListeningStarted() {
+
+    }
+
+    @Override
+    public void onListeningFinished() {
+
+    }
 }

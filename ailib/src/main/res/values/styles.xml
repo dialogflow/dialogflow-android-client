@@ -21,4 +21,14 @@
 	    <item name="android:layout_height">@dimen/mic_button_size</item>
 	    <item name="android:scaleType">centerInside</item>
 	</style>
+
+    <!--Style for recognition dialog-->
+    <style name="ApiAi.FullScreenDialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    </style>
+
 </resources>

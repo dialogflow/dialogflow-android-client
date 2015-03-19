@@ -6,7 +6,9 @@
 
     <string name="title_activity_aibutton_sample">AIButtonSampleActivity</string>
     <string name="title_activity_aiservice_sample">AIServiceSample</string>
+    <string name="title_activity_aidialog_sample">AIDialogSample</string>
     <string name="service_sample_text">Service sample</string>
     <string name="button_sample_text">Button sample</string>
+    <string name="dialog_sample_text">Dialog sample</string>
 
 </resources>

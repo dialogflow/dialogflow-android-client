@@ -5,7 +5,7 @@ package ai.api.sample;
  * API.AI Android SDK -  API.AI libraries usage example
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -68,6 +68,12 @@ public class MainActivity extends ActionBarActivity {
     public void buttonSampleClick(final View view) {
         final Intent intent = new Intent();
         intent.setClass(this, AIButtonSampleActivity.class);
+        startActivity(intent);
+    }
+
+    public void dialogSampleClick(final View view) {
+        final Intent intent = new Intent();
+        intent.setClass(this, AIDialogSampleActivity.class);
         startActivity(intent);
     }
 }
