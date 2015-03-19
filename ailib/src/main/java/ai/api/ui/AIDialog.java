@@ -50,8 +50,8 @@ public class AIDialog {
 
     private AIDialogListener resultsListener;
     private final Dialog dialog;
-    private AIButton aiButton;
-    private TextView partialResultsTextView;
+    private final AIButton aiButton;
+    private final TextView partialResultsTextView;
 
     private final Handler handler;
 
@@ -61,43 +61,38 @@ public class AIDialog {
     }
 
     public AIDialog(final Context context, final AIConfiguration config) {
+        this(context, config, R.layout.aidialog);
+    }
+
+    public AIDialog(final Context context, final AIConfiguration config, final int customLayout) {
         this.context = context;
         this.config = config;
         dialog = new Dialog(context);
         handler = new Handler(Looper.getMainLooper());
+
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(customLayout);
+
+        partialResultsTextView = (TextView) dialog.findViewById(R.id.partialResultsTextView);
+
+        aiButton = (AIButton) dialog.findViewById(R.id.micButton);
+        aiButton.initialize(config);
+        setAIButtonCallback(aiButton);
     }
 
     public void setResultsListener(final AIDialogListener resultsListener) {
         this.resultsListener = resultsListener;
     }
 
-    public void show() {
-        show(R.id.micButton);
-    }
-
-    public void show(final int customLayout) {
+    public void showAndListen() {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                showInUIThread(customLayout);
+                dialog.show();
+                startListening();
             }
         });
-    }
-
-    private void showInUIThread(final int customLayout) {
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.aidialog);
-
-        partialResultsTextView = (TextView) dialog.findViewById(R.id.partialResultsTextView);
-
-        aiButton = (AIButton) dialog.findViewById(customLayout);
-        aiButton.initialize(config);
-        setAIButtonCallback(aiButton);
-
-        dialog.show();
-
-        startListening();
     }
 
     private void setAIButtonCallback(final AIButton aiButton) {

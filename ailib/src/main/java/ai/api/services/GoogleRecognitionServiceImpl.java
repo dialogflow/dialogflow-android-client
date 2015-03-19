@@ -318,7 +318,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     rates = results.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES);
                 }
 
-                if (recognitionResults == null || recognitionResults.size() == 0) {
+                if (recognitionResults == null || recognitionResults.isEmpty()) {
                     // empty response
                     GoogleRecognitionServiceImpl.this.onResult(new AIResponse());
                 } else {
@@ -332,6 +332,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     if (contexts != null) {
                         aiRequest.setContexts(contexts);
                     }
+
+                    // notify listeners about the last recogntion result for more accurate user feedback
+                    GoogleRecognitionServiceImpl.this.onPartialResults(recognitionResults);
 
                     GoogleRecognitionServiceImpl.this.sendRequest(aiRequest);
 

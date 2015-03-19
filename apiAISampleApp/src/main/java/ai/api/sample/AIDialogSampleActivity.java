@@ -117,7 +117,7 @@ public class AIDialogSampleActivity extends ActionBarActivity {
             }
         });
 
-        aiDialog.show();
+        aiDialog.showAndListen();
 
     }
 }

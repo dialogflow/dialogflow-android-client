@@ -215,6 +215,12 @@ public class AIButton extends SoundLevelButton implements AIListener {
                     @Override
                     public void run() {
                         aiService.cancel();
+                        post(new Runnable() {
+                            @Override
+                            public void run() {
+                                changeState(MicState.normal);
+                            }
+                        });
                     }
                 });
             } else {
