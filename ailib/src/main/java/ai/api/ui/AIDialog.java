@@ -23,14 +23,10 @@ package ai.api.ui;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.util.List;
@@ -89,10 +85,17 @@ public class AIDialog {
         handler.post(new Runnable() {
             @Override
             public void run() {
+                resetControls();
                 dialog.show();
                 startListening();
             }
         });
+    }
+
+    private void resetControls() {
+        if (partialResultsTextView != null) {
+            partialResultsTextView.setText("");
+        }
     }
 
     private void setAIButtonCallback(final AIButton aiButton) {
@@ -134,7 +137,7 @@ public class AIDialog {
 
     }
 
-    public void startListening() {
+    private void startListening() {
         if (aiButton != null) {
             aiButton.startListening();
         }
