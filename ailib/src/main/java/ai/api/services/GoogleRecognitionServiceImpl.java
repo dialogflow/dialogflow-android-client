@@ -219,7 +219,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 public void run() {
                     synchronized (speechRecognizerLock) {
                         if (recognitionActive) {
-                            speechRecognizer.cancel();
+                            if (speechRecognizer != null) {
+                                speechRecognizer.cancel();
+                            }
                             recognitionActive = false;
                         }
                     }

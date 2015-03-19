@@ -261,8 +261,18 @@ public class AIButton extends SoundLevelButton implements AIListener {
 		super.onDetachedFromWindow();
 
 		if (!isInEditMode()) {
+            cancelListening();
             if (aiService != null) {
                 aiService.pause();
+            }
+        }
+    }
+
+    private void cancelListening() {
+        if (aiService != null) {
+            if (currentState != MicState.normal) {
+                aiService.cancel();
+                changeState(MicState.normal);
             }
         }
     }
