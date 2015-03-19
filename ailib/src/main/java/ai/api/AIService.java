@@ -29,6 +29,8 @@ import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
+import ai.api.services.GoogleRecognitionServiceImpl;
+import ai.api.services.SpeaktoitRecognitionServiceImpl;
 
 /**
  * Main SDK class fro working with API.AI service.

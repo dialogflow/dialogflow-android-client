@@ -41,7 +41,7 @@ import java.util.concurrent.Executors;
 import ai.api.AIConfiguration;
 import ai.api.AIListener;
 import ai.api.AIService;
-import ai.api.GoogleRecognitionServiceImpl;
+import ai.api.services.GoogleRecognitionServiceImpl;
 import ai.api.PartialResultsListener;
 import ai.api.R;
 import ai.api.model.AIError;

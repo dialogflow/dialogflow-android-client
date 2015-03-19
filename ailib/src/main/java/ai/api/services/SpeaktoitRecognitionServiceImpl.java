@@ -1,4 +1,4 @@
-package ai.api;
+package ai.api.services;
 
 /***********************************************************************************************************************
  *
@@ -28,6 +28,9 @@ import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import ai.api.AIConfiguration;
+import ai.api.AIService;
+import ai.api.AIServiceException;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
