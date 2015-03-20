@@ -58,14 +58,14 @@ public class DefaultProtocolTest {
     @Test
     public void legacyContextsTest() {
         final AIConfiguration config = new AIConfiguration(
-                "9586504322be4f8ba31cfdebc40eb76f",
+                "3485a96fb27744db83e78b8c4bc9e7b7",
                 "cb9693af-85ce-4fbf-844a-5563722fc27f",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
         config.setProtocolVersion(null);
         config.setWriteSoundLog(false);
-        config.setExperimental(true);
+        config.setExperimental(false);
 
         final DefaultProtocolTestingService aiDataService = new DefaultProtocolTestingService(Robolectric.application, config);
 
@@ -102,12 +102,12 @@ public class DefaultProtocolTest {
     @Test
     public void outputContextVoiceTest() {
         final AIConfiguration config = new AIConfiguration(
-                "9586504322be4f8ba31cfdebc40eb76f",
+                "3485a96fb27744db83e78b8c4bc9e7b7",
                 "cb9693af-85ce-4fbf-844a-5563722fc27f",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);
 
-        config.setExperimental(true);
+        config.setExperimental(false);
         config.setProtocolVersion(null);
 
         final DefaultProtocolTestingService aiDataService = new DefaultProtocolTestingService(Robolectric.application, config);
