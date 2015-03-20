@@ -124,7 +124,7 @@ public class Result implements Serializable {
             }
 
             try {
-                return ParametersConverter.parseDate(name);
+                return ParametersConverter.parseDate(parameterStringValue);
             } catch (final ParseException pe) {
                 throw new IllegalArgumentException(String.format(DATE_FORMAT_ERROR_MESSAGE, name, parameterStringValue), pe);
             }
@@ -146,7 +146,7 @@ public class Result implements Serializable {
             }
 
             try {
-                return ParametersConverter.parseDateTime(name);
+                return ParametersConverter.parseDateTime(parameterStringValue);
             } catch (final ParseException pe) {
                 throw new IllegalArgumentException(String.format(DATE_FORMAT_ERROR_MESSAGE, name, parameterStringValue), pe);
             }
@@ -168,7 +168,7 @@ public class Result implements Serializable {
             }
 
             try {
-                return ParametersConverter.parseTime(name);
+                return ParametersConverter.parseTime(parameterStringValue);
             } catch (final ParseException pe) {
                 throw new IllegalArgumentException(String.format(DATE_FORMAT_ERROR_MESSAGE, name, parameterStringValue), pe);
             }
@@ -189,7 +189,7 @@ public class Result implements Serializable {
                 return defaultValue;
             }
 
-            return ParametersConverter.parseInteger(name);
+            return ParametersConverter.parseInteger(parameterStringValue);
         }
         return defaultValue;
     }
@@ -206,7 +206,7 @@ public class Result implements Serializable {
                 return defaultValue;
             }
 
-            return ParametersConverter.parseFloat(name);
+            return ParametersConverter.parseFloat(parameterStringValue);
         }
         return defaultValue;
     }
