@@ -14,6 +14,16 @@ Two permissions are required to use the API.AI Android SDK:
 * **android.permission.INTERNET** for internet access
 * **android.permission.RECORD_AUDIO** for microphone access
 
+Add this dependencies to your project to use SDK
+
+```
+compile 'ai.api:sdk:1.4.5@aar'
+// api.ai SDK dependencies
+compile 'com.android.support:appcompat-v7:21.0.3'
+compile 'com.google.code.gson:gson:2.3'
+compile 'commons-io:commons-io:2.4'
+```
+
 Currently, speech recognition is performed using Google's Android SDK, either on the client device or in the cloud. Recognized text is passed to the API.AI through HTTP requests. Also you can try Speaktoit recognition engine (Use [AIConfiguration.RecognitionEngine.Speaktoit](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java#L37)).
 
 Authentication is accomplished through setting the client access token when initializing an **AIConfiguration** object. The client access token specifies which agent will be used for natural language processing.
@@ -54,7 +64,7 @@ To create your own app, you must first add the API.AI SDK library to your projec
 * Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
 
     ```
-    compile 'ai.api:sdk:1.3.0@aar'
+    compile 'ai.api:sdk:1.4.5@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.code.gson:gson:2.3'
