@@ -25,6 +25,7 @@ package ai.api.test;
 
 import android.text.TextUtils;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -43,6 +44,7 @@ import static org.junit.Assert.assertTrue;
 
 @Config(emulateSdk = 18, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
+@Ignore("Tests for development purposes. Disabled by default.")
 public class ProtocolDevTest extends ProtocolTestBase {
 
     // Testing keys
