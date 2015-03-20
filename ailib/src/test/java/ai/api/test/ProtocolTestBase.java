@@ -327,13 +327,14 @@ public abstract class ProtocolTestBase {
                 final AIRequest weatherRequest = new AIRequest();
                 weatherRequest.setQuery("weather");
                 final AIResponse weatherResponse = makeRequest(firstService, weatherRequest);
+                assertNotNull(weatherResponse);
             }
 
             {
                 final AIRequest checkSecondRequest = new AIRequest();
                 checkSecondRequest.setQuery("check weather");
                 final AIResponse checkSecondResponse = makeRequest(secondService, checkSecondRequest);
-                assertNull(checkSecondResponse.getResult().getAction());
+                assertTrue(TextUtils.isEmpty(checkSecondResponse.getResult().getAction()));
             }
 
             {

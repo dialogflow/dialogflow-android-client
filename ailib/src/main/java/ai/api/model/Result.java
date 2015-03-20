@@ -28,11 +28,17 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import ai.api.util.ParametersConverter;
+
 public class Result implements Serializable {
+
+    private static final String DATE_FORMAT_ERROR_MESSAGE = "'%s' parameter has value '%s' and can't be parsed as a Date";
 
     @SerializedName("speech")
     private String speech;
@@ -71,6 +77,9 @@ public class Result implements Serializable {
     }
 
     public String getAction() {
+        if (action == null) {
+            return "";
+        }
         return action;
     }
 
@@ -88,6 +97,118 @@ public class Result implements Serializable {
 
     public HashMap<String, JsonElement> getParameters() {
         return parameters;
+    }
+
+    public String getStringParameter(final String name) {
+        return getStringParameter(name, "");
+    }
+
+    public String getStringParameter(final String name, final String defaultValue) {
+        if (parameters.containsKey(name)) {
+            final String parameterValue = parameters.get(name).getAsString();
+            return parameterValue;
+        }
+        return defaultValue;
+    }
+
+    public Date getDateParameter(final String name) throws ParseException {
+        return getDateParameter(name, null);
+    }
+
+    public Date getDateParameter(final String name, final Date defaultValue) throws IllegalArgumentException {
+        if (parameters.containsKey(name)) {
+            final String parameterStringValue = parameters.get(name).getAsString();
+
+            if (TextUtils.isEmpty(parameterStringValue)) {
+                return defaultValue;
+            }
+
+            try {
+                return ParametersConverter.parseDate(name);
+            } catch (final ParseException pe) {
+                throw new IllegalArgumentException(String.format(DATE_FORMAT_ERROR_MESSAGE, name, parameterStringValue), pe);
+            }
+
+        }
+        return defaultValue;
+    }
+
+    public Date getDateTimeParameter(final String name) throws ParseException {
+        return getDateTimeParameter(name, null);
+    }
+
+    public Date getDateTimeParameter(final String name, final Date defaultValue) throws IllegalArgumentException {
+        if (parameters.containsKey(name)) {
+            final String parameterStringValue = parameters.get(name).getAsString();
+
+            if (TextUtils.isEmpty(parameterStringValue)) {
+                return defaultValue;
+            }
+
+            try {
+                return ParametersConverter.parseDateTime(name);
+            } catch (final ParseException pe) {
+                throw new IllegalArgumentException(String.format(DATE_FORMAT_ERROR_MESSAGE, name, parameterStringValue), pe);
+            }
+
+        }
+        return defaultValue;
+    }
+
+    public Date getTimeParameter(final String name) throws ParseException {
+        return getTimeParameter(name, null);
+    }
+
+    public Date getTimeParameter(final String name, final Date defaultValue) throws IllegalArgumentException {
+        if (parameters.containsKey(name)) {
+            final String parameterStringValue = parameters.get(name).getAsString();
+
+            if (TextUtils.isEmpty(parameterStringValue)) {
+                return defaultValue;
+            }
+
+            try {
+                return ParametersConverter.parseTime(name);
+            } catch (final ParseException pe) {
+                throw new IllegalArgumentException(String.format(DATE_FORMAT_ERROR_MESSAGE, name, parameterStringValue), pe);
+            }
+
+        }
+        return defaultValue;
+    }
+
+    public int getIntParameter(final String name) {
+        return getIntParameter(name, 0);
+    }
+
+    public int getIntParameter(final String name, final int defaultValue) {
+        if (parameters.containsKey(name)) {
+            final String parameterStringValue = parameters.get(name).getAsString();
+
+            if (TextUtils.isEmpty(parameterStringValue)) {
+                return defaultValue;
+            }
+
+            return ParametersConverter.parseInteger(name);
+        }
+        return defaultValue;
+    }
+
+    public float getFloatParameter(final String name) {
+        return getFloatParameter(name, 0);
+    }
+
+    public float getFloatParameter(final String name, final int defaultValue) {
+        if (parameters.containsKey(name)) {
+            final String parameterStringValue = parameters.get(name).getAsString();
+
+            if (TextUtils.isEmpty(parameterStringValue)) {
+                return defaultValue;
+            }
+
+            return ParametersConverter.parseFloat(name);
+        }
+        return defaultValue;
     }
 
     public AIOutputContext[] getContexts() {
