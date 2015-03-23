@@ -19,14 +19,14 @@ Add this dependencies to your project to use SDK
 ```
 compile 'ai.api:sdk:1.4.5@aar'
 // api.ai SDK dependencies
-compile 'com.android.support:appcompat-v7:21.0.3'
+compile 'com.android.support:appcompat-v7:22.0.0'
 compile 'com.google.code.gson:gson:2.3'
 compile 'commons-io:commons-io:2.4'
 ```
 
 Currently, speech recognition is performed using Google's Android SDK, either on the client device or in the cloud. Recognized text is passed to the API.AI through HTTP requests. Also you can try Speaktoit recognition engine (Use [AIConfiguration.RecognitionEngine.Speaktoit](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java#L37)).
 
-Authentication is accomplished through setting the client access token when initializing an **AIConfiguration** object. The client access token specifies which agent will be used for natural language processing.
+Authentication is accomplished through setting the client access token and subscription key when initializing an [AIConfiguration](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java) object. The client access token specifies which agent will be used for natural language processing, subscription key used for managing subscription info.
 
 **Note:** The API.AI Android SDK only makes query requests, and cannot be used to manage entities and intents. Instead, use the API.AI user interface or REST API to  create, retreive, update, and delete entities and intents.
 
@@ -59,21 +59,21 @@ If you are an experienced developer you might use [brief integration instruction
 
 ## Overview
 
-To create your own app, you must first add the API.AI SDK library to your project. There are two ways to accomplish this. The first way is simpler.
+To implement speech recognition and natural language processing features in your app, you must first add the API.AI SDK library to your project. There are two ways to accomplish this. The first way is recommended:
 
-* Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
+1. Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
 
     ```
     compile 'ai.api:sdk:1.4.5@aar'
     // api.ai SDK dependencies
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.google.code.gson:gson:2.3'
     compile 'commons-io:commons-io:2.4'
     ```
     
-* Download the library source code from github, and attach it to your project.
+2. (Not recommended) Download the library source code from github, and attach it to your project.
 
-Now you can create your own app, using either integrated speech recognition or using your own speech recognition.
+Now you can use API.AI service features in your app using either integrated speech recognition or using your own speech recognition.
 
 ## Using integrated speech recognition
 
