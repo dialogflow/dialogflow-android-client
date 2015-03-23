@@ -54,7 +54,7 @@ public class AIDialogSampleActivity extends ActionBarActivity {
         final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
-        config.setExperimental(true);
+        config.setExperimental(false);
 
         aiDialog = new AIDialog(this, config);
         aiDialog.setResultsListener(new AIDialog.AIDialogListener() {
