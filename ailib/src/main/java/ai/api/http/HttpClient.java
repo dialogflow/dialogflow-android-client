@@ -5,7 +5,7 @@ package ai.api.http;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -21,6 +21,8 @@ package ai.api.http;
  *
  ***********************************************************************************************************************/
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.apache.commons.io.Charsets;
@@ -39,6 +41,7 @@ public class HttpClient {
     public static final String TAG = HttpClient.class.getName();
     private static final int CHUNK_LENGTH = 2048;
 
+    @NonNull
     private final HttpURLConnection connection;
     private OutputStream os;
 
@@ -47,7 +50,7 @@ public class HttpClient {
 
     private boolean writeSoundLog;
 
-    public HttpClient(final HttpURLConnection connection) {
+    public HttpClient(@NonNull final HttpURLConnection connection) {
         this.connection = connection;
     }
 
@@ -59,14 +62,14 @@ public class HttpClient {
         os = connection.getOutputStream();
     }
 
-    public void addFormPart(final String paramName, final String value) throws IOException {
+    public void addFormPart(@NonNull final String paramName, @NonNull final String value) throws IOException {
         os.write((delimiter + boundary + "\r\n").getBytes());
         os.write("Content-Type: application/json\r\n".getBytes());
         os.write(("Content-Disposition: form-data; name=\"" + paramName + "\"\r\n").getBytes());
         os.write(("\r\n" + value + "\r\n").getBytes());
     }
 
-    public void addFilePart(final String paramName, final String fileName, final InputStream data) throws IOException {
+    public void addFilePart(@NonNull final String paramName, @NonNull final String fileName, @NonNull final InputStream data) throws IOException {
         os.write((delimiter + boundary + "\r\n").getBytes());
         os.write(("Content-Disposition: form-data; name=\"" + paramName + "\"; filename=\"" + fileName + "\"\r\n").getBytes());
         os.write(("Content-Type: audio/wav\r\n").getBytes());
@@ -123,7 +126,7 @@ public class HttpClient {
         os.close();
     }
 
-
+    @NonNull
     public String getResponse() throws IOException {
         final InputStream inputStream = new BufferedInputStream(connection.getInputStream());
         final String response = IOUtils.toString(inputStream, Charsets.UTF_8);
@@ -131,6 +134,7 @@ public class HttpClient {
         return response;
     }
 
+    @Nullable
     public String getErrorString() {
         try {
             final InputStream inputStream = new BufferedInputStream(connection.getErrorStream());

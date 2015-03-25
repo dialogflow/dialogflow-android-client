@@ -5,7 +5,7 @@ package ai.api;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -22,7 +22,8 @@ package ai.api;
  ***********************************************************************************************************************/
 
 import android.content.Context;
-import android.text.SpannableString;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -36,6 +37,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpRetryException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,6 +49,7 @@ import ai.api.http.HttpClient;
 import ai.api.model.AIContext;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
+import ai.api.model.Status;
 
 /**
  * Do simple requests to the AI Service
@@ -55,12 +58,19 @@ public class AIDataService {
 
     public static final String TAG = AIDataService.class.getName();
 
+    @NonNull
     private final Context context;
+
+    @NonNull
     private final AIConfiguration config;
 
+    @NonNull
     private final String sessionId;
 
-    public AIDataService(final Context context, final AIConfiguration config) {
+    @NonNull
+    private final Gson gson = GsonFactory.getGson();
+
+    public AIDataService(@NonNull final Context context, @NonNull final AIConfiguration config) {
         this.context = context;
         this.config = config;
 
@@ -73,14 +83,13 @@ public class AIDataService {
      * @param request request object to the service
      * @return response object from service
      */
+    @NonNull
     public AIResponse request(final AIRequest request) throws AIServiceException {
         if (request == null) {
             throw new IllegalArgumentException("Request argument must not be null");
         }
 
         Log.d(TAG, "Start request");
-
-        final Gson gson = GsonFactory.getGson();
 
         try {
 
@@ -95,15 +104,22 @@ public class AIDataService {
             final String response = doTextRequest(queryData);
 
             if (TextUtils.isEmpty(response)) {
-                throw new AIServiceException("Empty response from ai service. Please check configuration.");
+                throw new AIServiceException("Empty response from ai service. Please check configuration and Internet connection.");
             }
 
             Log.d(TAG, "Response json: " + response);
 
             final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
-            if (aiResponse != null) {
-                aiResponse.cleanup();
+
+            if (aiResponse == null) {
+                throw new AIServiceException("API.AI response parsed as null. Check debug log for details.");
             }
+
+            if (aiResponse.isError()) {
+                throw new AIServiceException(aiResponse);
+            }
+
+            aiResponse.cleanup();
 
             return aiResponse;
 
@@ -118,13 +134,13 @@ public class AIDataService {
 
     /**
      * Make requests to the ai service with voiceData.  This method must not be called in the UI Thread.
+     *
      * @param voiceStream voice data stream for recognition
      * @return response object from service
      * @throws AIServiceException
      */
-    public AIResponse voiceRequest(final InputStream voiceStream, final List<AIContext> aiContexts) throws AIServiceException {
-        final Gson gson = GsonFactory.getGson();
-
+    @NonNull
+    public AIResponse voiceRequest(@NonNull final InputStream voiceStream, @Nullable final List<AIContext> aiContexts) throws AIServiceException {
         Log.d(TAG, "Start voice request");
 
         try {
@@ -151,9 +167,16 @@ public class AIDataService {
             Log.d(TAG, "Response json: " + response);
 
             final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
-            if (aiResponse != null) {
-                aiResponse.cleanup();
+
+            if (aiResponse == null) {
+                throw new AIServiceException("API.AI response parsed as null. Check debug log for details.");
             }
+
+            if (aiResponse.isError()) {
+                throw new AIServiceException(aiResponse);
+            }
+
+            aiResponse.cleanup();
 
             return aiResponse;
 
@@ -167,6 +190,7 @@ public class AIDataService {
 
     /**
      * Forget all old contexts
+     *
      * @return true if operation succeed, false otherwise
      */
     public boolean resetContexts() {
@@ -175,7 +199,7 @@ public class AIDataService {
         cleanRequest.setResetContexts(true);
         try {
             final AIResponse response = request(cleanRequest);
-            return response != null && !response.isError();
+            return !response.isError();
         } catch (final AIServiceException e) {
             Log.e(TAG, "Exception while contexts clean.", e);
             return false;
@@ -240,7 +264,7 @@ public class AIDataService {
     /**
      * Method extracted for testing purposes
      */
-    protected String doSoundRequest(final InputStream voiceStream, final String queryData) throws MalformedURLException, AIServiceException {
+    protected String doSoundRequest(@NonNull final InputStream voiceStream, @NonNull final String queryData) throws MalformedURLException, AIServiceException {
 
         HttpURLConnection connection = null;
         HttpClient httpClient = null;
@@ -274,11 +298,18 @@ public class AIDataService {
                 Log.d(TAG, "" + errorString);
                 if (!TextUtils.isEmpty(errorString)) {
                     return errorString;
+                } else if (e instanceof HttpRetryException) {
+                    final AIResponse response = new AIResponse();
+                    final int code = ((HttpRetryException) e).responseCode();
+                    final Status status = Status.fromResponseCode(code);
+                    status.setErrorDetails(((HttpRetryException) e).getReason());
+                    response.setStatus(status);
+                    throw new AIServiceException(response);
                 }
             }
 
-            Log.e(TAG, "Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
-            throw new AIServiceException("Can't make request to the API.AI service. Please, check connection settings and API access token.", e);
+            Log.e(TAG, "Can't make request to the API.AI service. Please, check connection settings and API.AI keys.", e);
+            throw new AIServiceException("Can't make request to the API.AI service. Please, check connection settings and API.AI keys.", e);
         } finally {
             if (connection != null) {
                 connection.disconnect();

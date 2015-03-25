@@ -226,7 +226,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
                 final AIResponse aiResponse = aiDataService.voiceRequest(recorderWrapper, contexts);
                 return aiResponse;
             } catch (final AIServiceException e) {
-                aiError = new AIError("Wrong answer from server " + e.toString());
+                aiError = new AIError(e);
             }
 
             return null;

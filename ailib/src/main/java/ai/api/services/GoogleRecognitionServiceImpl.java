@@ -32,6 +32,7 @@ import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
         }
     }
 
-    private void sendRequest(final AIRequest aiRequest) {
+    private void sendRequest(@NonNull final AIRequest aiRequest) {
 
         if (aiRequest == null) {
             throw new IllegalArgumentException("aiRequest must be not null");

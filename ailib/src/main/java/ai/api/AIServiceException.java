@@ -1,11 +1,19 @@
 package ai.api;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+
+import java.util.HashMap;
+
+import ai.api.model.AIResponse;
+
 /***********************************************************************************************************************
  *
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -22,14 +30,46 @@ package ai.api;
  ***********************************************************************************************************************/
 
 public class AIServiceException extends Exception {
+
+    @Nullable
+    private final AIResponse aiResponse;
+
     public AIServiceException() {
+        aiResponse = null;
     }
 
     public AIServiceException(final String detailMessage, final Throwable throwable) {
         super(detailMessage, throwable);
+        aiResponse = null;
     }
 
     public AIServiceException(final String detailMessage) {
         super(detailMessage);
+        aiResponse = null;
+
+    }
+
+    public AIServiceException(@NonNull final AIResponse aiResponse) {
+        super();
+        this.aiResponse = aiResponse;
+    }
+
+    @Nullable
+    public AIResponse getResponse() {
+        return aiResponse;
+    }
+
+    @Override
+    public String getMessage() {
+        if (aiResponse != null
+                && aiResponse.getStatus() != null) {
+
+            final String errorDetails = aiResponse.getStatus().getErrorDetails();
+            if (!TextUtils.isEmpty(errorDetails)) {
+                return errorDetails;
+            }
+        }
+
+        return super.getMessage();
     }
 }

@@ -451,19 +451,36 @@ public abstract class ProtocolTestBase {
 
         try {
             final AIResponse aiResponse = aiDataService.request(aiRequest);
-
-            assertTrue(aiResponse.isError());
-            assertNull(aiResponse.getResult());
-            assertNotNull(aiResponse.getStatus().getErrorID());
-
-            assertEquals(401, (int) aiResponse.getStatus().getCode());
-            assertEquals("unauthorized", aiResponse.getStatus().getErrorType());
-
+            assertTrue("Method should produce exception", false);
         } catch (final AIServiceException e) {
             e.printStackTrace();
-            assertTrue(e.getMessage(), false);
+            assertNotNull(e.getResponse());
+            assertEquals("unauthorized", e.getResponse().getStatus().getErrorType());
+            assertEquals("Authorization failed. Please check your access keys.", e.getMessage());
         }
+    }
 
+    @Test
+    public void errorVoiceRequestTest() {
+        final AIConfiguration config = new AIConfiguration("WRONG_ACCESS_TOKEN", getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        config.setExperimental(isExperimentalTest());
+
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+        final InputStream voiceStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
+
+        try {
+            final AIResponse aiResponse = aiDataService.voiceRequest(voiceStream, null);
+            assertTrue("Method should produce exception", false);
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertNotNull(e.getResponse());
+            assertEquals("unauthorized", e.getResponse().getStatus().getErrorType());
+            assertEquals("Authorization failed. Please check your access keys.", e.getMessage());
+        }
     }
 
     @Test

@@ -5,7 +5,7 @@ package ai.api.model;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -27,15 +27,33 @@ import java.io.Serializable;
 
 public class AIError implements Serializable {
     private final String message;
+    private final AIResponse aiResponse;
+
     private AIServiceException exception;
 
     public AIError(final String message) {
+        aiResponse = null;
+
         this.message = message;
     }
 
     public AIError(final AIServiceException e) {
+        aiResponse = e.getResponse();
         message = e.getMessage();
         exception = e;
+    }
+
+    public AIError(final AIResponse aiResponse) {
+        this.aiResponse = aiResponse;
+
+        if (aiResponse == null) {
+            message = "API.AI service returns empty result";
+        }
+        else if (aiResponse.getStatus() != null) {
+            message = aiResponse.getStatus().getErrorDetails();
+        } else {
+            message = "API.AI service returns error code with empty status";
+        }
     }
 
     public String getMessage() {

@@ -21,6 +21,7 @@ package ai.api.model;
  *
  ***********************************************************************************************************************/
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.JsonElement;
@@ -76,6 +77,7 @@ public class Result implements Serializable {
         this.speech = speech;
     }
 
+    @NonNull
     public String getAction() {
         if (action == null) {
             return "";
