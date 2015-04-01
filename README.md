@@ -110,7 +110,7 @@ The following example code sends a query with the text "Hello":
 ```java
 final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY,
     AIConfiguration.SupportedLanguages.English, 
-    AIConfiguration.RecognitionEngine.Google);
+    AIConfiguration.RecognitionEngine.System);
 
 final AIDataService aiDataService = new AIDataService(config);
 
@@ -212,12 +212,12 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     private AIService aiService;
     ```
     
-3. In the OnCreate method, add the following line to set up the configuration to use Google speech recognition. Replace CLIENT_ACCESS_TOKEN and SUBSCRIPTION KEY with your client access token and subscription key. 
+3. In the OnCreate method, add the following line to set up the configuration to use system speech recognition. Replace CLIENT_ACCESS_TOKEN and SUBSCRIPTION KEY with your client access token and subscription key. 
     
     ```java
      final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
             "SUBSCRIPTION_KEY", AIConfiguration.SupportedLanguages.English,
-            AIConfiguration.RecognitionEngine.Google);
+            AIConfiguration.RecognitionEngine.System);
     ```
     
     ![Api keys](docs/images/apiKeys.png)
