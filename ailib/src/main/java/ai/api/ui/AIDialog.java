@@ -32,9 +32,11 @@ import android.widget.TextView;
 import java.util.List;
 
 import ai.api.AIConfiguration;
+import ai.api.AIServiceException;
 import ai.api.PartialResultsListener;
 import ai.api.R;
 import ai.api.model.AIError;
+import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
 public class AIDialog {
@@ -90,6 +92,14 @@ public class AIDialog {
                 startListening();
             }
         });
+    }
+
+    public AIResponse textRequest(final AIRequest request) throws AIServiceException {
+        return aiButton.textRequest(request);
+    }
+
+    public AIResponse textRequest(final String request) throws AIServiceException {
+        return textRequest(new AIRequest(request));
     }
 
     private void resetControls() {

@@ -5,7 +5,7 @@ package ai.api.ui;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -41,6 +41,8 @@ import java.util.concurrent.Executors;
 import ai.api.AIConfiguration;
 import ai.api.AIListener;
 import ai.api.AIService;
+import ai.api.AIServiceException;
+import ai.api.model.AIRequest;
 import ai.api.services.GoogleRecognitionServiceImpl;
 import ai.api.PartialResultsListener;
 import ai.api.R;
@@ -202,7 +204,21 @@ public class AIButton extends SoundLevelButton implements AIListener {
                     }
                 });
             }
+        } else {
+            throw new IllegalStateException("Call initialize method before usage");
         }
+    }
+
+    public AIResponse textRequest(final AIRequest request) throws AIServiceException {
+        if (aiService != null) {
+            return aiService.textRequest(request);
+        } else {
+            throw new IllegalStateException("Call initialize method before usage");
+        }
+    }
+
+    public AIResponse textRequest(final String request) throws AIServiceException {
+        return textRequest(new AIRequest(request));
     }
 
     @Override
