@@ -1,0 +1,14 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/appwidget_new_app_widget"
+     >
+
+    <ImageView android:id="@+id/appwidget_text" android:layout_width="wrap_content"
+    android:layout_height="wrap_content" android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true" android:text="@string/title_app_widget"
+    android:textColor="#ffffff" android:textSize="24sp" android:textStyle="bold|italic"
+    android:layout_margin="8dp"
+        style="@style/ApiAi.Microphone"
+     />
+
+</RelativeLayout>

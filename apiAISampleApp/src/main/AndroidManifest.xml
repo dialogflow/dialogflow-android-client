@@ -46,7 +46,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ai.api.sample.MainActivity" />
             </activity>
+        <activity
+            android:name=".AIWidgetActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Base.Theme.AppCompat.Dialog">
 
+        </activity>
+        <receiver android:name=".AISampleAppWidget" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ai_app_widget_info" />
+        </receiver>
     </application>
 
 </manifest>
