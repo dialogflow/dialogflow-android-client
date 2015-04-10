@@ -200,7 +200,7 @@ public class Result implements Serializable {
         return getFloatParameter(name, 0);
     }
 
-    public float getFloatParameter(final String name, final int defaultValue) {
+    public float getFloatParameter(final String name, final float defaultValue) {
         if (parameters.containsKey(name)) {
             final String parameterStringValue = parameters.get(name).getAsString();
 
