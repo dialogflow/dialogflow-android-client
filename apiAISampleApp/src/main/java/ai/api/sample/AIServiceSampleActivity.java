@@ -21,8 +21,8 @@ package ai.api.sample;
  *
  ***********************************************************************************************************************/
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -79,18 +79,18 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         contextTextView = (EditText) findViewById(R.id.contextTextView);
         selectLanguageSpinner = (Spinner) findViewById(R.id.selectLanguageSpinner);
 
-        final LanguageConfig[] languages = new LanguageConfig[] {
-                new LanguageConfig("en","327bf2eb54904e508362f6fb528ce00a"),
-                new LanguageConfig("ru","adcb900f02594f4186420c082e44173e"),
-                new LanguageConfig("de","96807aac0e98426eaf684f4081b7e431"),
-                new LanguageConfig("pt","4c4a2277516041f6a1c909163ebfed39"),
+        final LanguageConfig[] languages = new LanguageConfig[]{
+                new LanguageConfig("en", "327bf2eb54904e508362f6fb528ce00a"),
+                new LanguageConfig("ru", "adcb900f02594f4186420c082e44173e"),
+                new LanguageConfig("de", "96807aac0e98426eaf684f4081b7e431"),
+                new LanguageConfig("pt", "4c4a2277516041f6a1c909163ebfed39"),
                 new LanguageConfig("pt-BR", "6076377eea9e4291854204795b55eee9"),
                 new LanguageConfig("es", "430d461ea8e64c09a4459560353a5b1d"),
-                new LanguageConfig("fr","d6434b3bf49d4a93a25679782619f39d"),
-                new LanguageConfig("it","4319f7aa1765468194d9761432e4db36"),
+                new LanguageConfig("fr", "d6434b3bf49d4a93a25679782619f39d"),
+                new LanguageConfig("it", "4319f7aa1765468194d9761432e4db36"),
                 new LanguageConfig("ja", "6cab6813dc8c416f92c3c2e2b4a7bc27"),
                 new LanguageConfig("ko", "b0219c024ee848eaa7cfb17dceb9934a"),
-                new LanguageConfig("zh-CN","2b575c06deb246d2abe4bf769eb3200b"),
+                new LanguageConfig("zh-CN", "2b575c06deb246d2abe4bf769eb3200b"),
                 new LanguageConfig("zh-HK", "00ef32d3e35f43178405c046a16f3843"),
                 new LanguageConfig("zh-TW", "dd7ebc8a02974155aeffec26b21b55cf"),
         };
@@ -205,41 +205,32 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
             public void run() {
                 Log.d(TAG, "onResult");
 
-                if (response.isError()) {
-                    resultTextView.setText("Error: " + response.getStatus().getErrorDetails());
+                resultTextView.setText(gson.toJson(response));
 
-                    Log.i(TAG, "Received error response");
+                Log.i(TAG, "Received success response");
 
-                    // this is example how to get different parts of error description
-                    Log.i(TAG, "Error details: " + response.getStatus().getErrorDetails());
-                    Log.i(TAG, "Error type: " + response.getStatus().getErrorType());
-                } else {
-                    resultTextView.setText(gson.toJson(response));
+                // this is example how to get different parts of result object
+                Log.i(TAG, "Status code: " + response.getStatus().getCode());
+                Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
 
-                    Log.i(TAG, "Received success response");
+                Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
 
-                    // this is example how to get different parts of result object
-                    Log.i(TAG, "Status code: " + response.getStatus().getCode());
-                    Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
+                Log.i(TAG, "Action: " + response.getResult().getAction());
+                Log.i(TAG, "Speech: " + response.getResult().getSpeech());
 
-                    Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
+                if (response.getResult().getMetadata() != null) {
+                    Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
+                    Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
+                }
 
-                    Log.i(TAG, "Action: " + response.getResult().getAction());
-                    Log.i(TAG, "Speech: " + response.getResult().getSpeech());
-
-                    if (response.getResult().getMetadata() != null) {
-                        Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
-                        Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
-                    }
-
-                    if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
-                        Log.i(TAG, "Parameters: ");
-                        for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()){
-                            Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
-                        }
+                if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
+                    Log.i(TAG, "Parameters: ");
+                    for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()) {
+                        Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
                     }
                 }
             }
+
         });
     }
 

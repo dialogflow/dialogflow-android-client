@@ -21,8 +21,8 @@ package ai.api.sample;
  *
  ***********************************************************************************************************************/
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -98,41 +98,32 @@ public class AIButtonSampleActivity extends ActionBarActivity implements AIButto
             public void run() {
                 Log.d(TAG, "onResult");
 
-                if (response.isError()) {
-                    resultTextView.setText("Error: " + response.getStatus().getErrorDetails());
+                resultTextView.setText(gson.toJson(response));
 
-                    Log.i(TAG, "Received error response");
+                Log.i(TAG, "Received success response");
 
-                    // this is example how to get different parts of error description
-                    Log.i(TAG, "Error details: " + response.getStatus().getErrorDetails());
-                    Log.i(TAG, "Error type: " + response.getStatus().getErrorType());
-                } else {
-                    resultTextView.setText(gson.toJson(response));
+                // this is example how to get different parts of result object
+                Log.i(TAG, "Status code: " + response.getStatus().getCode());
+                Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
 
-                    Log.i(TAG, "Received success response");
+                Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
 
-                    // this is example how to get different parts of result object
-                    Log.i(TAG, "Status code: " + response.getStatus().getCode());
-                    Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
+                Log.i(TAG, "Action: " + response.getResult().getAction());
+                Log.i(TAG, "Speech: " + response.getResult().getSpeech());
 
-                    Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
+                if (response.getResult().getMetadata() != null) {
+                    Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
+                    Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
+                }
 
-                    Log.i(TAG, "Action: " + response.getResult().getAction());
-                    Log.i(TAG, "Speech: " + response.getResult().getSpeech());
-
-                    if (response.getResult().getMetadata() != null) {
-                        Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
-                        Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
-                    }
-
-                    if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
-                        Log.i(TAG, "Parameters: ");
-                        for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()){
-                            Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
-                        }
+                if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
+                    Log.i(TAG, "Parameters: ");
+                    for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()) {
+                        Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
                     }
                 }
             }
+
         });
     }
 
