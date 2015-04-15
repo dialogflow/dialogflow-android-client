@@ -12,7 +12,7 @@ Also SDK library must be in your app dependencies (see **build.gradle**)
 ```
 dependencies {
     // some another dependencies...
-    compile 'ai.api:sdk:1.3.0@aar'
+    compile 'ai.api:sdk:1.4.6@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile 'com.google.code.gson:gson:2.3'
@@ -121,24 +121,20 @@ Use the following steps:
         runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (response.isError()) {
-                        resultTextView.setText("Error: " + response.getStatus().getErrorDetails());
-                    } else {
-                        Result result = response.getResult();
-                    
-                        // Get parameters
-                        String parameterString = "";
-                        if (result.getParameters() != null && !result.getParameters().isEmpty()) {
-                            for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
-                                parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
-                            }
+                    Result result = response.getResult();
+
+                    // Get parameters
+                    String parameterString = "";
+                    if (result.getParameters() != null && !result.getParameters().isEmpty()) {
+                        for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
+                            parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
                         }
-                    
-                        // Show results in TextView.
-                        resultTextView.setText("Query:" + result.getResolvedQuery() +
-                            "\nAction: " + result.getAction() +
-                            "\nParameters: " + parameterString);
                     }
+
+                    // Show results in TextView.
+                    resultTextView.setText("Query:" + result.getResolvedQuery() +
+                        "\nAction: " + result.getAction() +
+                        "\nParameters: " + parameterString);
                 }
             });
     }

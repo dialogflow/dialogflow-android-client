@@ -17,7 +17,7 @@ Two permissions are required to use the API.AI Android SDK:
 Add this dependencies to your project to use SDK
 
 ```
-compile 'ai.api:sdk:1.4.5@aar'
+compile 'ai.api:sdk:1.4.6@aar'
 // api.ai SDK dependencies
 compile 'com.android.support:appcompat-v7:22.0.0'
 compile 'com.google.code.gson:gson:2.3'
@@ -64,7 +64,7 @@ To implement speech recognition and natural language processing features in your
 1. Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
 
     ```
-    compile 'ai.api:sdk:1.4.5@aar'
+    compile 'ai.api:sdk:1.4.6@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.google.code.gson:gson:2.3'
@@ -90,8 +90,7 @@ Once you've added the SDK library, follow these steps:
 6. Launch listening from the microphone via the **startListening** method. The SDK will start listening for the microphone input of the mobile device.
 7. To stop listening and start the request to the API.AI service using the current recognition results, call the **stopListening** method of the AIService class.
 8. To cancel the listening process without sending a request to the API.AI service, call the **cancel** method of the AIService class.
-9. In the **onResult** method of the AIListener interface, check the response for errors using the **AIResponse.isError** method.
-10. If there are no errors, you can get the result using the **AIResponse.getResult** method. From there, you can obtain the action and parameters.
+9. If there are no errors, you can get the result using the **AIResponse.getResult** method. From there, you can obtain the action and parameters.
 
 ## Using your own speech recognition
 
@@ -156,7 +155,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     
 3. Save **AndroidManifest.xml**.
 4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](docs/images/Dependencies.png)
-5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.2.0** item then click OK.<br/> ![Add dependency](docs/images/SearchApiAi.png)
+5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.4.6** item then click OK.<br/> ![Add dependency](docs/images/SearchApiAi.png)
     * Also you need to add dependencies of the SDK library : *com.android.support:appcompat-v7*, *com.google.code.gson:gson*, *commons-io:commons-io*. Add them in the same way.
 6. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
 7. Expand the import section and add the following lines to import the necessary API.AI classes:
@@ -241,24 +240,20 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     
     ```java
     public void onResult(final AIResponse response) {
-        if (response.isError()) {
-            resultTextView.setText("Error: " + response.getStatus().getErrorDetails());
-        } else {
-            Result result = response.getResult();
-    
-            // Get parameters
-            String parameterString = "";
-            if (result.getParameters() != null && !result.getParameters().isEmpty()) {
-                for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
-                    parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
-                }
+        Result result = response.getResult();
+
+        // Get parameters
+        String parameterString = "";
+        if (result.getParameters() != null && !result.getParameters().isEmpty()) {
+            for (final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()) {
+                parameterString += "(" + entry.getKey() + ", " + entry.getValue() + ") ";
             }
-    
-            // Show results in TextView.
-            resultTextView.setText("Query:" + result.getResolvedQuery() +
-                "\nAction: " + result.getAction() +
-                "\nParameters: " + parameterString);
         }
+
+        // Show results in TextView.
+        resultTextView.setText("Query:" + result.getResolvedQuery() +
+            "\nAction: " + result.getAction() +
+            "\nParameters: " + parameterString);
     }
     ```
     
