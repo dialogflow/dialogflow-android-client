@@ -44,7 +44,7 @@ import static org.junit.Assert.assertTrue;
 
 @Config(emulateSdk = 18, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
-@Ignore("Tests for development purposes. Disabled by default.")
+//@Ignore("Tests for development purposes. Disabled by default.")
 public class ProtocolDevTest extends ProtocolTestBase {
 
     // Testing keys
@@ -111,7 +111,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
                 assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
                 assertEquals("helloAction", aiResponse.getResult().getAction());
-                assertEquals("Добрый день", aiResponse.getResult().getSpeech());
+                assertEquals("Добрый день", aiResponse.getResult().getFulfillment().getSpeech());
 
             } catch (final AIServiceException e) {
                 e.printStackTrace();
@@ -142,7 +142,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
                 assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
                 assertEquals("greeting", aiResponse.getResult().getAction());
-                assertEquals("Hi! How are you?", aiResponse.getResult().getSpeech());
+                assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
 
             } catch (final AIServiceException e) {
                 e.printStackTrace();

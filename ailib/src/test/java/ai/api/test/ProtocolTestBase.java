@@ -88,7 +88,7 @@ public abstract class ProtocolTestBase {
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
             assertEquals("greeting", aiResponse.getResult().getAction());
-            assertEquals("Hi! How are you?", aiResponse.getResult().getSpeech());
+            assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
 
         } catch (final AIServiceException e) {
             e.printStackTrace();
@@ -400,7 +400,7 @@ public abstract class ProtocolTestBase {
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
 
             assertEquals("helloAction", aiResponse.getResult().getAction());
-            assertEquals("Добрый день", aiResponse.getResult().getSpeech());
+            assertEquals("Добрый день", aiResponse.getResult().getFulfillment().getSpeech());
 
         } catch (final AIServiceException e) {
             e.printStackTrace();
@@ -428,7 +428,7 @@ public abstract class ProtocolTestBase {
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
 
             assertEquals("helloAction", aiResponse.getResult().getAction());
-            assertEquals("como você está", aiResponse.getResult().getSpeech());
+            assertEquals("como você está", aiResponse.getResult().getFulfillment().getSpeech());
 
         } catch (final AIServiceException e) {
             e.printStackTrace();

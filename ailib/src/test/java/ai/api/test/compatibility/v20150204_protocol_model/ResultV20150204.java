@@ -1,11 +1,11 @@
-package ai.api.model;
+package ai.api.test.compatibility.v20150204_protocol_model;
 
 /***********************************************************************************************************************
  *
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -35,11 +35,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import ai.api.model.AIOutputContext;
+import ai.api.model.Fulfillment;
+import ai.api.model.Metadata;
 import ai.api.util.ParametersConverter;
 
-public class Result implements Serializable {
+public class ResultV20150204 implements Serializable {
 
     private static final String DATE_FORMAT_ERROR_MESSAGE = "'%s' parameter has value '%s' and can't be parsed as a Date";
+
+    @SerializedName("speech")
+    private String speech;
 
     @SerializedName("action")
     private String action;
@@ -66,11 +72,13 @@ public class Result implements Serializable {
     @SerializedName("resolvedQuery")
     private String resolvedQuery;
 
-    /**
-     * Fulfillment of the response
-     */
-    @SerializedName("fulfillment")
-    private Fulfillment fulfillment;
+    public String getSpeech() {
+        return speech;
+    }
+
+    public void setSpeech(final String speech) {
+        this.speech = speech;
+    }
 
     @NonNull
     public String getAction() {
@@ -223,14 +231,6 @@ public class Result implements Serializable {
         this.resolvedQuery = resolvedQuery;
     }
 
-    public Fulfillment getFulfillment() {
-        return fulfillment;
-    }
-
-    public void setFulfillment(final Fulfillment fulfillment) {
-        this.fulfillment = fulfillment;
-    }
-
     void trimParameters() {
         if (parameters != null) {
             final List<String> parametersToTrim = new LinkedList<String>();
@@ -250,7 +250,8 @@ public class Result implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("Result {action='%s', resolvedQuery='%s'}",
+        return String.format("Result {speech='%s', action='%s', resolvedQuery='%s'}",
+                speech,
                 action,
                 resolvedQuery);
     }

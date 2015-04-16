@@ -28,7 +28,7 @@ public class AIConfiguration {
     private static final String SERVICE_PROD_URL="https://api.api.ai/v1/";
     private static final String SERVICE_DEV_URL = "https://dev.api.ai/api/";
 
-    protected static final String CURRENT_PROTOCOL_VERSION = "20150204";
+    protected static final String CURRENT_PROTOCOL_VERSION = "20150415";
 
     protected static final String QUESTION_ENDPOINT = "query";
 

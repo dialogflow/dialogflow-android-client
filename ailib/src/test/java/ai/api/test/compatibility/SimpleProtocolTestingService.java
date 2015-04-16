@@ -1,11 +1,11 @@
-package ai.api.model;
+package ai.api.test.compatibility;
 
 /***********************************************************************************************************************
  *
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -21,43 +21,25 @@ package ai.api.model;
  *
  ***********************************************************************************************************************/
 
-import com.google.gson.annotations.SerializedName;
+import android.content.Context;
 
-import java.io.Serializable;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 
-public class Metadata implements Serializable {
+import ai.api.AIConfiguration;
+import ai.api.AIDataService;
+import ai.api.AIServiceException;
 
-    /**
-     * Name of the intent that produced this result
-     */
-    @SerializedName("intentName")
-    private String intentName;
-
-    /**
-     * Id of the intent that produced this result
-     */
-    @SerializedName("intentId")
-    private String intentId;
-
-    /**
-     * Name of the intent that produced this result
-     */
-    public String getIntentName() {
-        return intentName;
+public class SimpleProtocolTestingService extends AIDataService {
+    public SimpleProtocolTestingService(final Context context, final AIConfiguration config) {
+        super(context, config);
     }
 
-    public void setIntentName(final String intentName) {
-        this.intentName = intentName;
+    public String doDefaultProtocolTextRequest(final String requestJson) throws MalformedURLException, AIServiceException {
+        return doTextRequest(requestJson);
     }
 
-    /**
-     * Id of the intent that produced this result
-     */
-    public String getIntentId() {
-        return intentId;
-    }
-
-    public void setIntentId(final String intentId) {
-        this.intentId = intentId;
+    public String doDefaultProtocolSoundRequest(final InputStream voiceStream, final String queryData) throws MalformedURLException, AIServiceException {
+        return doSoundRequest(voiceStream, queryData);
     }
 }

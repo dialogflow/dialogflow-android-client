@@ -67,7 +67,7 @@ public class DefaultProtocolTest {
         config.setWriteSoundLog(false);
         config.setExperimental(false);
 
-        final DefaultProtocolTestingService aiDataService = new DefaultProtocolTestingService(Robolectric.application, config);
+        final SimpleProtocolTestingService aiDataService = new SimpleProtocolTestingService(Robolectric.application, config);
 
         try {
             final AIRequest aiRequest = new AIRequest();
@@ -110,7 +110,7 @@ public class DefaultProtocolTest {
         config.setExperimental(false);
         config.setProtocolVersion(null);
 
-        final DefaultProtocolTestingService aiDataService = new DefaultProtocolTestingService(Robolectric.application, config);
+        final SimpleProtocolTestingService aiDataService = new SimpleProtocolTestingService(Robolectric.application, config);
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 

@@ -1,11 +1,11 @@
-package ai.api.test.compatibility;
+package ai.api.model;
 
 /***********************************************************************************************************************
  *
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -21,25 +21,20 @@ package ai.api.test.compatibility;
  *
  ***********************************************************************************************************************/
 
-import android.content.Context;
+import com.google.gson.annotations.SerializedName;
 
-import java.io.InputStream;
-import java.net.MalformedURLException;
+import java.io.Serializable;
 
-import ai.api.AIConfiguration;
-import ai.api.AIDataService;
-import ai.api.AIServiceException;
+public class Fulfillment implements Serializable {
 
-public class DefaultProtocolTestingService extends AIDataService {
-    public DefaultProtocolTestingService(final Context context, final AIConfiguration config) {
-        super(context, config);
+    @SerializedName("speech")
+    private String speech;
+
+    public String getSpeech() {
+        return speech;
     }
 
-    public String doDefaultProtocolTextRequest(final String requestJson) throws MalformedURLException, AIServiceException {
-        return doTextRequest(requestJson);
-    }
-
-    public String doDefaultProtocolSoundRequest(final InputStream voiceStream, final String queryData) throws MalformedURLException, AIServiceException {
-        return doSoundRequest(voiceStream, queryData);
+    public void setSpeech(final String speech) {
+        this.speech = speech;
     }
 }
