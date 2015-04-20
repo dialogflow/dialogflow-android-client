@@ -21,14 +21,12 @@ package ai.api.test;
  *
  ***********************************************************************************************************************/
 
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 @Config(emulateSdk = 18, manifest = Config.NONE)
 @RunWith(RobolectricTestRunner.class)
-@Ignore("Tests disabled before release.")
 public class ProtocolProdTest extends ProtocolTestBase {
 
     // Testing keys
