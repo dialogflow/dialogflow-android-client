@@ -109,7 +109,7 @@ public class AIButtonSampleActivity extends ActionBarActivity implements AIButto
                 Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
 
                 Log.i(TAG, "Action: " + response.getResult().getAction());
-                Log.i(TAG, "Speech: " + response.getResult().getSpeech());
+                Log.i(TAG, "Speech: " + response.getResult().getFulfillment().getSpeech());
 
                 if (response.getResult().getMetadata() != null) {
                     Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
