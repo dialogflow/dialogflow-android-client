@@ -24,6 +24,7 @@ package ai.api.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 public class EntityEntry implements Serializable {
@@ -33,6 +34,23 @@ public class EntityEntry implements Serializable {
 
     @SerializedName("synonyms")
     private List<String> synonyms;
+
+    public EntityEntry() {
+    }
+
+    public EntityEntry(final String value) {
+        this.value = value;
+    }
+
+    public EntityEntry(final String value, final List<String> synonyms) {
+        this.value = value;
+        this.synonyms = synonyms;
+    }
+
+    public EntityEntry(final String value, final String[] synonyms) {
+        this.value = value;
+        this.synonyms = Arrays.asList(synonyms);
+    }
 
     public String getValue() {
         return value;

@@ -24,6 +24,7 @@ package ai.api.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Entity implements Serializable {
@@ -33,6 +34,13 @@ public class Entity implements Serializable {
 
     @SerializedName("entries")
     private List<EntityEntry> entries;
+
+    public Entity() {
+    }
+
+    public Entity(final String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
@@ -48,5 +56,12 @@ public class Entity implements Serializable {
 
     public void setEntries(final List<EntityEntry> entries) {
         this.entries = entries;
+    }
+
+    public void addEntry(final EntityEntry entry) {
+        if (entries == null) {
+            entries = new ArrayList<>();
+        }
+        entries.add(entry);
     }
 }

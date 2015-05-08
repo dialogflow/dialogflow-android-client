@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.robolectric.Robolectric;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import ai.api.AIConfiguration;
 import ai.api.AIDataService;
@@ -37,11 +38,12 @@ import ai.api.model.AIContext;
 import ai.api.model.AIOutputContext;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
+import ai.api.model.Entity;
+import ai.api.model.EntityEntry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public abstract class ProtocolTestBase {
@@ -517,6 +519,69 @@ public abstract class ProtocolTestBase {
         }
     }
 
+    @Test
+    public void entitiesTest() throws AIServiceException {
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        config.setWriteSoundLog(false);
+        config.setExperimental(isExperimentalTest());
+
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("hi nori");
+
+        final Entity myDwarfs = new Entity("dwarfs");
+        myDwarfs.addEntry(new EntityEntry("nori", new String[] {"ori", "nori"}));
+        myDwarfs.addEntry(new EntityEntry("bifur", new String[] {"Bofur","Bombur"}));
+
+        final ArrayList<Entity> extraEntities = new ArrayList<>();
+        extraEntities.add(myDwarfs);
+
+        aiRequest.setEntities(extraEntities);
+
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+        assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+        assertEquals("say_hi", aiResponse.getResult().getAction());
+        assertEquals("hi Bilbo, I am nori", aiResponse.getResult().getFulfillment().getSpeech());
+    }
+
+    @Test
+    public void wrongEntitiesTest() {
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        config.setWriteSoundLog(false);
+        config.setExperimental(isExperimentalTest());
+
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("hi Bofur");
+
+        final Entity myDwarfs = new Entity("not_dwarfs");
+        myDwarfs.addEntry(new EntityEntry("Nori", new String[] {"Nori","Ori"}));
+        myDwarfs.addEntry(new EntityEntry("Bifur", new String[] {"Bofur","Bifur", "Bombur"}));
+
+        final ArrayList<Entity> extraEntities = new ArrayList<>();
+        extraEntities.add(myDwarfs);
+
+        aiRequest.setEntities(extraEntities);
+
+        final AIResponse aiResponse;
+        try {
+            aiResponse = makeRequest(aiDataService, aiRequest);
+            assertTrue("Request shoud throws bad_request exception", false);
+        } catch (final AIServiceException e) {
+            e.printStackTrace();
+            assertTrue(true);
+        }
+
+    }
 
     /**
      * Cleanup contexts to prevent Tests correlation
