@@ -110,7 +110,7 @@ public abstract class ProtocolTestBase {
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
         try {
-            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
+            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream);
             assertNotNull(aiResponse);
             assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
             assertFalse(TextUtils.isEmpty(aiResponse.getId()));
@@ -236,7 +236,7 @@ public abstract class ProtocolTestBase {
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
         try {
-            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream, null);
+            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream);
             assertNotNull(aiResponse);
             assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
             assertFalse(TextUtils.isEmpty(aiResponse.getId()));
@@ -473,7 +473,7 @@ public abstract class ProtocolTestBase {
         final InputStream voiceStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
         try {
-            final AIResponse aiResponse = aiDataService.voiceRequest(voiceStream, null);
+            final AIResponse aiResponse = aiDataService.voiceRequest(voiceStream);
             assertTrue("Method should produce exception", false);
         } catch (final AIServiceException e) {
             e.printStackTrace();

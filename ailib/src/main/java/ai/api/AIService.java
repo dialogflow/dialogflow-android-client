@@ -84,6 +84,12 @@ public abstract class AIService {
     public abstract void startListening(List<AIContext> contexts);
 
     /**
+     * Starts listening process. Request to the AI service will be done with specified extra data.
+     * @param requestExtras extras can hold additional contexts and entities
+     */
+    public abstract void startListening(RequestExtras requestExtras);
+
+    /**
      * Stop listening and start request to the AI service with current recognition results
      */
     public abstract void stopListening();

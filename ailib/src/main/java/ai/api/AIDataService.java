@@ -133,14 +133,40 @@ public class AIDataService {
     }
 
     /**
-     * Make requests to the ai service with voiceData.  This method must not be called in the UI Thread.
+     * Make requests to the ai service with voice data. This method must not be called in the UI Thread.
      *
      * @param voiceStream voice data stream for recognition
      * @return response object from service
      * @throws AIServiceException
      */
     @NonNull
+    public AIResponse voiceRequest(@NonNull final InputStream voiceStream) throws AIServiceException {
+        return voiceRequest(voiceStream, new RequestExtras());
+    }
+
+    /**
+     * Make requests to the ai service with voice data. This method must not be called in the UI Thread.
+     *
+     * @param voiceStream voice data stream for recognition
+     * @param aiContexts additional contexts for request
+     * @return response object from service
+     * @throws AIServiceException
+     */
+    @NonNull
     public AIResponse voiceRequest(@NonNull final InputStream voiceStream, @Nullable final List<AIContext> aiContexts) throws AIServiceException {
+        return voiceRequest(voiceStream, new RequestExtras(aiContexts, null));
+    }
+
+    /**
+     * Make requests to the ai service with voice data. This method must not be called in the UI Thread.
+     *
+     * @param voiceStream voice data stream for recognition
+     * @param requestExtras object that can hold additional contexts and entities
+     * @return response object from service
+     * @throws AIServiceException
+     */
+    @NonNull
+    public AIResponse voiceRequest(@NonNull final InputStream voiceStream, @Nullable final RequestExtras requestExtras) throws AIServiceException {
         Log.d(TAG, "Start voice request");
 
         try {
@@ -150,8 +176,13 @@ public class AIDataService {
             request.setSessionId(sessionId);
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
-            if (aiContexts != null) {
-                request.setContexts(aiContexts);
+            if (requestExtras != null) {
+                if (requestExtras.hasContexts()) {
+                    request.setContexts(requestExtras.getContexts());
+                }
+                if (requestExtras.hasEntities()) {
+                    request.setEntities(requestExtras.getEntities());
+                }
             }
 
             final String queryData = gson.toJson(request);

@@ -5,7 +5,7 @@ package ai.api.model;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
  ***********************************************************************************************************************
@@ -26,6 +26,8 @@ import android.text.TextUtils;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuestionMetadata implements Serializable {
 
@@ -37,6 +39,9 @@ public class QuestionMetadata implements Serializable {
 
     @SerializedName("sessionId")
     private String sessionId;
+
+    @SerializedName("entities")
+    private List<Entity> entities;
 
     public String getTimezone() {
         return timezone;
@@ -64,6 +69,21 @@ public class QuestionMetadata implements Serializable {
 
     public void setSessionId(final String sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public List<Entity> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(final List<Entity> entities) {
+        this.entities = entities;
+    }
+
+    public void addEntity(final Entity entity) {
+        if (entities == null) {
+            entities = new ArrayList<>();
+        }
+        entities.add(entity);
     }
 
     @Override

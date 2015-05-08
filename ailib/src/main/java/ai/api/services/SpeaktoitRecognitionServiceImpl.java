@@ -31,6 +31,7 @@ import android.util.Log;
 import ai.api.AIConfiguration;
 import ai.api.AIService;
 import ai.api.AIServiceException;
+import ai.api.RequestExtras;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
@@ -102,11 +103,16 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     @Override
     public void startListening() {
-        startListening(null);
+        startListening(new RequestExtras());
     }
 
     @Override
     public void startListening(final List<AIContext> contexts) {
+        startListening(new RequestExtras(contexts, null));
+    }
+
+    @Override
+    public void startListening(final RequestExtras requestExtras) {
         Log.v(TAG, "startListening");
         synchronized (mediaRecorderLock) {
             if (!isRecording) {
@@ -117,7 +123,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
                 onListeningStarted();
 
-                new RequestTask(new RecorderWrapper(mediaRecorder), contexts).execute();
+                new RequestTask(new RecorderWrapper(mediaRecorder), requestExtras).execute();
             } else {
                 Log.w(TAG, "Trying start listening when it already active");
             }
@@ -205,25 +211,25 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
     private class RequestTask extends AsyncTask<Void, Void, AIResponse> {
 
         private final RecorderWrapper recorderWrapper;
-        private final List<AIContext> contexts;
+        private final RequestExtras requestExtras;
 
         private AIError aiError;
 
 
         private RequestTask(final RecorderWrapper recorderWrapper) {
             this.recorderWrapper = recorderWrapper;
-            contexts = null;
+            requestExtras = null;
         }
 
-        private RequestTask(final RecorderWrapper recorderWrapper, final List<AIContext> contexts) {
+        private RequestTask(final RecorderWrapper recorderWrapper, final RequestExtras requestExtras) {
             this.recorderWrapper = recorderWrapper;
-            this.contexts = contexts;
+            this.requestExtras = requestExtras;
         }
 
         @Override
         protected AIResponse doInBackground(final Void... params) {
             try {
-                final AIResponse aiResponse = aiDataService.voiceRequest(recorderWrapper, contexts);
+                final AIResponse aiResponse = aiDataService.voiceRequest(recorderWrapper, requestExtras);
                 return aiResponse;
             } catch (final AIServiceException e) {
                 aiError = new AIError(e);

@@ -44,6 +44,7 @@ import ai.api.AIConfiguration;
 import ai.api.AIService;
 import ai.api.AIServiceException;
 import ai.api.PartialResultsListener;
+import ai.api.RequestExtras;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;
@@ -58,6 +59,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
     private final Object speechRecognizerLock = new Object();
 
     private volatile boolean recognitionActive = false;
+
+    private RequestExtras requestExtras;
+    private PartialResultsListener partialResultsListener;
 
     private final Handler handler;
 
@@ -75,8 +79,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
         errorMessages.put(9, "Insufficient permissions.");
     }
 
-    private List<AIContext> contexts;
-    private PartialResultsListener partialResultsListener;
+
 
     public GoogleRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config, context);
@@ -156,19 +159,24 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
     @Override
     public void startListening() {
-        startListening(null);
+        startListening(new RequestExtras());
     }
 
     @Override
     public void startListening(final List<AIContext> contexts) {
+        startListening(new RequestExtras(contexts, null));
+    }
+
+    @Override
+    public void startListening(final RequestExtras requestExtras) {
         if (!recognitionActive) {
-            this.contexts = contexts;
+            this.requestExtras = requestExtras;
 
             final Intent sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                     RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 
-            final String language = config.getLanguage().replace('-','_');
+            final String language = config.getLanguage().replace('-', '_');
 
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language);
             sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, language);
@@ -332,8 +340,14 @@ public class GoogleRecognitionServiceImpl extends AIService {
                         aiRequest.setQuery(recognitionResults.get(0));
                     }
 
-                    if (contexts != null) {
-                        aiRequest.setContexts(contexts);
+                    if (requestExtras != null) {
+                        if (requestExtras.hasContexts()) {
+                            aiRequest.setContexts(requestExtras.getContexts());
+                        }
+
+                        if (requestExtras.hasEntities()) {
+                            aiRequest.setEntities(requestExtras.getEntities());
+                        }
                     }
 
                     // notify listeners about the last recogntion result for more accurate user feedback
