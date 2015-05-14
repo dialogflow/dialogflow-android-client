@@ -64,6 +64,10 @@ public class AIButtonSampleActivity extends ActionBarActivity implements AIButto
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
+        config.setRecognizerStartSound(getResources().openRawResourceFd(R.raw.recognizer_start));
+        config.setRecognizerStopSound(getResources().openRawResourceFd(R.raw.recognizer_stop));
+        config.setRecognizerCancelSound(getResources().openRawResourceFd(R.raw.recognizer_cancel));
+
         aiButton.initialize(config);
         aiButton.setResultsListener(this);
     }
