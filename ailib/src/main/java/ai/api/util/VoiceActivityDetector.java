@@ -30,18 +30,27 @@ public class VoiceActivityDetector {
 
     public static final String TAG = VoiceActivityDetector.class.getName();
 
+    public static final int FRAME_SIZE_IN_BYTES = 320;
+    private static final int SEQUENCE_LENGTH_MILLIS = 30;
+    private static final int MIN_SPEECH_SEQUENCE_COUNT = 3;
+    private static final long MIN_SILENCE_MILLIS = 800;
+    private static final long MAX_SILENCE_MILLIS = 3500;
+    private static final long SILENCE_DIFF_MILLIS = MAX_SILENCE_MILLIS - MIN_SILENCE_MILLIS;
+    private static final long START_NOISE_INTERVAL_MILLIS = 150;
+    private static final double ENERGY_FACTOR = 1.1;
+
     private final int sampleRate;
 
     private SpeechEventsListener eventsListener;
 
     private double averageNoiseEnergy = 0.0;
 
-    private double lastActiveTime = -1.0;
+    private long lastActiveTime = -1;
 
     /**
      * last time active frame hit sequance.
      */
-    private double lastSequenceTime = 0.0;
+    private long lastSequenceTime = 0;
 
     /**
      * number of active frame in sequance.
@@ -51,35 +60,24 @@ public class VoiceActivityDetector {
     /**
      * current processed time in millis
      */
-    private double time = 0.0;
+    private long time = 0;
 
-    private final double sequenceLengthMilis = 100.0;
-    private final int minSpeechSequenceCount = 3;
+    private int frameNumber;
 
-    /**
-     * multiplayer for energy noise overcome.
-     */
-    private final double energyFactor = 1.1;
-
-    private final double maxSilenceLengthMilis = 0.35 * 1000;
-    private final double minSilenceLengthMilis = 0.08 * 1000;
-
-    private double silenceLengthMilis = maxSilenceLengthMilis;
+    private long silenceMillis = MAX_SILENCE_MILLIS;
 
     private boolean speechActive = false;
-
-    /**
-     * Time in millis to remember nose energy
-     */
-    private final int startNoiseInterval = 150;
-    private int minAudioBufferSize = 1920;
     private boolean enabled = true;
+    private boolean process = true;
 
     public VoiceActivityDetector(final int sampleRate) {
         this.sampleRate = sampleRate;
     }
 
     public void processBuffer(final byte[] buffer, final int bytesRead) {
+        if (!process) {
+            return;
+        }
 
         final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead);
         final ShortBuffer shorts = byteBuffer.asShortBuffer();
@@ -87,47 +85,31 @@ public class VoiceActivityDetector {
         final boolean active = isFrameActive(shorts);
 
         final int frameSize = bytesRead / 2; // 16 bit encoding
-        time = time + (frameSize * 1000) / sampleRate; // because of sampleRate given for seconds
+        time = frameNumber * frameSize * 1000 / sampleRate;
 
         if (active) {
-            if (lastActiveTime >= 0 &&
-                    time - lastActiveTime < sequenceLengthMilis) {
-
-                sequenceCounter++;
-
-                if (sequenceCounter >= minSpeechSequenceCount) {
-
+            if (lastActiveTime >= 0 && (time - lastActiveTime) < SEQUENCE_LENGTH_MILLIS) {
+                if (++sequenceCounter >= MIN_SPEECH_SEQUENCE_COUNT) {
                     if (!speechActive) {
                         onSpeechBegin();
                     }
 
-                    speechActive = true;
-
-                    //Log.d(TAG, "LAST SPEECH " + time);
                     lastSequenceTime = time;
-                    silenceLengthMilis = Math.max(minSilenceLengthMilis, silenceLengthMilis - (maxSilenceLengthMilis - minSilenceLengthMilis) / 4);
-                    //Log.d(TAG, "SM:" + silenceLengthMilis);
-
+                    silenceMillis = Math.max(MIN_SILENCE_MILLIS, silenceMillis - SILENCE_DIFF_MILLIS / 4);
                 }
             } else {
                 sequenceCounter = 1;
             }
             lastActiveTime = time;
         } else {
-            if (time - lastSequenceTime > silenceLengthMilis) {
-                if (lastSequenceTime > 0) {
-                    //Log.d(TAG, "TERMINATE: " + time);
-                    if (speechActive) {
-                        speechActive = false;
-                        onSpeechEnd();
-                    }
-
+            if (time - lastSequenceTime > silenceMillis) {
+                if (speechActive) {
+                    onSpeechEnd();
                 } else {
-                    //Log.d(TAG, "NOSPEECH: " + time);
+                    onSpeechCancel();
                 }
             }
         }
-
     }
 
     private boolean isFrameActive(final ShortBuffer frame) {
@@ -142,13 +124,7 @@ public class VoiceActivityDetector {
             final short amplitudeValue = frame.get(i);
             energy += amplitudeValue * amplitudeValue / frameSize;
 
-            final int sign;
-
-            if (amplitudeValue > 0) {
-                sign = 1;
-            } else {
-                sign = -1;
-            }
+            final int sign = amplitudeValue > 0 ? 1 : -1;
 
             if (lastSign != 0 && sign != lastSign) {
                 czCount += 1;
@@ -158,15 +134,17 @@ public class VoiceActivityDetector {
 
         onChangeLevel(Math.sqrt(energy / frameSize) / 10 /* normalization value */);
 
+        frameNumber++;
+
         boolean result = false;
-        if (time < startNoiseInterval) {
+        if (time < START_NOISE_INTERVAL_MILLIS) {
             averageNoiseEnergy = (averageNoiseEnergy + energy) / 2.0;
         } else {
             final int minCZ = (int) (frameSize * (1 / 3.0));
             final int maxCZ = (int) (frameSize * (3 / 4.0));
 
             if (czCount >= minCZ && czCount <= maxCZ) {
-                if (energy > averageNoiseEnergy * energyFactor) {
+                if (energy > averageNoiseEnergy * ENERGY_FACTOR) {
                     result = true;
                 }
             }
@@ -178,20 +156,22 @@ public class VoiceActivityDetector {
 
     private void onChangeLevel(final double energy) {
         if (eventsListener != null) {
-            eventsListener.onAudioLevelChanged(energy);
+            eventsListener.onRmsChanged(energy);
         }
     }
 
     public void reset() {
-        time = 0.0;
+        time = 0;
+        frameNumber = 0;
 
         averageNoiseEnergy = 0.0;
-        lastActiveTime = -1.0;
-        lastSequenceTime = 0.0;
+        lastActiveTime = -1;
+        lastSequenceTime = 0;
         sequenceCounter = 0;
-        silenceLengthMilis = maxSilenceLengthMilis;
+        silenceMillis = MAX_SILENCE_MILLIS;
 
         speechActive = false;
+        process = true;
     }
 
     public void setSpeechListener(final SpeechEventsListener eventsListener) {
@@ -200,6 +180,10 @@ public class VoiceActivityDetector {
 
     private void onSpeechEnd() {
         Log.v(TAG, "onSpeechEnd");
+
+        speechActive = false;
+        process = false;
+
         if (enabled) {
             if (eventsListener != null) {
                 eventsListener.onSpeechEnd();
@@ -207,24 +191,31 @@ public class VoiceActivityDetector {
         }
     }
 
+    private void onSpeechCancel() {
+        Log.v(TAG, "onSpeechCancel");
+
+        speechActive = false;
+        process = false;
+
+        if (eventsListener != null) {
+            eventsListener.onSpeechCancel();
+        }
+    }
+
     private void onSpeechBegin() {
         Log.v(TAG, "onSpeechBegin");
+
+        speechActive = true;
+
         if (eventsListener != null) {
             eventsListener.onSpeechBegin();
         }
     }
 
     /**
-     * Used for optimization
-     * @param minAudioBufferSize
-     */
-    public void setMinAudioBufferSize(final int minAudioBufferSize) {
-        this.minAudioBufferSize = minAudioBufferSize;
-    }
-
-    /**
      * If enabled, voice activity detector fires onSpeechEnd events.
      * This option does not affect onSpeechBegin and onChangeLevel events
+     *
      * @param enabled new option values
      */
     public void setEnabled(final boolean enabled) {
@@ -232,21 +223,15 @@ public class VoiceActivityDetector {
     }
 
     /**
-     * If enabled, voice activity detector fires onSpeechEnd events.
-     * This option does not affect onSpeechBegin and onChangeLevel events
-     * @return current option value
-     */
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
      * Used to notify about speech begin/end events
      */
     public interface SpeechEventsListener {
         void onSpeechBegin();
+
+        void onSpeechCancel();
+
         void onSpeechEnd();
 
-        void onAudioLevelChanged(double energy);
+        void onRmsChanged(double level);
     }
 }

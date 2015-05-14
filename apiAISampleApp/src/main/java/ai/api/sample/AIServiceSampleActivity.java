@@ -39,8 +39,8 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import ai.api.AIConfiguration;
@@ -50,20 +50,39 @@ import ai.api.GsonFactory;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
+import ai.api.model.Metadata;
+import ai.api.model.Result;
+import ai.api.model.Status;
 
-public class AIServiceSampleActivity extends ActionBarActivity implements AIListener {
+public class AIServiceSampleActivity extends ActionBarActivity
+        implements AIListener, AdapterView.OnItemSelectedListener {
 
     public static final String TAG = AIServiceSampleActivity.class.getName();
+
+    final static LanguageConfig[] languages = new LanguageConfig[]{
+            new LanguageConfig("en", "327bf2eb54904e508362f6fb528ce00a"),
+            new LanguageConfig("ru", "adcb900f02594f4186420c082e44173e"),
+            new LanguageConfig("de", "96807aac0e98426eaf684f4081b7e431"),
+            new LanguageConfig("pt", "4c4a2277516041f6a1c909163ebfed39"),
+            new LanguageConfig("pt-BR", "6076377eea9e4291854204795b55eee9"),
+            new LanguageConfig("es", "430d461ea8e64c09a4459560353a5b1d"),
+            new LanguageConfig("fr", "d6434b3bf49d4a93a25679782619f39d"),
+            new LanguageConfig("it", "4319f7aa1765468194d9761432e4db36"),
+            new LanguageConfig("ja", "6cab6813dc8c416f92c3c2e2b4a7bc27"),
+            new LanguageConfig("ko", "b0219c024ee848eaa7cfb17dceb9934a"),
+            new LanguageConfig("zh-CN", "2b575c06deb246d2abe4bf769eb3200b"),
+            new LanguageConfig("zh-HK", "00ef32d3e35f43178405c046a16f3843"),
+            new LanguageConfig("zh-TW", "dd7ebc8a02974155aeffec26b21b55cf"),
+    };
 
 
     private AIService aiService;
     private ProgressBar progressBar;
     private ImageView recIndicator;
     private TextView resultTextView;
-    private Gson gson;
     private EditText contextTextView;
-    private Spinner selectLanguageSpinner;
 
+    private Gson gson = GsonFactory.getGson();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -71,46 +90,14 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         setContentView(R.layout.activity_aiservice_sample);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
         recIndicator = (ImageView) findViewById(R.id.recIndicator);
-        recIndicator.setVisibility(View.INVISIBLE);
-
         resultTextView = (TextView) findViewById(R.id.resultTextView);
         contextTextView = (EditText) findViewById(R.id.contextTextView);
-        selectLanguageSpinner = (Spinner) findViewById(R.id.selectLanguageSpinner);
 
-        final LanguageConfig[] languages = new LanguageConfig[]{
-                new LanguageConfig("en", "327bf2eb54904e508362f6fb528ce00a"),
-                new LanguageConfig("ru", "adcb900f02594f4186420c082e44173e"),
-                new LanguageConfig("de", "96807aac0e98426eaf684f4081b7e431"),
-                new LanguageConfig("pt", "4c4a2277516041f6a1c909163ebfed39"),
-                new LanguageConfig("pt-BR", "6076377eea9e4291854204795b55eee9"),
-                new LanguageConfig("es", "430d461ea8e64c09a4459560353a5b1d"),
-                new LanguageConfig("fr", "d6434b3bf49d4a93a25679782619f39d"),
-                new LanguageConfig("it", "4319f7aa1765468194d9761432e4db36"),
-                new LanguageConfig("ja", "6cab6813dc8c416f92c3c2e2b4a7bc27"),
-                new LanguageConfig("ko", "b0219c024ee848eaa7cfb17dceb9934a"),
-                new LanguageConfig("zh-CN", "2b575c06deb246d2abe4bf769eb3200b"),
-                new LanguageConfig("zh-HK", "00ef32d3e35f43178405c046a16f3843"),
-                new LanguageConfig("zh-TW", "dd7ebc8a02974155aeffec26b21b55cf"),
-        };
-
-        final ArrayAdapter<LanguageConfig> languagesAdapter = new ArrayAdapter<LanguageConfig>(this, android.R.layout.simple_spinner_dropdown_item, languages);
-        selectLanguageSpinner.setAdapter(languagesAdapter);
-        selectLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(final AdapterView<?> parent, final View view, final int position, final long id) {
-                final LanguageConfig selectedLanguage = (LanguageConfig) parent.getItemAtPosition(position);
-                initService(selectedLanguage);
-            }
-
-            @Override
-            public void onNothingSelected(final AdapterView<?> parent) {
-
-            }
-        });
-
-        gson = GsonFactory.getGson();
+        Spinner spinner = (Spinner) findViewById(R.id.selectLanguageSpinner);
+        final ArrayAdapter<LanguageConfig> languagesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, languages);
+        spinner.setAdapter(languagesAdapter);
+        spinner.setOnItemSelectedListener(this);
     }
 
     private void initService(final LanguageConfig selectedLanguage) {
@@ -130,31 +117,24 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_aiservice_sample, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         final int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        Log.d(TAG, "onPause");
 
         // use this method to disconnect from speech recognition service
         // Not destroying the SpeechRecognition object in onPause method would block other apps from using SpeechRecognition service
@@ -167,34 +147,28 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
     protected void onResume() {
         super.onResume();
 
-        Log.d(TAG, "onResume");
-
         // use this method to reinit connection to recognition service
         if (aiService != null) {
             aiService.resume();
         }
     }
 
-    public void buttonListenOnClick(final View view) {
+    public void startRecognition(final View view) {
         final String contextString = String.valueOf(contextTextView.getText());
-        if (!TextUtils.isEmpty(contextString)) {
-
-            final AIContext aiContext = new AIContext(contextString);
-            final List<AIContext> contexts = new ArrayList<AIContext>();
-            contexts.add(aiContext);
-            aiService.startListening(contexts);
-
-        } else {
+        if (TextUtils.isEmpty(contextString)) {
             aiService.startListening();
+        } else {
+            final AIContext aiContext = new AIContext(contextString);
+            aiService.startListening(Collections.singletonList(aiContext));
         }
 
     }
 
-    public void buttonStopListenOnClick(final View view) {
+    public void stopRecognition(final View view) {
         aiService.stopListening();
     }
 
-    public void buttonCancelOnClick(final View view) {
+    public void cancelRecognition(final View view) {
         aiService.cancel();
     }
 
@@ -210,22 +184,26 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
                 Log.i(TAG, "Received success response");
 
                 // this is example how to get different parts of result object
-                Log.i(TAG, "Status code: " + response.getStatus().getCode());
-                Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
+                final Status status = response.getStatus();
+                Log.i(TAG, "Status code: " + status.getCode());
+                Log.i(TAG, "Status type: " + status.getErrorType());
 
-                Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
+                final Result result = response.getResult();
+                Log.i(TAG, "Resolved query: " + result.getResolvedQuery());
 
-                Log.i(TAG, "Action: " + response.getResult().getAction());
-                Log.i(TAG, "Speech: " + response.getResult().getFulfillment().getSpeech());
+                Log.i(TAG, "Action: " + result.getAction());
+                Log.i(TAG, "Speech: " + result.getFulfillment().getSpeech());
 
-                if (response.getResult().getMetadata() != null) {
-                    Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
-                    Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
+                final Metadata metadata = result.getMetadata();
+                if (metadata != null) {
+                    Log.i(TAG, "Intent id: " + metadata.getIntentId());
+                    Log.i(TAG, "Intent name: " + metadata.getIntentName());
                 }
 
-                if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
+                final HashMap<String, JsonElement> params = result.getParameters();
+                if (params != null && !params.isEmpty()) {
                     Log.i(TAG, "Parameters: ");
-                    for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()) {
+                    for (final Map.Entry<String, JsonElement> entry : params.entrySet()) {
                         Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
                     }
                 }
@@ -239,7 +217,6 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "onError");
                 resultTextView.setText(error.toString());
             }
         });
@@ -251,13 +228,11 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
             @Override
             public void run() {
                 float positiveLevel = Math.abs(level);
+
                 if (positiveLevel > 100) {
                     positiveLevel = 100;
                 }
-
                 progressBar.setProgress((int) positiveLevel);
-
-                Log.d(TAG, "Sound level:" + level);
             }
         });
     }
@@ -267,9 +242,18 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "onListeningStarted");
-
                 recIndicator.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    @Override
+    public void onListeningCanceled() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                recIndicator.setVisibility(View.INVISIBLE);
+                resultTextView.setText("");
             }
         });
     }
@@ -279,11 +263,19 @@ public class AIServiceSampleActivity extends ActionBarActivity implements AIList
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "onListeningFinished");
-
                 recIndicator.setVisibility(View.INVISIBLE);
             }
         });
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        final LanguageConfig selectedLanguage = (LanguageConfig) parent.getItemAtPosition(position);
+        initService(selectedLanguage);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 }

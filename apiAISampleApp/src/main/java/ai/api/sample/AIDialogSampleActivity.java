@@ -27,22 +27,29 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import ai.api.AIConfiguration;
 import ai.api.GsonFactory;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
+import ai.api.model.Metadata;
+import ai.api.model.Result;
+import ai.api.model.Status;
 import ai.api.ui.AIDialog;
 
-public class AIDialogSampleActivity extends ActionBarActivity {
+public class AIDialogSampleActivity extends ActionBarActivity implements AIDialog.AIDialogListener {
 
     private static final String TAG = AIDialogSampleActivity.class.getName();
 
     private TextView resultTextView;
     private AIDialog aiDialog;
+
+    private Gson gson = GsonFactory.getGson();
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -57,52 +64,65 @@ public class AIDialogSampleActivity extends ActionBarActivity {
         config.setExperimental(false);
 
         aiDialog = new AIDialog(this, config);
-        aiDialog.setResultsListener(new AIDialog.AIDialogListener() {
+        aiDialog.setResultsListener(this);
+    }
+
+    @Override
+    public void onResult(final AIResponse response) {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onResult(final AIResponse response) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "onResult");
+            public void run() {
+                Log.d(TAG, "onResult");
 
-                        resultTextView.setText(GsonFactory.getGson().toJson(response));
+                resultTextView.setText(gson.toJson(response));
 
-                        Log.i(TAG, "Received success response");
+                Log.i(TAG, "Received success response");
 
-                        // this is example how to get different parts of result object
-                        Log.i(TAG, "Status code: " + response.getStatus().getCode());
-                        Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
+                // this is example how to get different parts of result object
+                final Status status = response.getStatus();
+                Log.i(TAG, "Status code: " + status.getCode());
+                Log.i(TAG, "Status type: " + status.getErrorType());
 
-                        Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
+                final Result result = response.getResult();
+                Log.i(TAG, "Resolved query: " + result.getResolvedQuery());
 
-                        Log.i(TAG, "Action: " + response.getResult().getAction());
-                        Log.i(TAG, "Speech: " + response.getResult().getFulfillment().getSpeech());
+                Log.i(TAG, "Action: " + result.getAction());
+                Log.i(TAG, "Speech: " + result.getFulfillment().getSpeech());
 
-                        if (response.getResult().getMetadata() != null) {
-                            Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
-                            Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
-                        }
+                final Metadata metadata = result.getMetadata();
+                if (metadata != null) {
+                    Log.i(TAG, "Intent id: " + metadata.getIntentId());
+                    Log.i(TAG, "Intent name: " + metadata.getIntentName());
+                }
 
-                        if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
-                            Log.i(TAG, "Parameters: ");
-                            for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()) {
-                                Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
-                            }
-                        }
+                final HashMap<String, JsonElement> params = result.getParameters();
+                if (params != null && !params.isEmpty()) {
+                    Log.i(TAG, "Parameters: ");
+                    for (final Map.Entry<String, JsonElement> entry : params.entrySet()) {
+                        Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
                     }
-
-                });
+                }
             }
 
+        });
+    }
+
+    @Override
+    public void onError(final AIError error) {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onError(final AIError error) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "onError");
-                        resultTextView.setText(error.toString());
-                    }
-                });
+            public void run() {
+                resultTextView.setText(error.toString());
+            }
+        });
+    }
+
+    @Override
+    public void onCancelled() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                resultTextView.setText("");
             }
         });
     }

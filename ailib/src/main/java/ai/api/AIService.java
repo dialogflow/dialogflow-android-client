@@ -131,6 +131,12 @@ public abstract class AIService {
         }
     }
 
+    protected void onListeningCancelled() {
+        if (listener != null) {
+            listener.onListeningCanceled();
+        }
+    }
+
     protected void onListeningFinished() {
         if (listener != null) {
             listener.onListeningFinished();

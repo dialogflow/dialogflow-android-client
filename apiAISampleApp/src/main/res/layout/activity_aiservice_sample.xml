@@ -32,27 +32,28 @@
                 android:layout_height="wrap_content"
                 android:text="Listen"
                 android:id="@+id/buttonListen"
-                android:onClick="buttonListenOnClick"/>
+                android:onClick="startRecognition"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="StopListen"
                 android:id="@+id/buttonStopListen"
-                android:onClick="buttonStopListenOnClick"/>
+                android:onClick="stopRecognition"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
                 android:id="@+id/buttonCancel"
-                android:onClick="buttonCancelOnClick"/>
+                android:onClick="cancelRecognition"/>
 
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:id="@+id/recIndicator"
                 android:src="@drawable/recording_shape"
+                android:visibility="invisible"
                 android:layout_gravity="center" />
 
         </LinearLayout>

@@ -21,6 +21,7 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
+import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
 
 public class AIConfiguration {
@@ -117,6 +118,21 @@ public class AIConfiguration {
     private final String subscriptionKey;
     private final String language;
     private final RecognitionEngine recognitionEngine;
+
+    /**
+     * Speaktoit recognition start sound resouce descriptor
+     */
+    private AssetFileDescriptor recognizerStartSound;
+
+    /**
+     * Speaktoit recognition stop sound resouce descriptor
+     */
+    private AssetFileDescriptor recognizerStopSound;
+
+    /**
+     * Speaktoit recognition cancel sound resouce descriptor
+     */
+    private AssetFileDescriptor recognizerCancelSound;
 
     /**
      * Protocol version used for api queries. Can be changed if old protocol version required.
@@ -236,4 +252,29 @@ public class AIConfiguration {
             return String.format("%s%s", serviceUrl, QUESTION_ENDPOINT);
         }
     }
+
+    public AssetFileDescriptor getRecognizerStartSound() {
+        return recognizerStartSound;
+    }
+
+    public void setRecognizerStartSound(AssetFileDescriptor recognizerStartSound) {
+        this.recognizerStartSound = recognizerStartSound;
+    }
+
+    public AssetFileDescriptor getRecognizerStopSound() {
+        return recognizerStopSound;
+    }
+
+    public void setRecognizerStopSound(AssetFileDescriptor recognizerStopSound) {
+        this.recognizerStopSound = recognizerStopSound;
+    }
+
+    public AssetFileDescriptor getRecognizerCancelSound() {
+        return recognizerCancelSound;
+    }
+
+    public void setRecognizerCancelSound(AssetFileDescriptor recognizerCancelSound) {
+        this.recognizerCancelSound = recognizerCancelSound;
+    }
+
 }

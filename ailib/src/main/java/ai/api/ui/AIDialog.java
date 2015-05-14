@@ -54,8 +54,9 @@ public class AIDialog {
     private final Handler handler;
 
     public interface AIDialogListener {
-        public void onResult(final AIResponse result);
-        public void onError(final AIError error);
+        void onResult(final AIResponse result);
+        void onError(final AIError error);
+        void onCancelled();
     }
 
     public AIDialog(final Context context, final AIConfiguration config) {
@@ -124,6 +125,16 @@ public class AIDialog {
             public void onError(final AIError error) {
                 if (resultsListener != null) {
                     resultsListener.onError(error);
+                }
+            }
+
+            @Override
+            public void onCancelled() {
+
+                AIDialog.this.close();
+
+                if (resultsListener != null) {
+                    resultsListener.onCancelled();
                 }
             }
         });

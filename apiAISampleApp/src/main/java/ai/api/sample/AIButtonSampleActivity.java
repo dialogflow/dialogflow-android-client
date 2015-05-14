@@ -31,12 +31,16 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import ai.api.AIConfiguration;
 import ai.api.GsonFactory;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
+import ai.api.model.Metadata;
+import ai.api.model.Result;
+import ai.api.model.Status;
 import ai.api.ui.AIButton;
 
 public class AIButtonSampleActivity extends ActionBarActivity implements AIButton.AIButtonListener {
@@ -46,7 +50,7 @@ public class AIButtonSampleActivity extends ActionBarActivity implements AIButto
     private AIButton aiButton;
     private TextView resultTextView;
 
-    private Gson gson;
+    private Gson gson = GsonFactory.getGson();
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -54,40 +58,47 @@ public class AIButtonSampleActivity extends ActionBarActivity implements AIButto
         setContentView(R.layout.activity_aibutton_sample);
 
         resultTextView = (TextView) findViewById(R.id.resultTextView);
-        gson = GsonFactory.getGson();
-
+        aiButton = (AIButton) findViewById(R.id.micButton);
 
         final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
-        aiButton = (AIButton) findViewById(R.id.micButton);
-
         aiButton.initialize(config);
         aiButton.setResultsListener(this);
-
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // use this method to disconnect from speech recognition service
+        // Not destroying the SpeechRecognition object in onPause method would block other apps from using SpeechRecognition service
+        aiButton.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // use this method to reinit connection to recognition service
+        aiButton.resume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_aibutton_sample, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         final int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -103,22 +114,26 @@ public class AIButtonSampleActivity extends ActionBarActivity implements AIButto
                 Log.i(TAG, "Received success response");
 
                 // this is example how to get different parts of result object
-                Log.i(TAG, "Status code: " + response.getStatus().getCode());
-                Log.i(TAG, "Status type: " + response.getStatus().getErrorType());
+                final Status status = response.getStatus();
+                Log.i(TAG, "Status code: " + status.getCode());
+                Log.i(TAG, "Status type: " + status.getErrorType());
 
-                Log.i(TAG, "Resolved query: " + response.getResult().getResolvedQuery());
+                final Result result = response.getResult();
+                Log.i(TAG, "Resolved query: " + result.getResolvedQuery());
 
-                Log.i(TAG, "Action: " + response.getResult().getAction());
-                Log.i(TAG, "Speech: " + response.getResult().getFulfillment().getSpeech());
+                Log.i(TAG, "Action: " + result.getAction());
+                Log.i(TAG, "Speech: " + result.getFulfillment().getSpeech());
 
-                if (response.getResult().getMetadata() != null) {
-                    Log.i(TAG, "Intent id: " + response.getResult().getMetadata().getIntentId());
-                    Log.i(TAG, "Intent name: " + response.getResult().getMetadata().getIntentName());
+                final Metadata metadata = result.getMetadata();
+                if (metadata != null) {
+                    Log.i(TAG, "Intent id: " + metadata.getIntentId());
+                    Log.i(TAG, "Intent name: " + metadata.getIntentName());
                 }
 
-                if (response.getResult().getParameters() != null && !response.getResult().getParameters().isEmpty()) {
+                final HashMap<String, JsonElement> params = result.getParameters();
+                if (params != null && !params.isEmpty()) {
                     Log.i(TAG, "Parameters: ");
-                    for (final Map.Entry<String, JsonElement> entry : response.getResult().getParameters().entrySet()) {
+                    for (final Map.Entry<String, JsonElement> entry : params.entrySet()) {
                         Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
                     }
                 }
@@ -134,6 +149,17 @@ public class AIButtonSampleActivity extends ActionBarActivity implements AIButto
             public void run() {
                 Log.d(TAG, "onError");
                 resultTextView.setText(error.toString());
+            }
+        });
+    }
+
+    @Override
+    public void onCancelled() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d(TAG, "onCancelled");
+                resultTextView.setText("");
             }
         });
     }

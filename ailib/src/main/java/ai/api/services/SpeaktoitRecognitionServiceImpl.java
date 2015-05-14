@@ -22,11 +22,20 @@ package ai.api.services;
  ***********************************************************************************************************************/
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import ai.api.AIConfiguration;
 import ai.api.AIService;
@@ -37,13 +46,10 @@ import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 import ai.api.util.VoiceActivityDetector;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-public class SpeaktoitRecognitionServiceImpl extends AIService {
+public class SpeaktoitRecognitionServiceImpl extends AIService implements
+        VoiceActivityDetector.SpeechEventsListener,
+        MediaPlayer.OnCompletionListener,
+        MediaPlayer.OnErrorListener {
 
     public static final String TAG = SpeaktoitRecognitionServiceImpl.class.getName();
 
@@ -51,54 +57,42 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
 
-    private AudioRecord mediaRecorder;
-    private final Object mediaRecorderLock = new Object();
-
     private final ExecutorService eventsExecutor = Executors.newSingleThreadExecutor();
+    private final VoiceActivityDetector vad = new VoiceActivityDetector(SAMPLE_RATE_IN_HZ);
 
+
+    private AudioRecord audioRecord;
+
+    private final Object recognizerLock = new Object();
     private volatile boolean isRecording = false;
 
-    private final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE_IN_HZ);
+    private MediaPlayer mediaPlayer;
+
+    private RequestExtras extras;
+    private RecognizeTask recognizeTask;
 
     public SpeaktoitRecognitionServiceImpl(final Context context, final AIConfiguration config) {
         super(config, context);
-
-        initMediaRecorder();
+        init();
     }
 
-    private void initMediaRecorder() {
-        final int minBufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
-        mediaRecorder = new AudioRecord(MediaRecorder.AudioSource.MIC,
-                SAMPLE_RATE_IN_HZ,
-                CHANNEL_CONFIG,
-                AUDIO_FORMAT,
-                minBufferSize);
+    private void init() {
+        synchronized (recognizerLock) {
+            final int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE_IN_HZ, CHANNEL_CONFIG, AUDIO_FORMAT);
 
-        voiceActivityDetector.setMinAudioBufferSize(minBufferSize);
-        voiceActivityDetector.setEnabled(config.isVoiceActivityDetectionEnabled());
+            audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
+                    SAMPLE_RATE_IN_HZ,
+                    CHANNEL_CONFIG,
+                    AUDIO_FORMAT,
+                    bufferSize);
 
-        voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
-            @Override
-            public void onSpeechBegin() {
-                Log.v(TAG, "onSpeechBegin event");
-            }
+            vad.setEnabled(config.isVoiceActivityDetectionEnabled());
+            vad.setSpeechListener(this);
 
-            @Override
-            public void onSpeechEnd() {
-                Log.v(TAG, "onSpeechEnd event");
-                eventsExecutor.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        stopListening();
-                    }
-                });
-            }
-
-            @Override
-            public void onAudioLevelChanged(final double energy) {
-                SpeaktoitRecognitionServiceImpl.this.onAudioLevelChanged((float) energy);
-            }
-        });
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setOnErrorListener(this);
+            mediaPlayer.setOnCompletionListener(this);
+        }
     }
 
     @Override
@@ -113,35 +107,54 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     @Override
     public void startListening(final RequestExtras requestExtras) {
-        Log.v(TAG, "startListening");
-        synchronized (mediaRecorderLock) {
+        synchronized (recognizerLock) {
             if (!isRecording) {
-                voiceActivityDetector.reset();
-
-                mediaRecorder.startRecording();
                 isRecording = true;
+                extras = requestExtras;
 
-                onListeningStarted();
-
-                new RequestTask(new RecorderWrapper(mediaRecorder), requestExtras).execute();
+                final AssetFileDescriptor startSound = config.getRecognizerStartSound();
+                if (startSound != null) {
+                    final boolean success = playSound(startSound);
+                    if (!success) {
+                        startRecording(extras);
+                    }
+                } else {
+                    startRecording(extras);
+                }
             } else {
                 Log.w(TAG, "Trying start listening when it already active");
             }
         }
     }
 
+    private void startRecording(final RequestExtras extras) {
+        vad.reset();
+
+        audioRecord.startRecording();
+
+        onListeningStarted();
+
+        recognizeTask = new RecognizeTask(new RecorderStream(audioRecord), extras);
+        recognizeTask.execute();
+    }
+
     @Override
     public void stopListening() {
-        Log.v(TAG, "stopListening");
-        synchronized (mediaRecorderLock) {
+        synchronized (recognizerLock) {
             if (isRecording) {
                 try {
-                    mediaRecorder.stop();
+                    audioRecord.stop();
                     isRecording = false;
 
+                    final AssetFileDescriptor stopSound = config.getRecognizerStopSound();
+                    if (stopSound != null) {
+                        playSound(stopSound);
+                    }
+
                     onListeningFinished();
+
                 } catch (final IllegalStateException e) {
-                    Log.w(TAG, "Attempt to stop mediaRecorder when it is stopped");
+                    Log.w(TAG, "Attempt to stop audioRecord when it is stopped");
                 }
             }
         }
@@ -149,105 +162,185 @@ public class SpeaktoitRecognitionServiceImpl extends AIService {
 
     @Override
     public void cancel() {
-        synchronized (mediaRecorderLock) {
+        synchronized (recognizerLock) {
             if (isRecording) {
-                mediaRecorder.stop();
+                audioRecord.stop();
                 isRecording = false;
 
-                onListeningFinished();
+                final AssetFileDescriptor cancelSound = config.getRecognizerCancelSound();
+                if (cancelSound != null) {
+                    playSound(cancelSound);
+                }
             }
+            if (recognizeTask != null) {
+                recognizeTask.cancel(true);
+            }
+            onListeningCancelled();
         }
     }
 
     @Override
     public void pause() {
-        super.pause();
-
-        synchronized (mediaRecorderLock) {
+        synchronized (recognizerLock) {
             if (isRecording) {
-                mediaRecorder.stop();
+                audioRecord.stop();
                 isRecording = false;
             }
-            mediaRecorder.release();
-            mediaRecorder = null;
+            audioRecord.release();
+            audioRecord = null;
+
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
         }
     }
 
     @Override
     public void resume() {
-        super.resume();
-
-        if (mediaRecorder == null) {
-            initMediaRecorder();
-        }
+        init();
     }
 
-    private class RecorderWrapper extends InputStream {
+    private boolean playSound(AssetFileDescriptor afd) {
+        boolean result = true;
+        try {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IOException e) {
+            result = false;
+        }
+        return result;
+    }
+
+    @Override
+    public void onSpeechBegin() {
+    }
+
+    @Override
+    public void onSpeechEnd() {
+        eventsExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                stopListening();
+            }
+        });
+    }
+
+    @Override
+    public void onSpeechCancel() {
+        eventsExecutor.submit(new Runnable() {
+            @Override
+            public void run() {
+                cancel();
+            }
+        });
+    }
+
+    @Override
+    public void onRmsChanged(double energy) {
+        onAudioLevelChanged((float) energy);
+    }
+
+    private class RecorderStream extends InputStream {
 
         private final AudioRecord audioRecord;
 
-        private RecorderWrapper(final AudioRecord audioRecord) {
+        private byte[] bytes;
+        private final Object bytesLock = new Object();
+
+        private RecorderStream(final AudioRecord audioRecord) {
             this.audioRecord = audioRecord;
         }
 
         @Override
         public int read() throws IOException {
             final byte[] buffer = new byte[1];
-            audioRecord.read(buffer,0,1);
+            audioRecord.read(buffer, 0, 1);
             return buffer[0];
         }
 
         @Override
-        public int read(final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
+        public int read(@NonNull final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
             //Log.v(TAG, "RecorderWrapper: read");
             final int bytesRead = audioRecord.read(buffer, byteOffset, byteCount);
             if (bytesRead > 0) {
-                voiceActivityDetector.processBuffer(buffer, bytesRead);
+                synchronized (bytesLock) {
+                    byte[] temp = bytes;
+                    int tempLength = temp != null ? temp.length : 0;
+                    bytes = new byte[tempLength + bytesRead];
+                    if (tempLength > 0) {
+                        System.arraycopy(temp, 0, bytes, 0, tempLength);
+                    }
+                    System.arraycopy(buffer, 0, bytes, tempLength, bytesRead);
+
+                    final int frameSize = VoiceActivityDetector.FRAME_SIZE_IN_BYTES;
+                    while (bytes.length >= frameSize) {
+                        final byte[] b = new byte[frameSize];
+                        System.arraycopy(bytes, 0, b, 0, frameSize);
+                        vad.processBuffer(b, frameSize);
+
+                        temp = bytes;
+                        final int newLength = temp.length - frameSize;
+                        bytes = new byte[newLength];
+                        System.arraycopy(temp, frameSize, bytes, 0, newLength);
+                    }
+                }
             }
             return bytesRead;
         }
     }
 
-    private class RequestTask extends AsyncTask<Void, Void, AIResponse> {
+    private class RecognizeTask extends AsyncTask<Void, Void, AIResponse> {
 
-        private final RecorderWrapper recorderWrapper;
+        private final RecorderStream recorderStream;
         private final RequestExtras requestExtras;
 
         private AIError aiError;
 
-
-        private RequestTask(final RecorderWrapper recorderWrapper) {
-            this.recorderWrapper = recorderWrapper;
-            requestExtras = null;
-        }
-
-        private RequestTask(final RecorderWrapper recorderWrapper, final RequestExtras requestExtras) {
-            this.recorderWrapper = recorderWrapper;
+        private RecognizeTask(final RecorderStream recorderStream, final RequestExtras requestExtras) {
+            this.recorderStream = recorderStream;
             this.requestExtras = requestExtras;
         }
 
         @Override
         protected AIResponse doInBackground(final Void... params) {
             try {
-                final AIResponse aiResponse = aiDataService.voiceRequest(recorderWrapper, requestExtras);
-                return aiResponse;
+                return aiDataService.voiceRequest(recorderStream, requestExtras);
             } catch (final AIServiceException e) {
                 aiError = new AIError(e);
             }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(final AIResponse aiResponse) {
-            super.onPostExecute(aiResponse);
-
+            if (isCancelled()) {
+                return;
+            }
             if (aiResponse != null) {
                 onResult(aiResponse);
             } else {
+                SpeaktoitRecognitionServiceImpl.this.cancel();
                 onError(aiError);
             }
         }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        if (isRecording) {
+            startRecording(extras);
+        }
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        if (isRecording) {
+            startRecording(extras);
+        }
+        return false;
     }
 
 }

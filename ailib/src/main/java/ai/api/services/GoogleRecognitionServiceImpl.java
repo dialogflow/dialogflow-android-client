@@ -209,8 +209,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 public void run() {
                     synchronized (speechRecognizerLock) {
                         if (recognitionActive) {
-                            speechRecognizer.stopListening();
-                            recognitionActive = false;
+                            if (speechRecognizer != null) {
+                                speechRecognizer.stopListening();
+                            }
                         }
                     }
                 }
@@ -228,10 +229,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 public void run() {
                     synchronized (speechRecognizerLock) {
                         if (recognitionActive) {
+                            recognitionActive = false;
                             if (speechRecognizer != null) {
                                 speechRecognizer.cancel();
                             }
-                            recognitionActive = false;
+                            onListeningCancelled();
                         }
                     }
                 }
@@ -245,8 +247,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
      */
     @Override
     public void pause() {
-        super.pause();
-
         clearRecognizer();
     }
 
@@ -255,7 +255,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
      */
     @Override
     public void resume() {
-        super.resume();
     }
 
     public void setPartialResultsListener(PartialResultsListener partialResultsListener) {
@@ -276,7 +275,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         @Override
         public void onReadyForSpeech(final Bundle params) {
-            GoogleRecognitionServiceImpl.this.onListeningStarted();
+            if (recognitionActive) {
+                GoogleRecognitionServiceImpl.this.onListeningStarted();
+            }
         }
 
         @Override
@@ -286,7 +287,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         @Override
         public void onRmsChanged(final float rmsdB) {
-            GoogleRecognitionServiceImpl.this.onAudioLevelChanged(rmsdB);
+            if (recognitionActive) {
+                GoogleRecognitionServiceImpl.this.onAudioLevelChanged(rmsdB);
+            }
         }
 
         @Override
@@ -296,22 +299,26 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         @Override
         public void onEndOfSpeech() {
-            GoogleRecognitionServiceImpl.this.onListeningFinished();
+            if (recognitionActive) {
+                GoogleRecognitionServiceImpl.this.onListeningFinished();
+            }
         }
 
         @Override
         public void onError(final int error) {
-            recognitionActive = false;
+            if (recognitionActive) {
+                recognitionActive = false;
 
-            final AIError aiError;
+                final AIError aiError;
 
-            if (errorMessages.containsKey(error)) {
-                final String description = errorMessages.get(error);
-                aiError = new AIError("Speech recognition engine error: " + description);
-            } else {
-                aiError = new AIError("Speech recognition engine error: " + error);
+                if (errorMessages.containsKey(error)) {
+                    final String description = errorMessages.get(error);
+                    aiError = new AIError("Speech recognition engine error: " + description);
+                } else {
+                    aiError = new AIError("Speech recognition engine error: " + error);
+                }
+                GoogleRecognitionServiceImpl.this.onError(aiError);
             }
-            GoogleRecognitionServiceImpl.this.onError(aiError);
         }
 
         @TargetApi(14)
@@ -362,9 +369,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         @Override
         public void onPartialResults(final Bundle partialResults) {
-            final ArrayList<String> partialRecognitionResults = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-            if (partialRecognitionResults != null && !partialRecognitionResults.isEmpty()) {
-                GoogleRecognitionServiceImpl.this.onPartialResults(partialRecognitionResults);
+            if (recognitionActive) {
+                final ArrayList<String> partialRecognitionResults = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                if (partialRecognitionResults != null && !partialRecognitionResults.isEmpty()) {
+                    GoogleRecognitionServiceImpl.this.onPartialResults(partialRecognitionResults);
+                }
             }
         }
 

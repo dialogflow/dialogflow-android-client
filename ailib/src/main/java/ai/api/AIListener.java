@@ -57,6 +57,11 @@ public interface AIListener {
     void onListeningStarted();
 
     /**
+     * Event fires when recognition engine cancel listening
+     */
+    void onListeningCanceled();
+
+    /**
      * Event fires when recognition engine finish listening
      */
     void onListeningFinished();
