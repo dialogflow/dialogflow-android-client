@@ -61,7 +61,6 @@ public class AIDialogSampleActivity extends ActionBarActivity implements AIDialo
         final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
-        config.setExperimental(false);
 
         config.setRecognizerStartSound(getResources().openRawResourceFd(R.raw.recognizer_start));
         config.setRecognizerStopSound(getResources().openRawResourceFd(R.raw.recognizer_stop));

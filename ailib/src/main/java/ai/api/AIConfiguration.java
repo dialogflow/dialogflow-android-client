@@ -26,8 +26,7 @@ import android.text.TextUtils;
 
 public class AIConfiguration {
 
-    private static final String SERVICE_PROD_URL="https://api.api.ai/v1/";
-    private static final String SERVICE_DEV_URL = "https://dev.api.ai/api/";
+    private static final String SERVICE_PROD_URL = "https://api.api.ai/v1/";
 
     protected static final String CURRENT_PROTOCOL_VERSION = "20150415";
 
@@ -139,7 +138,6 @@ public class AIConfiguration {
      */
     private String protocolVersion;
 
-    private boolean experimental;
     private boolean writeSoundLog;
 
     private boolean voiceActivityDetectionEnabled = true;
@@ -191,28 +189,6 @@ public class AIConfiguration {
 
     /**
      * This flag is for testing purposes ONLY. Don't change it.
-     * @return value indicating that experimental service version used
-     */
-    public boolean isExperimental() {
-        return experimental;
-    }
-
-    /**
-     * This flag is for testing purposes ONLY. Don't use it in your code.
-     * @param experimental value indicating used service address
-     */
-    public void setExperimental(final boolean experimental) {
-        this.experimental = experimental;
-
-        if (experimental) {
-            serviceUrl = SERVICE_DEV_URL;
-        } else {
-            serviceUrl = SERVICE_PROD_URL;
-        }
-    }
-
-    /**
-     * This flag is for testing purposes ONLY. Don't change it.
      * @param writeSoundLog value, indicating recorded sound will be saved in storage (if possible)
      */
     public void setWriteSoundLog(final boolean writeSoundLog) {
@@ -243,6 +219,13 @@ public class AIConfiguration {
      */
     public void setProtocolVersion(final String protocolVersion) {
         this.protocolVersion = protocolVersion;
+    }
+
+    /**
+     * Set API service url. Used primarily for test requests.
+     */
+    public void setServiceUrl(String serviceUrl) {
+        this.serviceUrl = serviceUrl;
     }
 
     public String getQuestionUrl() {
