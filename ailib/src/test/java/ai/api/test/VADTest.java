@@ -58,12 +58,17 @@ public class VADTest {
             }
 
             @Override
+            public void onSpeechCancel() {
+
+            }
+
+            @Override
             public void onSpeechEnd() {
                 voiceDetected = true;
             }
 
             @Override
-            public void onAudioLevelChanged(double energy) {
+            public void onRmsChanged(double level) {
 
             }
         });
@@ -106,12 +111,17 @@ public class VADTest {
             }
 
             @Override
+            public void onSpeechCancel() {
+
+            }
+
+            @Override
             public void onSpeechEnd() {
                 voiceDetected = true;
             }
 
             @Override
-            public void onAudioLevelChanged(double energy) {
+            public void onRmsChanged(double level) {
 
             }
         });
@@ -150,12 +160,17 @@ public class VADTest {
             }
 
             @Override
+            public void onSpeechCancel() {
+
+            }
+
+            @Override
             public void onSpeechEnd() {
                 voiceDetected = true;
             }
 
             @Override
-            public void onAudioLevelChanged(double energy) {
+            public void onRmsChanged(double level) {
 
             }
         });
@@ -196,14 +211,20 @@ public class VADTest {
             }
 
             @Override
+            public void onSpeechCancel() {
+
+            }
+
+            @Override
             public void onSpeechEnd() {
                 voiceDetected = true;
             }
 
             @Override
-            public void onAudioLevelChanged(double energy) {
+            public void onRmsChanged(double level) {
 
             }
+
         });
 
         try {

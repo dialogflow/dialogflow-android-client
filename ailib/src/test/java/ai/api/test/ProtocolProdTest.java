@@ -66,8 +66,4 @@ public class ProtocolProdTest extends ProtocolTestBase {
         return "";
     }
 
-    protected boolean isExperimentalTest() {
-        return false;
-    }
-
 }

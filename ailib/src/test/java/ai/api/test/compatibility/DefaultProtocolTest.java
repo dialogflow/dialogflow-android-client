@@ -65,7 +65,6 @@ public class DefaultProtocolTest {
 
         config.setProtocolVersion(null);
         config.setWriteSoundLog(false);
-        config.setExperimental(false);
 
         final SimpleProtocolTestingService aiDataService = new SimpleProtocolTestingService(Robolectric.application, config);
 
@@ -107,7 +106,6 @@ public class DefaultProtocolTest {
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);
 
-        config.setExperimental(false);
         config.setProtocolVersion(null);
 
         final SimpleProtocolTestingService aiDataService = new SimpleProtocolTestingService(Robolectric.application, config);

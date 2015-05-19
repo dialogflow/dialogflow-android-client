@@ -2,24 +2,24 @@ package ai.api.test;
 
 /**
  * ********************************************************************************************************************
- *
+ * <p/>
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
- *
+ * <p/>
  * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
- *
+ * <p/>
  * **********************************************************************************************************************
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- *
+ * <p/>
  * *********************************************************************************************************************
  */
 
@@ -67,17 +67,17 @@ public class ProtocolDevTest extends ProtocolTestBase {
     }
 
     @Override
-    protected String getRuAccessToken(){
+    protected String getRuAccessToken() {
         return "43a7541fb0a94fae8f1bef406a2d9ca8";
     }
 
     @Override
-    protected String getBrAccessToken(){
+    protected String getBrAccessToken() {
         return "";
     }
 
     @Override
-    protected String getPtBrAccessToken(){
+    protected String getPtBrAccessToken() {
         return "521282797a864a029e1f965fa973cf61";
     }
 
@@ -86,20 +86,20 @@ public class ProtocolDevTest extends ProtocolTestBase {
         return "c82b0a650c9a4758984fb53411f271e4";
     }
 
-    @Override
-    protected boolean isExperimentalTest() {
-        return true;
+    protected String getDevUrl() {
+        return "";
     }
 
     @Test
     public void AIDataServiceDevRuTest() {
-        if (isExperimentalTest()) {
+        final String devUrl = getDevUrl();
+        if (!TextUtils.isEmpty(devUrl)) {
             final AIConfiguration config = new AIConfiguration("43a7541fb0a94fae8f1bef406a2d9ca8", getSubscriptionKey(),
                     AIConfiguration.SupportedLanguages.Russian,
                     AIConfiguration.RecognitionEngine.System);
 
+            config.setServiceUrl(devUrl);
             config.setWriteSoundLog(false);
-            config.setExperimental(isExperimentalTest());
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -124,13 +124,14 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     @Test
     public void AIDataServiceDevTest() {
-        if (isExperimentalTest()) {
+        final String devUrl = getDevUrl();
+        if (!TextUtils.isEmpty(devUrl)) {
             final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                     AIConfiguration.SupportedLanguages.English,
                     AIConfiguration.RecognitionEngine.System);
 
+            config.setServiceUrl(devUrl);
             config.setWriteSoundLog(false);
-            config.setExperimental(isExperimentalTest());
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -150,6 +151,14 @@ public class ProtocolDevTest extends ProtocolTestBase {
             }
         } else {
             assertTrue(true);
+        }
+    }
+
+    @Override
+    protected void updateConfig(AIConfiguration config) {
+        final String devUrl = getDevUrl();
+        if (!TextUtils.isEmpty(devUrl)) {
+            config.setServiceUrl(devUrl);
         }
     }
 }

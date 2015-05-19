@@ -64,7 +64,6 @@ public class V20150204ProtocolTest {
 
         config.setProtocolVersion(PROTOCOL_VERSION);
         config.setWriteSoundLog(false);
-        config.setExperimental(false);
 
         final SimpleProtocolTestingService aiService = new SimpleProtocolTestingService(Robolectric.application, config);
 
@@ -91,7 +90,6 @@ public class V20150204ProtocolTest {
 
         config.setProtocolVersion(PROTOCOL_VERSION);
         config.setWriteSoundLog(false);
-        config.setExperimental(false);
 
         final SimpleProtocolTestingService aiService = new SimpleProtocolTestingService(Robolectric.application, config);
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
