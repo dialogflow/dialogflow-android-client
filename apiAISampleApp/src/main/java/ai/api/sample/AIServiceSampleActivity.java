@@ -106,10 +106,6 @@ public class AIServiceSampleActivity extends ActionBarActivity
                 "62f2522a-7404-4c28-b9ac-097ca5d8b32d", lang,
                 AIConfiguration.RecognitionEngine.System);
 
-        config.setRecognizerStartSound(getResources().openRawResourceFd(R.raw.recognizer_start));
-        config.setRecognizerStopSound(getResources().openRawResourceFd(R.raw.recognizer_stop));
-        config.setRecognizerCancelSound(getResources().openRawResourceFd(R.raw.recognizer_cancel));
-
         if (aiService != null) {
             aiService.pause();
         }
