@@ -44,14 +44,14 @@ public class VADTest {
 
     @Test
     public void testSpeechDetect() {
-        final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE);
+        final VoiceActivityDetector vad = new VoiceActivityDetector(SAMPLE_RATE);
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("speech.raw");
 
         voiceDetected = false;
         speechStarted = false;
 
-        voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
+        vad.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
             @Override
             public void onSpeechBegin() {
                 speechStarted = true;
@@ -74,17 +74,9 @@ public class VADTest {
         });
 
         try {
-
-            final int bufferSize = 1096;
-            final byte[] buffer = new byte[bufferSize];
-
-            int bytesRead = 0;
-
-            bytesRead = inputStream.read(buffer, 0, bufferSize);
-
-            while (bytesRead >= 0) {
-                voiceActivityDetector.processBuffer(buffer, bytesRead);
-                bytesRead = inputStream.read(buffer, 0, bufferSize);
+            final byte[] frame = new byte[VoiceActivityDetector.FRAME_SIZE_IN_BYTES];
+            while (inputStream.read(frame, 0, frame.length) == frame.length) {
+                vad.processBuffer(frame, frame.length);
             }
 
             assertTrue(speechStarted);
@@ -98,21 +90,19 @@ public class VADTest {
 
     @Test
     public void testSilence() {
-        final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE);
+        final VoiceActivityDetector vad = new VoiceActivityDetector(SAMPLE_RATE);
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("silence.raw");
 
         voiceDetected = false;
 
-        voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
+        vad.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
             @Override
             public void onSpeechBegin() {
-
             }
 
             @Override
             public void onSpeechCancel() {
-
             }
 
             @Override
@@ -127,14 +117,9 @@ public class VADTest {
         });
 
         try {
-
-            final int bufferSize = 1096;
-            final byte[] buffer = new byte[bufferSize];
-
-            int bytesRead = inputStream.read(buffer, 0, bufferSize);
-            while (bytesRead >= 0) {
-                voiceActivityDetector.processBuffer(buffer, bytesRead);
-                bytesRead = inputStream.read(buffer, 0, bufferSize);
+            final byte[] frame = new byte[VoiceActivityDetector.FRAME_SIZE_IN_BYTES];
+            while (inputStream.read(frame, 0, frame.length) == frame.length) {
+                vad.processBuffer(frame, frame.length);
             }
 
             assertFalse(voiceDetected);
@@ -147,13 +132,13 @@ public class VADTest {
 
     // @Test TODO enable after VAD improvement
     public void testNoise() {
-        final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE);
+        final VoiceActivityDetector vad = new VoiceActivityDetector(SAMPLE_RATE);
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("noiseOnly.raw");
 
         voiceDetected = false;
 
-        voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
+        vad.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
             @Override
             public void onSpeechBegin() {
 
@@ -176,14 +161,9 @@ public class VADTest {
         });
 
         try {
-
-            final int bufferSize = 1096;
-            final byte[] buffer = new byte[bufferSize];
-
-            int bytesRead = inputStream.read(buffer, 0, bufferSize);
-            while (bytesRead >= 0) {
-                voiceActivityDetector.processBuffer(buffer, bytesRead);
-                bytesRead = inputStream.read(buffer, 0, bufferSize);
+            final byte[] frame = new byte[VoiceActivityDetector.FRAME_SIZE_IN_BYTES];
+            while (inputStream.read(frame, 0, frame.length) == frame.length) {
+                vad.processBuffer(frame, frame.length);
             }
 
             assertFalse(voiceDetected);
@@ -196,15 +176,15 @@ public class VADTest {
 
     @Test
     public void testEnabled() {
-        final VoiceActivityDetector voiceActivityDetector = new VoiceActivityDetector(SAMPLE_RATE);
-        voiceActivityDetector.setEnabled(false);
+        final VoiceActivityDetector vad = new VoiceActivityDetector(SAMPLE_RATE);
+        vad.setEnabled(false);
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("speech.raw");
 
         voiceDetected = false;
         speechStarted = false;
 
-        voiceActivityDetector.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
+        vad.setSpeechListener(new VoiceActivityDetector.SpeechEventsListener() {
             @Override
             public void onSpeechBegin() {
                 speechStarted = true;
@@ -228,17 +208,9 @@ public class VADTest {
         });
 
         try {
-
-            final int bufferSize = 1096;
-            final byte[] buffer = new byte[bufferSize];
-
-            int bytesRead = 0;
-
-            bytesRead = inputStream.read(buffer, 0, bufferSize);
-
-            while (bytesRead >= 0) {
-                voiceActivityDetector.processBuffer(buffer, bytesRead);
-                bytesRead = inputStream.read(buffer, 0, bufferSize);
+            final byte[] frame = new byte[VoiceActivityDetector.FRAME_SIZE_IN_BYTES];
+            while (inputStream.read(frame, 0, frame.length) == frame.length) {
+                vad.processBuffer(frame, frame.length);
             }
 
             assertTrue(speechStarted);
