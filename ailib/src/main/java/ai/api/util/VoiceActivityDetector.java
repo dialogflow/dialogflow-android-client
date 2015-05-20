@@ -24,6 +24,7 @@ package ai.api.util;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
 public class VoiceActivityDetector {
@@ -36,14 +37,16 @@ public class VoiceActivityDetector {
     private static final long MIN_SILENCE_MILLIS = 800;
     private static final long MAX_SILENCE_MILLIS = 3500;
     private static final long SILENCE_DIFF_MILLIS = MAX_SILENCE_MILLIS - MIN_SILENCE_MILLIS;
-    private static final long START_NOISE_INTERVAL_MILLIS = 150;
-    private static final double ENERGY_FACTOR = 1.1;
+    private static final long NOISE_FRAMES = 15;
+    private static final double ENERGY_FACTOR = 3.1;
+    private static final int MIN_CZ = 5;
+    private static final int MAX_CZ = 15;
 
     private final int sampleRate;
 
     private SpeechEventsListener eventsListener;
 
-    private double averageNoiseEnergy = 0.0;
+    private double noiseEnergy = 0.0;
 
     private long lastActiveTime = -1;
 
@@ -79,7 +82,7 @@ public class VoiceActivityDetector {
             return;
         }
 
-        final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead);
+        final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead).order(ByteOrder.LITTLE_ENDIAN);
         final ShortBuffer shorts = byteBuffer.asShortBuffer();
 
         final boolean active = isFrameActive(shorts);
@@ -121,37 +124,31 @@ public class VoiceActivityDetector {
         final int frameSize = frame.limit();
 
         for (int i = 0; i < frameSize; i++) {
-            final short amplitudeValue = frame.get(i);
-            energy += amplitudeValue * amplitudeValue / frameSize;
+            final double amplitude = (double) frame.get(i) / (double) Short.MAX_VALUE;
+            energy += (float) amplitude * (float) amplitude / (double) frameSize;
 
-            final int sign = amplitudeValue > 0 ? 1 : -1;
-
+            final int sign = (float) amplitude > 0 ? 1 : -1;
             if (lastSign != 0 && sign != lastSign) {
-                czCount += 1;
+                czCount++;
             }
             lastSign = sign;
         }
 
-        onChangeLevel(Math.sqrt(energy / frameSize) / 10 /* normalization value */);
-
-        frameNumber++;
+        //TODO Normalize audio level for smooth mic button animation
+        onChangeLevel(energy * 1000);
 
         boolean result = false;
-        if (time < START_NOISE_INTERVAL_MILLIS) {
-            averageNoiseEnergy = (averageNoiseEnergy + energy) / 2.0;
+        if (++frameNumber < NOISE_FRAMES) {
+            noiseEnergy += (energy / (double) NOISE_FRAMES);
         } else {
-            final int minCZ = (int) (frameSize * (1 / 3.0));
-            final int maxCZ = (int) (frameSize * (3 / 4.0));
-
-            if (czCount >= minCZ && czCount <= maxCZ) {
-                if (energy > averageNoiseEnergy * ENERGY_FACTOR) {
+            if (czCount >= MIN_CZ && czCount <= MAX_CZ) {
+                if (energy > noiseEnergy * ENERGY_FACTOR) {
                     result = true;
                 }
             }
         }
 
         return result;
-
     }
 
     private void onChangeLevel(final double energy) {
@@ -164,7 +161,7 @@ public class VoiceActivityDetector {
         time = 0;
         frameNumber = 0;
 
-        averageNoiseEnergy = 0.0;
+        noiseEnergy = 0.0;
         lastActiveTime = -1;
         lastSequenceTime = 0;
         sequenceCounter = 0;
