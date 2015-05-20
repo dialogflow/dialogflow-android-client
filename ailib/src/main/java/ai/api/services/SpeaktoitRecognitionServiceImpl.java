@@ -263,7 +263,6 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
 
         @Override
         public int read(@NonNull final byte[] buffer, final int byteOffset, final int byteCount) throws IOException {
-            //Log.v(TAG, "RecorderWrapper: read");
             final int bytesRead = audioRecord.read(buffer, byteOffset, byteCount);
             if (bytesRead > 0) {
                 synchronized (bytesLock) {
@@ -288,7 +287,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
                     }
                 }
             }
-            return bytesRead;
+            return bytesRead != 0 ? bytesRead : AudioRecord.ERROR_INVALID_OPERATION;
         }
     }
 
