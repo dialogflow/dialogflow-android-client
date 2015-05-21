@@ -138,7 +138,7 @@ public class AIConfiguration {
      */
     private String protocolVersion;
 
-    private boolean writeSoundLog;
+    private boolean writeSoundLog = false;
 
     private boolean voiceActivityDetectionEnabled = true;
 

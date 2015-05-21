@@ -64,7 +64,6 @@ public class DefaultProtocolTest {
                 AIConfiguration.RecognitionEngine.System);
 
         config.setProtocolVersion(null);
-        config.setWriteSoundLog(false);
 
         final SimpleProtocolTestingService aiDataService = new SimpleProtocolTestingService(Robolectric.application, config);
 

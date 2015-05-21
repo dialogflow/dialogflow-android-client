@@ -73,8 +73,6 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        config.setWriteSoundLog(false);
-
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
         final AIRequest aiRequest = new AIRequest();
@@ -100,8 +98,6 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.Speaktoit);
 
         updateConfig(config);
-
-        config.setWriteSoundLog(false);
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -133,8 +129,6 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.System);
 
         updateConfig(config);
-
-        config.setWriteSoundLog(false);
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -229,8 +223,6 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        config.setWriteSoundLog(false);
-
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
@@ -266,8 +258,6 @@ public abstract class ProtocolTestBase {
 
             updateConfig(config);
 
-            config.setWriteSoundLog(false);
-
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
             final AIRequest aiRequest = new AIRequest();
@@ -291,8 +281,6 @@ public abstract class ProtocolTestBase {
                     AIConfiguration.RecognitionEngine.System);
 
             updateConfig(secondConfig);
-
-            secondConfig.setWriteSoundLog(false);
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, secondConfig);
 
@@ -528,15 +516,13 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        config.setWriteSoundLog(false);
-
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("hi nori");
 
         final Entity myDwarfs = new Entity("dwarfs");
-        myDwarfs.addEntry(new EntityEntry("nori", new String[] {"ori", "nori"}));
+        myDwarfs.addEntry(new EntityEntry("Ori", new String[] {"ori", "Nori"}));
         myDwarfs.addEntry(new EntityEntry("bifur", new String[] {"Bofur","Bombur"}));
 
         final ArrayList<Entity> extraEntities = new ArrayList<>();
@@ -548,7 +534,7 @@ public abstract class ProtocolTestBase {
 
         assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
         assertEquals("say_hi", aiResponse.getResult().getAction());
-        assertEquals("hi Bilbo, I am nori", aiResponse.getResult().getFulfillment().getSpeech());
+        assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
     }
 
     @Test
@@ -558,8 +544,6 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.System);
 
         updateConfig(config);
-
-        config.setWriteSoundLog(false);
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 

@@ -99,7 +99,6 @@ public class ProtocolDevTest extends ProtocolTestBase {
                     AIConfiguration.RecognitionEngine.System);
 
             config.setServiceUrl(devUrl);
-            config.setWriteSoundLog(false);
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
@@ -131,7 +130,6 @@ public class ProtocolDevTest extends ProtocolTestBase {
                     AIConfiguration.RecognitionEngine.System);
 
             config.setServiceUrl(devUrl);
-            config.setWriteSoundLog(false);
 
             final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
