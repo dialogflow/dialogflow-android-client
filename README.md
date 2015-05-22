@@ -28,7 +28,7 @@ Currently, speech recognition is performed using Google's Android SDK, either on
 
 Authentication is accomplished through setting the client access token and subscription key when initializing an [AIConfiguration](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java) object. The client access token specifies which agent will be used for natural language processing, subscription key used for managing subscription info.
 
-**Note:** The API.AI Android SDK only makes query requests, and cannot be used to manage entities and intents. Instead, use the API.AI user interface or REST API to  create, retreive, update, and delete entities and intents.
+**Note:** The API.AI Android SDK only makes query requests, and cannot be used to manage entities and intents. Instead, use the API.AI user interface or REST API to  create, retrieve, update, and delete entities and intents.
 
 * [Running the Sample Code](#running_sample)
 * [Getting Started with Your Own App](#getting_started)
@@ -40,7 +40,7 @@ Authentication is accomplished through setting the client access token and subsc
 
 The API.AI Android SDK comes with a simple sample that illustrates how voice commands can be integrated with API.AI. Use the following steps to run the sample code:
 
-1. Have an API.AI agent created that has entities and intents. See the API.AI documentation on how to do this. 
+1. Have an API.AI agent created that has entities and intents. See the [API.AI documentation](http://api.ai/docs/getting-started/5-min-guide/) on how to do this.
 2. Open [Android Studio](https://developer.android.com/sdk/installing/studio.html).
 3. Import the **api-ai-android-master** directory.
 4. Open the SDK Manager and be sure that you have installed Android Build Tools 19.1.
@@ -84,13 +84,65 @@ Once you've added the SDK library, follow these steps:
     * **android.permission.RECORD_AUDIO**
     
 2. Create a class that implements the AIListener interface. This class will process responses from API.AI.
+
+    ```java
+    public interface AIListener {
+        void onResult(AIResponse result); // here process response
+        void onError(AIError error); // here process error
+        void onAudioLevel(float level); // callback for sound level visualization
+        void onListeningStarted(); // indicate start listening here
+        void onListeningCanceled(); // indicate stop listening here
+        void onListeningFinished(); // indicate stop listening here
+    }
+    ```
+
 3. Create an instance of AIConfiguration, specifying the access token, locale, and recognition engine.
+
+    ```java
+    final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
+                "SUBSCRIPTION_KEY",
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+    ```
+
 4. Use the AIConfiguration object to get a reference to the AIService, which will make the query requests.
+
+    ```java
+    AIService aiService = AIService.getService(context, config);
+    ```
+
 5. Set the AIListener instance for the AIService instance.
+
+    ```java
+    aiService.setListener(yourAiListenerInstance);
+    ```
+
 6. Launch listening from the microphone via the **startListening** method. The SDK will start listening for the microphone input of the mobile device.
+
+    ```java
+    aiService.startListening();
+    ```
+
 7. To stop listening and start the request to the API.AI service using the current recognition results, call the **stopListening** method of the AIService class.
+
+    ```java
+    aiService.stopListening();
+    ```
+
 8. To cancel the listening process without sending a request to the API.AI service, call the **cancel** method of the AIService class.
+
+    ```java
+    aiService.cancel();
+    ```
+
 9. If there are no errors, you can get the result using the **AIResponse.getResult** method. From there, you can obtain the action and parameters.
+
+    ```java
+    public void onResult(final AIResponse response) {
+        Log.i(TAG, "Action: " + result.getAction());
+        // process response object
+    }
+    ```
 
 ## Using your own speech recognition
 
