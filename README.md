@@ -33,7 +33,10 @@ Authentication is accomplished through setting the client access token and subsc
 * [Running the Sample Code](#running_sample)
 * [Getting Started with Your Own App](#getting_started)
 * [Tutorial](#tutorial)
-* [Brief Integration Instruction (for experienced developers)](docs/integration.md).
+* [Brief Integration Instruction (for experienced developers)](docs/integration.md)
+* [Feature examples](#feature-examples)
+    * [User specified contexts](#user-specified-contexts)
+    * [User specified contexts](#user-specified-entities)
 * [Troubleshooting](#troubleshooting)
 
 # <a name="running_sample" />Running the Sample Code
@@ -337,6 +340,47 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 1. Attach an Android device to your computer or have a virtual device ready.
 2. Make sure that your module is selected in the dropdown, and then click the Debug button.<br/>![Debug button](docs/images/DebugButton.png)
 3. The app should now be running on your device or virtual device. Click the **Listen** button and then speak a phrase that will work with your intent. Wait a few seconds. The result should appear in the result TextView. <br/>![Result](docs/images/AppScreenshot.png)
+
+# Feature examples
+
+## User specified contexts
+
+To specify additional [contexts](http://api.ai/docs/getting-started/key-concepts.html#contexts) in the query you can use `RequestExtras` object.
+
+First create list of contexts you need:
+
+```java
+List<AIContext> contexts = new ArrayList<>();
+contexts.add(new AIContext("firstContext"));
+contexts.add(new AIContext("secondContext"));
+```
+
+Then create `RequestExtras` instance and use it for request
+
+```java
+RequestExtras requestExtras = new RequestExtras(contexts, null);
+aiService.startListening(requestExtras);
+```
+
+## User specified entities
+
+To specify user entities in the query you can use `RequestExtras` object.
+
+First create list of entities you need:
+
+```java
+final Entity myDwarfs = new Entity("dwarfs");
+myDwarfs.addEntry(new EntityEntry("Ori", new String[] {"Ori", "Nori"}));
+myDwarfs.addEntry(new EntityEntry("Bifur", new String[] {"Bofur","Bombur"}));
+final List<Entity> entities = Collections.singletonList(myDwarfs);
+```
+
+Then create `RequestExtras` instance and use it for request
+
+```java
+RequestExtras requestExtras = new RequestExtras(null, entities);
+aiService.startListening(requestExtras);
+```
 
 # <a name="troubleshooting" />Troubleshooting
 
