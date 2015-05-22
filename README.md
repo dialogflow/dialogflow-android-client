@@ -36,7 +36,7 @@ Authentication is accomplished through setting the client access token and subsc
 * [Brief Integration Instruction (for experienced developers)](docs/integration.md)
 * [Feature examples](#feature-examples)
     * [User specified contexts](#user-specified-contexts)
-    * [User specified contexts](#user-specified-entities)
+    * [User specified entities](#user-specified-entities)
 * [Troubleshooting](#troubleshooting)
 
 # <a name="running_sample" />Running the Sample Code
