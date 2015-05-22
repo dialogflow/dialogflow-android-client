@@ -20,6 +20,10 @@ dependencies {
 }
 ```
 
+* [Integration with AIButton](#integration-with-aibutton)
+* [Integration with AIService](#integration-with-aiservice)
+* [Integration with AIDialog](#integration-with-aidialog)
+
 # Integration with AIButton
 
 Use this type of integration if you want quickly integrate natural language processing functionality into your application. The idea is to add ready button control from the SDK. Use the following steps.
@@ -172,3 +176,32 @@ Use the following steps:
         // show sound level
     }
     ```
+
+# Integration with AIDialog
+
+AIDialog is simple and ready to use dialog for making voice requests. All you need is create `AIConfiguration`:
+
+```java
+ final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
+        "SUBSCRIPTION_KEY",
+        AIConfiguration.SupportedLanguages.English,
+        AIConfiguration.RecognitionEngine.System);
+```
+
+And implement `AIDialog.AIDialogListener` interface methods:
+
+```java
+void onResult(final AIResponse result);
+void onError(final AIError error);
+void onCancelled();
+```
+
+Then create `AIDialog` instance and show it:
+
+```java
+AIDialog aiDialog = new AIDialog(this, config);
+aiDialog.setResultsListener(yourListenerImplementation);
+aiDialog.showAndListen();
+```
+
+AIDialog instance can be used multiple times.
