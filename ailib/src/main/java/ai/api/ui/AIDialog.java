@@ -47,6 +47,11 @@ public class AIDialog {
     private final AIConfiguration config;
 
     private AIDialogListener resultsListener;
+
+    public Dialog getDialog() {
+        return dialog;
+    }
+
     private final Dialog dialog;
     private final AIButton aiButton;
     private final TextView partialResultsTextView;
