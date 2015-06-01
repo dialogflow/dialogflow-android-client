@@ -1,11 +1,7 @@
 Android SDK for api.ai
 ==================
 
-release:<br/>
-[![Release status](https://travis-ci.org/api-ai/api-ai-android-sdk.svg?branch=master)](https://travis-ci.org/api-ai/api-ai-android-sdk)
-
-dev:<br/>
-[![Dev status](https://travis-ci.org/api-ai/api-ai-android-sdk.svg?branch=dev)](https://travis-ci.org/api-ai/api-ai-android-sdk)
+[![Release status](https://travis-ci.org/api-ai/api-ai-android-sdk.svg?branch=master)](https://travis-ci.org/api-ai/api-ai-android-sdk) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/ai.api/sdk/badge.svg)](https://maven-badges.herokuapp.com/maven-central/ai.api/sdk)
 
 The API.AI Android SDK makes it easy to integrate speech recognition with [API.AI](http://www.api.ai) natural language processing API on Android devices. API.AI allows using voice commands and integration with dialog scenarios defined for a particular agent in API.AI.
 
