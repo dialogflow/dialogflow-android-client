@@ -22,7 +22,6 @@ package ai.api.sample;
  ***********************************************************************************************************************/
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -54,7 +53,7 @@ import ai.api.model.Metadata;
 import ai.api.model.Result;
 import ai.api.model.Status;
 
-public class AIServiceSampleActivity extends ActionBarActivity
+public class AIServiceSampleActivity extends BaseActivity
         implements AIListener, AdapterView.OnItemSelectedListener {
 
     public static final String TAG = AIServiceSampleActivity.class.getName();

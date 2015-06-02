@@ -28,7 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends BaseActivity {
 
     public static final String TAG = MainActivity.class.getName();
 
@@ -36,8 +36,6 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
     }
 
     @Override
@@ -54,26 +52,26 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         final int id = item.getItemId();
         if (id == R.id.action_settings) {
+            startActivity(AISettingsActivity.class);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void serviceSampleClick(final View view) {
-        final Intent intent = new Intent();
-        intent.setClass(this, AIServiceSampleActivity.class);
-        startActivity(intent);
+        startActivity(AIServiceSampleActivity.class);
     }
 
     public void buttonSampleClick(final View view) {
-        final Intent intent = new Intent();
-        intent.setClass(this, AIButtonSampleActivity.class);
-        startActivity(intent);
+        startActivity(AIButtonSampleActivity.class);
     }
 
     public void dialogSampleClick(final View view) {
-        final Intent intent = new Intent();
-        intent.setClass(this, AIDialogSampleActivity.class);
+        startActivity(AIDialogSampleActivity.class);
+    }
+
+    private void startActivity(Class<?> cls) {
+        final Intent intent = new Intent(this, cls);
         startActivity(intent);
     }
 }

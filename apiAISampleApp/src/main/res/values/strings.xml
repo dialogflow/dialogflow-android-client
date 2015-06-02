@@ -11,4 +11,6 @@
     <string name="button_sample_text">Button sample</string>
     <string name="dialog_sample_text">Dialog sample</string>
 
+    <string name="use_bluetooth_headset">Use Bluetooth headset</string>
+
 </resources>

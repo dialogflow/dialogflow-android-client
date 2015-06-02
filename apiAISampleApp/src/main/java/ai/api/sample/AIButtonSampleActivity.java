@@ -43,7 +43,7 @@ import ai.api.model.Result;
 import ai.api.model.Status;
 import ai.api.ui.AIButton;
 
-public class AIButtonSampleActivity extends ActionBarActivity implements AIButton.AIButtonListener {
+public class AIButtonSampleActivity extends BaseActivity implements AIButton.AIButtonListener {
 
     public static final String TAG = AIButtonSampleActivity.class.getName();
 

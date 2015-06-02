@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ai.api.sample" >
+    package="ai.api.sample">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
+        android:name=".AIApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name="ai.api.sample.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,7 +28,7 @@
         <activity
             android:name="ai.api.sample.AIButtonSampleActivity"
             android:label="@string/title_activity_aibutton_sample"
-            android:parentActivityName="ai.api.sample.MainActivity" >
+            android:parentActivityName="ai.api.sample.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ai.api.sample.MainActivity" />
@@ -33,19 +37,29 @@
         <activity
             android:name=".AIServiceSampleActivity"
             android:label="@string/title_activity_aiservice_sample"
-            android:parentActivityName="ai.api.sample.MainActivity" >
+            android:parentActivityName="ai.api.sample.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ai.api.sample.MainActivity" />
         </activity>
 
-        <activity android:name=".AIDialogSampleActivity"
+        <activity
+            android:name=".AIDialogSampleActivity"
             android:label="@string/title_activity_aidialog_sample"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ai.api.sample.MainActivity" />
-            </activity>
+        </activity>
+
+        <activity
+            android:name=".AISettingsActivity"
+            android:label="@string/action_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ai.api.sample.MainActivity" />
+        </activity>
 
     </application>
 

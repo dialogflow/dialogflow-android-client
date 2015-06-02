@@ -42,7 +42,7 @@ import ai.api.model.Result;
 import ai.api.model.Status;
 import ai.api.ui.AIDialog;
 
-public class AIDialogSampleActivity extends ActionBarActivity implements AIDialog.AIDialogListener {
+public class AIDialogSampleActivity extends BaseActivity implements AIDialog.AIDialogListener {
 
     private static final String TAG = AIDialogSampleActivity.class.getName();
 
