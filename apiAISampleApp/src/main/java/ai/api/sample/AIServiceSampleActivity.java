@@ -40,12 +40,14 @@ import com.google.gson.JsonElement;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ai.api.AIConfiguration;
 import ai.api.AIListener;
 import ai.api.AIService;
 import ai.api.GsonFactory;
+import ai.api.RequestExtras;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
@@ -157,8 +159,9 @@ public class AIServiceSampleActivity extends BaseActivity
         if (TextUtils.isEmpty(contextString)) {
             aiService.startListening();
         } else {
-            final AIContext aiContext = new AIContext(contextString);
-            aiService.startListening(Collections.singletonList(aiContext));
+            final List<AIContext> contexts = Collections.singletonList(new AIContext(contextString));
+            final RequestExtras requestExtras = new RequestExtras(contexts, null);
+            aiService.startListening(requestExtras);
         }
 
     }

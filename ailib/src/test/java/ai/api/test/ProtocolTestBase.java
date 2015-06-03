@@ -30,6 +30,8 @@ import org.robolectric.Robolectric;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import ai.api.AIConfiguration;
 import ai.api.AIDataService;
@@ -525,8 +527,7 @@ public abstract class ProtocolTestBase {
         myDwarfs.addEntry(new EntityEntry("Ori", new String[] {"ori", "Nori"}));
         myDwarfs.addEntry(new EntityEntry("bifur", new String[] {"Bofur","Bombur"}));
 
-        final ArrayList<Entity> extraEntities = new ArrayList<>();
-        extraEntities.add(myDwarfs);
+        final List<Entity> extraEntities = Collections.singletonList(myDwarfs);
 
         aiRequest.setEntities(extraEntities);
 
@@ -562,7 +563,7 @@ public abstract class ProtocolTestBase {
         final AIResponse aiResponse;
         try {
             aiResponse = makeRequest(aiDataService, aiRequest);
-            assertTrue("Request shoud throws bad_request exception", false);
+            assertTrue("Request should throws bad_request exception", false);
         } catch (final AIServiceException e) {
             e.printStackTrace();
             assertTrue(true);
