@@ -24,14 +24,17 @@ package ai.api;
 import java.util.List;
 
 import ai.api.model.AIContext;
+import ai.api.model.AIRequest;
 import ai.api.model.Entity;
 
 /**
  * Extra data for request
  */
 public class RequestExtras {
-    private final List<AIContext> contexts;
-    private final List<Entity> entities;
+    private List<AIContext> contexts;
+    private List<Entity> entities;
+
+    private Boolean resetContexts;
 
     public RequestExtras() {
         contexts = null;
@@ -47,8 +50,24 @@ public class RequestExtras {
         return contexts;
     }
 
+    public void setContexts(final List<AIContext> contexts) {
+        this.contexts = contexts;
+    }
+
     public List<Entity> getEntities() {
         return entities;
+    }
+
+    public void setEntities(final List<Entity> entities) {
+        this.entities = entities;
+    }
+
+    public Boolean getResetContexts() {
+        return resetContexts;
+    }
+
+    public void setResetContexts(final boolean resetContexts) {
+        this.resetContexts = resetContexts;
     }
 
     public boolean hasContexts() {
@@ -64,4 +83,21 @@ public class RequestExtras {
         }
         return false;
     }
+
+    public void copyTo(final AIRequest request) {
+        if (hasContexts()) {
+            request.setContexts(getContexts());
+        }
+
+        if (hasEntities()) {
+            request.setEntities(getEntities());
+        }
+
+        if (getResetContexts() != null) {
+            request.setResetContexts(getResetContexts());
+        }
+
+    }
+
+
 }

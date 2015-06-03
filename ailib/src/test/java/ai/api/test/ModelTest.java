@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.text.ParseException;
 import java.util.Date;
 
 import ai.api.GsonFactory;

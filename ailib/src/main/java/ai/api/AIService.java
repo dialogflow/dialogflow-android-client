@@ -155,6 +155,14 @@ public abstract class AIService {
         return aiDataService.request(request);
     }
 
+    public AIResponse textRequest(final String textRequest, final RequestExtras requestExtras) throws AIServiceException {
+        final AIRequest aiRequest = new AIRequest(textRequest);
+        if (requestExtras != null) {
+            requestExtras.copyTo(aiRequest);
+        }
+        return aiDataService.request(aiRequest);
+    }
+
     /**
      * Forget all old contexts
      * @return true if operation succeed, false otherwise
