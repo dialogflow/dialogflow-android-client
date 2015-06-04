@@ -33,6 +33,7 @@ Authentication is accomplished through setting the client access token and subsc
 * [Feature examples](#feature-examples)
     * [User specified contexts](#user-specified-contexts)
     * [User specified entities](#user-specified-entities)
+    * [Bluetooth support](#bluetooth-support)
 * [Troubleshooting](#troubleshooting)
 
 # <a name="running_sample" />Running the Sample Code
@@ -377,6 +378,112 @@ Then create `RequestExtras` instance and use it for request
 RequestExtras requestExtras = new RequestExtras(null, entities);
 aiService.startListening(requestExtras);
 ```
+
+## Bluetooth support
+
+Do these steps to make SDK work with Bluetooth devices:
+
+1. Create implementation of the [BluetoothController](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/util/BluetoothController.java) near your Application class
+    ```java
+    private class BluetoothControllerImpl extends BluetoothController {
+
+        public BluetoothControllerImpl(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onHeadsetDisconnected() {
+            Log.d(TAG, "Bluetooth headset disconnected");
+        }
+
+        @Override
+        public void onHeadsetConnected() {
+            Log.d(TAG, "Bluetooth headset connected");
+
+            if (isInForeground() && !bluetoothController.isOnHeadsetSco()) {
+                bluetoothController.start();
+            }
+        }
+
+        @Override
+        public void onScoAudioDisconnected() {
+            Log.d(TAG, "Bluetooth sco audio finished");
+            bluetoothController.stop();
+
+            if (isInForeground()) {
+                bluetoothController.start();
+            }
+        }
+
+        @Override
+        public void onScoAudioConnected() {
+            Log.d(TAG, "Bluetooth sco audio started");
+        }
+
+    }
+    ```
+2. Add to your `Application` class integer field to count Activities and `BluetoothController` class implementation for Bluetooth management
+    ```java
+    private int activitiesCount;
+    private BluetoothControllerImpl bluetoothController;
+    ```
+
+3. Add helper methods to your `Application` class
+    ```java
+    protected void onActivityResume() {
+        if (activitiesCount++ == 0) { // on become foreground
+            bluetoothController.start();
+        }
+    }
+
+    protected void onActivityPaused() {
+        if (--activitiesCount == 0) { // on become background
+            bluetoothController.stop();
+        }
+    }
+
+    private boolean isInForeground() {
+        return activitiesCount > 0;
+    }
+    ```
+
+4. You need to call this methods from `onPause` and `onResume` of every Activity, it can be solved with base class for all your activities
+    ```java
+    public class BaseActivity extends ActionBarActivity {
+
+        private AIApplication app;
+
+        private static final long PAUSE_CALLBACK_DELAY = 500;
+
+        private final Handler handler = new Handler();
+        private Runnable pauseCallback = new Runnable() {
+            @Override
+            public void run() {
+                app.onActivityPaused();
+            }
+        };
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            app = (AIApplication) getApplication();
+        }
+
+        @Override
+        protected void onResume() {
+            super.onResume();
+            app.onActivityResume();
+        }
+
+        @Override
+        protected void onPause() {
+            super.onPause();
+            handler.postDelayed(pauseCallback, PAUSE_CALLBACK_DELAY);
+        }
+    }
+    ```
+
+A complete example can be found in the [Sample Application](https://github.com/api-ai/api-ai-android-sdk/tree/master/apiAISampleApp/src/main/java/ai/api/sample).
 
 # <a name="troubleshooting" />Troubleshooting
 
