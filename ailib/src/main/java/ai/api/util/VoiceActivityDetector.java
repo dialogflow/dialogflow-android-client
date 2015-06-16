@@ -51,12 +51,12 @@ public class VoiceActivityDetector {
     private long lastActiveTime = -1;
 
     /**
-     * last time active frame hit sequance.
+     * last time active frame hit sequence.
      */
     private long lastSequenceTime = 0;
 
     /**
-     * number of active frame in sequance.
+     * number of active frame in sequence.
      */
     private int sequenceCounter = 0;
 
