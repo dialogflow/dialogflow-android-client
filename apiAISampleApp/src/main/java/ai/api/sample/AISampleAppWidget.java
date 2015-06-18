@@ -15,22 +15,22 @@ import android.widget.Toast;
 public class AISampleAppWidget extends AppWidgetProvider {
     private static final String ACTION_KEY = "tap_on_icon";
     @Override
-    public void onReceive(final Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         super.onReceive(context, intent);
         if (intent.getAction().equals(ACTION_KEY)) {
 
-            Intent popUpIntent = new Intent(context, AIWidgetActivity.class);
+            final Intent popUpIntent = new Intent(context, AIWidgetActivity.class);
 
             popUpIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             context.startActivity(popUpIntent);
-            Toast.makeText(context.getApplicationContext(), "hop hey",Toast.LENGTH_LONG).show();
+            Toast.makeText(context.getApplicationContext(), "API.AI Dialog shown",Toast.LENGTH_SHORT).show();
 
         }
     }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+    public void onUpdate(final Context context, final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         final int N = appWidgetIds.length;
         for (int i = 0; i < N; i++) {
@@ -40,22 +40,22 @@ public class AISampleAppWidget extends AppWidgetProvider {
 
 
     @Override
-    public void onEnabled(Context context) {
+    public void onEnabled(final Context context) {
         // Enter relevant functionality for when the first widget is created
     }
 
     @Override
-    public void onDisabled(Context context) {
+    public void onDisabled(final Context context) {
         // Enter relevant functionality for when the last widget is disabled
     }
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ai_app_widget);
+    static void updateAppWidget(final Context context, final AppWidgetManager appWidgetManager,
+                                final int appWidgetId) {
+        final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ai_app_widget);
         //views.setTextViewText(R.id.appwidget_text, widgetText);
-        Intent intent = new Intent(context, AISampleAppWidget.class);
+        final Intent intent = new Intent(context, AISampleAppWidget.class);
         intent.setAction(ACTION_KEY);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         views.setOnClickPendingIntent(R.id.appwidget_new_app_widget, pendingIntent);
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);

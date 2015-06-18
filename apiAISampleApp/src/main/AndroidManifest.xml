@@ -67,7 +67,7 @@
             android:theme="@style/Base.Theme.AppCompat.Dialog">
 
         </activity>
-        
+
         <receiver android:name=".AISampleAppWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

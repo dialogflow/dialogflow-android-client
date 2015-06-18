@@ -47,11 +47,6 @@ public class AIDialog {
     private final AIConfiguration config;
 
     private AIDialogListener resultsListener;
-
-    public Dialog getDialog() {
-        return dialog;
-    }
-
     private final Dialog dialog;
     private final AIButton aiButton;
     private final TextView partialResultsTextView;
@@ -87,6 +82,10 @@ public class AIDialog {
 
     public void setResultsListener(final AIDialogListener resultsListener) {
         this.resultsListener = resultsListener;
+    }
+
+    public Dialog getDialog() {
+        return dialog;
     }
 
     public void showAndListen() {

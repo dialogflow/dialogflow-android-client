@@ -18,39 +18,46 @@ public class AIWidgetActivity extends ActionBarActivity {
     private AIDialog aiDialog;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_sample);
         final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
-        config.setExperimental(false);
 
         aiDialog = new AIDialog(this, config);
         aiDialog.setResultsListener(new AIDialog.AIDialogListener() {
             @Override
-            public void onResult(AIResponse aiResponse) {
+            public void onResult(final AIResponse aiResponse) {
                 // TODO Process aiResponse
                 aiDialog.close();
-                Toast.makeText(getApplicationContext(), String.format("%s %s","Successful response: ",aiResponse.getResult().getResolvedQuery()), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), String.format("%s %s","Successful response: ",
+                        aiResponse.getResult().getResolvedQuery()), Toast.LENGTH_SHORT).show();
                 AIWidgetActivity.this.finish();
             }
 
             @Override
-            public void onError(AIError aiError) {
+            public void onError(final AIError aiError) {
                 // TODO show error message
                 aiDialog.close();
-                Toast.makeText(getApplicationContext(), aiError.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), aiError.getMessage(), Toast.LENGTH_SHORT).show();
+                AIWidgetActivity.this.finish();
+            }
+
+            @Override
+            public void onCancelled() {
+                aiDialog.close();
+                Toast.makeText(getApplicationContext(), "Process cancelled", Toast.LENGTH_SHORT).show();
                 AIWidgetActivity.this.finish();
             }
 
         });
+
         aiDialog.getDialog().setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
-                Toast.makeText(getApplicationContext(), "cancelled by user", Toast.LENGTH_LONG).show();
-
+            public void onDismiss(final DialogInterface dialog) {
+                Toast.makeText(getApplicationContext(), "Dialog dismissed by user", Toast.LENGTH_SHORT).show();
                 AIWidgetActivity.this.finish();
             }
         });
@@ -65,13 +72,13 @@ public class AIWidgetActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        final int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
 }
