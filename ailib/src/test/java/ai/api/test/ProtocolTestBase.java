@@ -362,9 +362,18 @@ public abstract class ProtocolTestBase {
             final AIOutputContext context = response.getResult().getContexts()[0];
             assertNotNull(context.getParameters());
 
-            assertTrue(context.getParameters().containsKey("param"));
-            final JsonElement contextParam = context.getParameters().get("param");
-            assertEquals("blabla", contextParam.getAsString());
+            {
+                assertTrue(context.getParameters().containsKey("param"));
+                final JsonElement contextParam = context.getParameters().get("param");
+                assertEquals("blabla", contextParam.getAsString());
+            }
+
+            {
+                assertTrue(context.getParameters().containsKey("my_name"));
+                final JsonElement contextParam = context.getParameters().get("my_name");
+                assertEquals("Sam", contextParam.getAsString());
+            }
+
 
         } catch (final AIServiceException e) {
             e.printStackTrace();
