@@ -10,6 +10,7 @@
     <string name="service_sample_text">Service sample</string>
     <string name="button_sample_text">Button sample</string>
     <string name="dialog_sample_text">Dialog sample</string>
+    <string name="title_app_widget">Voice command</string>
 
     <string name="use_bluetooth_headset">Use Bluetooth headset</string>
 

@@ -35,8 +35,8 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     compile 'commons-io:commons-io:2.4'
 
-    compile 'ai.api:sdk:1.6.5@aar'
+    //compile 'ai.api:sdk:1.6.5@aar'
 
     // this line left for testing purposes
-    //compile project(':ailib')
+    compile project(':ailib')
 }

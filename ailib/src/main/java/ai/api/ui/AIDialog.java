@@ -84,6 +84,10 @@ public class AIDialog {
         this.resultsListener = resultsListener;
     }
 
+    public Dialog getDialog() {
+        return dialog;
+    }
+
     public void showAndListen() {
         handler.post(new Runnable() {
             @Override
