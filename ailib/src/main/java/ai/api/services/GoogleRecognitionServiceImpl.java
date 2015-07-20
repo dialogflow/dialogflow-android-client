@@ -68,17 +68,16 @@ public class GoogleRecognitionServiceImpl extends AIService {
     private final Map<Integer, String> errorMessages = new HashMap<Integer, String>();
 
     {
-        errorMessages.put(1, "Network operation timed out.");
-        errorMessages.put(2, "Other network related errors.");
-        errorMessages.put(3, "Audio recording error.");
-        errorMessages.put(4, "Server sends error status.");
-        errorMessages.put(5, "Other client side errors.");
-        errorMessages.put(6, "No speech input.");
-        errorMessages.put(7, "No recognition result matched.");
-        errorMessages.put(8, "RecognitionService busy.");
-        errorMessages.put(9, "Insufficient permissions.");
+        errorMessages.put(SpeechRecognizer.ERROR_NETWORK_TIMEOUT, "Network operation timed out.");
+        errorMessages.put(SpeechRecognizer.ERROR_NETWORK, "Other network related errors.");
+        errorMessages.put(SpeechRecognizer.ERROR_AUDIO, "Audio recording error.");
+        errorMessages.put(SpeechRecognizer.ERROR_SERVER, "Server sends error status.");
+        errorMessages.put(SpeechRecognizer.ERROR_CLIENT, "Other client side errors.");
+        errorMessages.put(SpeechRecognizer.ERROR_SPEECH_TIMEOUT, "No speech input.");
+        errorMessages.put(SpeechRecognizer.ERROR_NO_MATCH, "No recognition result matched.");
+        errorMessages.put(SpeechRecognizer.ERROR_RECOGNIZER_BUSY, "RecognitionService busy.");
+        errorMessages.put(SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS, "Insufficient permissions.");
     }
-
 
 
     public GoogleRecognitionServiceImpl(final Context context, final AIConfiguration config) {
@@ -306,6 +305,12 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         @Override
         public void onError(final int error) {
+
+            // warkaround for http://stackoverflow.com/questions/31071650/speechrecognizer-throws-onerror-on-the-first-listening
+            if (error == SpeechRecognizer.ERROR_NO_MATCH && isAndroid5()) {
+                return;
+            }
+
             if (recognitionActive) {
                 recognitionActive = false;
 
@@ -317,8 +322,16 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 } else {
                     aiError = new AIError("Speech recognition engine error: " + error);
                 }
+
                 GoogleRecognitionServiceImpl.this.onError(aiError);
             }
+        }
+
+        private boolean isAndroid5() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                return true;
+            }
+            return false;
         }
 
         @TargetApi(14)
@@ -359,10 +372,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
                     // notify listeners about the last recogntion result for more accurate user feedback
                     GoogleRecognitionServiceImpl.this.onPartialResults(recognitionResults);
-
                     GoogleRecognitionServiceImpl.this.sendRequest(aiRequest);
-
-                    clearRecognizer();
                 }
             }
         }
