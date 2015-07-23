@@ -306,7 +306,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
         @Override
         public void onError(final int error) {
 
-            // warkaround for http://stackoverflow.com/questions/31071650/speechrecognizer-throws-onerror-on-the-first-listening
+            // workaround for http://stackoverflow.com/questions/31071650/speechrecognizer-throws-onerror-on-the-first-listening
             if (error == SpeechRecognizer.ERROR_NO_MATCH && isAndroid5()) {
                 return;
             }
