@@ -157,7 +157,7 @@ public class AIButton extends SoundLevelButton implements AIListener {
         }
     }
 
-    private MicState currentState = MicState.normal;
+    private volatile MicState currentState = MicState.normal;
 
     public AIButton(final Context context) {
         super(context);
