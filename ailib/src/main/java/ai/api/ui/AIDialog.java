@@ -176,4 +176,28 @@ public class AIDialog {
             }
         });
     }
+
+    /**
+     * Disconnect aiDialog from the recognition service.
+     * Use pause/resume methods when you have permanent reference to the AIDialog object in your Activity.
+     * pause() call should be added to the onPause() method of the Activity.
+     * resume() call should be added to the onResume() method of the Activity.
+     */
+    public void pause() {
+        if (aiButton != null) {
+            aiButton.pause();
+        }
+    }
+
+    /**
+     * Reconnect aiDialog to the recognition service.
+     * Use pause/resume methods when you have permanent reference to the AIDialog object in your Activity.
+     * pause() call should be added to the onPause() method of the Activity.
+     * resume() call should be added to the onResume() method of the Activity.
+     */
+    public void resume() {
+        if (aiButton != null) {
+            aiButton.resume();
+        }
+    }
 }

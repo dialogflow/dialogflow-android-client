@@ -22,7 +22,6 @@ package ai.api.sample;
  ***********************************************************************************************************************/
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -124,6 +123,22 @@ public class AIDialogSampleActivity extends BaseActivity implements AIDialog.AID
                 resultTextView.setText("");
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        if (aiDialog != null) {
+            aiDialog.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        if (aiDialog != null) {
+            aiDialog.resume();
+        }
+        super.onResume();
     }
 
     public void buttonListenOnClick(final View view) {
