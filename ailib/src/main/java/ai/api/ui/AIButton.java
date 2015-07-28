@@ -236,6 +236,14 @@ public class AIButton extends SoundLevelButton implements AIListener {
         return textRequest(new AIRequest(request));
     }
 
+    /**
+     * Get AIService object for making different data requests
+     * @return
+     */
+    public AIService getAIService() {
+        return aiService;
+    }
+
     @Override
     protected void onClick(final View v) {
         super.onClick(v);

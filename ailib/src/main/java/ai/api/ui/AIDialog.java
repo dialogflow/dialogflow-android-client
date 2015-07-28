@@ -32,6 +32,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ai.api.AIConfiguration;
+import ai.api.AIService;
 import ai.api.AIServiceException;
 import ai.api.PartialResultsListener;
 import ai.api.R;
@@ -175,6 +176,14 @@ public class AIDialog {
                 dialog.dismiss();
             }
         });
+    }
+
+    /**
+     * Get AIService object for making different data requests
+     * @return
+     */
+    public AIService getAIService() {
+        return aiButton.getAIService();
     }
 
     /**
