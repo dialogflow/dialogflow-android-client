@@ -5,10 +5,10 @@ package ai.api;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
- ***********************************************************************************************************************
+ * *********************************************************************************************************************
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -31,6 +31,7 @@ public class AIConfiguration {
     protected static final String CURRENT_PROTOCOL_VERSION = "20150415";
 
     protected static final String QUESTION_ENDPOINT = "query";
+    protected static final String USER_ENTITIES_ENDPOINT = "userEntities";
 
     private String serviceUrl;
 
@@ -233,6 +234,14 @@ public class AIConfiguration {
             return String.format("%s%s?v=%s", serviceUrl, QUESTION_ENDPOINT, protocolVersion);
         } else {
             return String.format("%s%s", serviceUrl, QUESTION_ENDPOINT);
+        }
+    }
+
+    public String getUserEntitiesEndpoint() {
+        if (!TextUtils.isEmpty(protocolVersion)) {
+            return String.format("%s%s?v=%s", serviceUrl, USER_ENTITIES_ENDPOINT, protocolVersion);
+        } else {
+            return String.format("%s%s", serviceUrl, USER_ENTITIES_ENDPOINT);
         }
     }
 

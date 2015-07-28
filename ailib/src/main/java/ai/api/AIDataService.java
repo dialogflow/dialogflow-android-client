@@ -8,7 +8,7 @@ package ai.api;
  * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
- ***********************************************************************************************************************
+ * *********************************************************************************************************************
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -49,6 +49,7 @@ import ai.api.http.HttpClient;
 import ai.api.model.AIContext;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
+import ai.api.model.Entity;
 import ai.api.model.Status;
 
 /**
@@ -237,16 +238,49 @@ public class AIDataService {
         }
     }
 
-    /**
-     * Method extracted for testing purposes
-     */
+    public AIResponse uploadUserEntity(final Entity userEntity) throws AIServiceException {
+        final UserEntityWrapper wrapper = new UserEntityWrapper(userEntity, sessionId);
+        final String requestData = gson.toJson(wrapper);
+
+        try {
+            final String response = doTextRequest(config.getUserEntitiesEndpoint(), requestData);
+            if (TextUtils.isEmpty(response)) {
+                throw new AIServiceException("Empty response from ai service. Please check configuration and Internet connection.");
+            }
+            Log.d(TAG, "Response json: " + response);
+
+            final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
+
+            if (aiResponse == null) {
+                throw new AIServiceException("API.AI response parsed as null. Check debug log for details.");
+            }
+
+            if (aiResponse.isError()) {
+                throw new AIServiceException(aiResponse);
+            }
+
+            aiResponse.cleanup();
+            return aiResponse;
+
+        } catch (final MalformedURLException e) {
+            Log.e(TAG, "Malformed url should not be raised", e);
+            throw new AIServiceException("Wrong configuration. Please, connect to AI Service support", e);
+        } catch (final JsonSyntaxException je) {
+            throw new AIServiceException("Wrong service answer format. Please, connect to API.AI Service support", je);
+        }
+    }
+
     protected String doTextRequest(final String requestJson) throws MalformedURLException, AIServiceException {
+        return doTextRequest(config.getQuestionUrl(), requestJson);
+    }
+
+    protected String doTextRequest(final String endpoint, final String requestJson) throws MalformedURLException, AIServiceException {
 
         HttpURLConnection connection = null;
 
         try {
 
-            final URL url = new URL(config.getQuestionUrl());
+            final URL url = new URL(endpoint);
 
             final String queryData = requestJson;
 

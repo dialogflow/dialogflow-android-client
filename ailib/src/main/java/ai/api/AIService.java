@@ -29,6 +29,7 @@ import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
+import ai.api.model.Entity;
 import ai.api.services.GoogleRecognitionServiceImpl;
 import ai.api.services.SpeaktoitRecognitionServiceImpl;
 
@@ -169,5 +170,15 @@ public abstract class AIService {
      */
     public boolean resetContexts() {
         return aiDataService.resetContexts();
+    }
+
+    /**
+     * Upload user entities for using while session
+     * @param userEntity
+     * @return uploading result
+     * @throws AIServiceException
+     */
+    public AIResponse uploadUserEntity(final Entity userEntity) throws AIServiceException {
+        return aiDataService.uploadUserEntity(userEntity);
     }
 }

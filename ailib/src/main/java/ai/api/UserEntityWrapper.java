@@ -1,4 +1,4 @@
-package ai.api.model;
+package ai.api;
 
 /***********************************************************************************************************************
  *
@@ -8,7 +8,7 @@ package ai.api.model;
  * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
- * ********************************************************************************************************************
+ * *********************************************************************************************************************
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -23,45 +23,27 @@ package ai.api.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import ai.api.model.Entity;
 
-public class Entity implements Serializable {
+class UserEntityWrapper extends Entity {
 
-    @SerializedName("name")
-    private String name;
+    @SerializedName("sessionId")
+    private String sessionId;
 
-    @SerializedName("entries")
-    private List<EntityEntry> entries;
-
-    public Entity() {
+    public UserEntityWrapper() {
     }
 
-    public Entity(final String name) {
-        this.name = name;
+    public UserEntityWrapper(final Entity entity, final String sessionId) {
+        this.sessionId = sessionId;
+        setName(entity.getName());
+        setEntries(entity.getEntries());
     }
 
-    public String getName() {
-        return name;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public List<EntityEntry> getEntries() {
-        return entries;
-    }
-
-    public void setEntries(final List<EntityEntry> entries) {
-        this.entries = entries;
-    }
-
-    public void addEntry(final EntityEntry entry) {
-        if (entries == null) {
-            entries = new ArrayList<>();
-        }
-        entries.add(entry);
+    public void setSessionId(final String sessionId) {
+        this.sessionId = sessionId;
     }
 }
