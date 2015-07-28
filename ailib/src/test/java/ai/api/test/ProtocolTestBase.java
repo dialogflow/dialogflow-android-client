@@ -547,8 +547,9 @@ public abstract class ProtocolTestBase {
         assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
     }
 
-    @Test
-    public void wrongEntitiesTest() {
+
+    @Test(expected = AIServiceException.class)
+    public void wrongEntitiesTest() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
@@ -569,13 +570,7 @@ public abstract class ProtocolTestBase {
 
         aiRequest.setEntities(extraEntities);
 
-        final AIResponse aiResponse;
-        try {
-            aiResponse = makeRequest(aiDataService, aiRequest);
-            assertTrue("Request should throws bad_request exception", false);
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(true);
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
         }
 
     }
