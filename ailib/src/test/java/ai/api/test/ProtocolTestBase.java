@@ -520,7 +520,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void entitiesTest() throws AIServiceException {
+    public void requestEntitiesTest() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
@@ -528,28 +528,72 @@ public abstract class ProtocolTestBase {
         updateConfig(config);
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService secondService = new AIDataService(Robolectric.application, config);
 
-        final AIRequest aiRequest = new AIRequest();
-        aiRequest.setQuery("hi nori");
+        {
+            final AIRequest aiRequest = new AIRequest();
+            aiRequest.setQuery("hi nori");
 
-        final Entity myDwarfs = new Entity("dwarfs");
-        myDwarfs.addEntry(new EntityEntry("Ori", new String[] {"ori", "Nori"}));
-        myDwarfs.addEntry(new EntityEntry("bifur", new String[] {"Bofur","Bombur"}));
+            final Entity myDwarfs = new Entity("dwarfs");
+            myDwarfs.addEntry(new EntityEntry("Ori", new String[]{"ori", "Nori"}));
+            myDwarfs.addEntry(new EntityEntry("bifur", new String[]{"Bofur", "Bombur"}));
 
-        final List<Entity> extraEntities = Collections.singletonList(myDwarfs);
+            final List<Entity> extraEntities = Collections.singletonList(myDwarfs);
 
-        aiRequest.setEntities(extraEntities);
+            aiRequest.setEntities(extraEntities);
 
-        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-        assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
-        assertEquals("say_hi", aiResponse.getResult().getAction());
-        assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", aiResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
+
+        }
+
+        {
+            // check entities working in session, not for one request
+            final AIRequest secondRequest = new AIRequest("hi bombur");
+            final AIResponse secondResponse = makeRequest(aiDataService, secondRequest);
+
+            assertFalse(TextUtils.isEmpty(secondResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", secondResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am bifur", secondResponse.getResult().getFulfillment().getSpeech());
+        }
+
+        // check previous entities overwritten
+        {
+            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertTrue(TextUtils.isEmpty(aiResponse.getResult().getAction()));
+            assertTrue(TextUtils.isEmpty(aiResponse.getResult().getFulfillment().getSpeech()));
+        }
+
+        // check entities was not changed in another session
+
+        {
+            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIResponse aiResponse = makeRequest(secondService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", aiResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+        }
+
+        {
+            final AIRequest aiRequest = new AIRequest("hi nori");
+            final AIResponse aiResponse = makeRequest(secondService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertTrue(TextUtils.isEmpty(aiResponse.getResult().getAction()));
+            assertTrue(TextUtils.isEmpty(aiResponse.getResult().getFulfillment().getSpeech()));
+        }
     }
 
 
     @Test(expected = AIServiceException.class)
-    public void wrongEntitiesTest() throws AIServiceException {
+    public void wrongRequestEntitiesTest() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
@@ -582,22 +626,43 @@ public abstract class ProtocolTestBase {
         updateConfig(config);
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService secondDataService = new AIDataService(Robolectric.application, config);
 
         final Entity myDwarfs = new Entity("dwarfs");
         myDwarfs.addEntry(new EntityEntry("Ori", new String[]{"ori", "Nori"}));
-        myDwarfs.addEntry(new EntityEntry("bifur", new String[] {"Bofur","Bombur"}));
+        myDwarfs.addEntry(new EntityEntry("bifur", new String[]{"Bofur", "Bombur"}));
 
         final AIResponse uploadResult = aiDataService.uploadUserEntity(myDwarfs);
         assertNotNull(uploadResult);
 
-        final AIRequest aiRequest = new AIRequest();
-        aiRequest.setQuery("hi nori");
+        {
+            final AIRequest aiRequest = new AIRequest("hi nori");
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", aiResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
 
-        assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
-        assertEquals("say_hi", aiResponse.getResult().getAction());
-        assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
+            // check entities working for session, not for one request
+            final AIRequest secondRequest = new AIRequest("hi bombur");
+            final AIResponse secondResponse = makeRequest(aiDataService, secondRequest);
+
+            assertFalse(TextUtils.isEmpty(secondResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", secondResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am bifur", secondResponse.getResult().getFulfillment().getSpeech());
+        }
+
+        {
+            // check entities was not changed in another session
+
+            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIResponse aiResponse = makeRequest(secondDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", aiResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+        }
+
     }
 
     @Test(expected = AIServiceException.class)
