@@ -23,6 +23,7 @@ package ai.api;
 
 import android.content.Context;
 
+import java.util.Collection;
 import java.util.List;
 
 import ai.api.model.AIContext;
@@ -173,12 +174,22 @@ public abstract class AIService {
     }
 
     /**
-     * Upload user entities for using while session
-     * @param userEntity
+     * Upload user entity for using while session
+     * @param userEntity entity to upload
      * @return uploading result
      * @throws AIServiceException
      */
     public AIResponse uploadUserEntity(final Entity userEntity) throws AIServiceException {
         return aiDataService.uploadUserEntity(userEntity);
+    }
+
+    /**
+     * Upload user entities for using while session
+     * @param userEntities collection of user entities
+     * @return uploading result
+     * @throws AIServiceException if request to the API.AI service failed
+     */
+    public AIResponse uploadUserEntities(final Collection<Entity> userEntities) throws AIServiceException {
+        return aiDataService.uploadUserEntities(userEntities);
     }
 }

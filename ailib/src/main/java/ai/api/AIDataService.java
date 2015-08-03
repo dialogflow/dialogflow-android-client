@@ -42,6 +42,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -239,11 +241,17 @@ public class AIDataService {
     }
 
     public AIResponse uploadUserEntity(final Entity userEntity) throws AIServiceException {
-        final UserEntityWrapper wrapper = new UserEntityWrapper(userEntity, sessionId);
-        final String requestData = gson.toJson(wrapper);
+        return uploadUserEntities(Collections.singleton(userEntity));
+    }
 
+    public AIResponse uploadUserEntities(final Collection<Entity> userEntities) throws AIServiceException {
+        if (userEntities == null || userEntities.size() == 0) {
+            throw new AIServiceException("Empty entities list");
+        }
+
+        final String requestData = gson.toJson(userEntities);
         try {
-            final String response = doTextRequest(config.getUserEntitiesEndpoint(), requestData);
+            final String response = doTextRequest(config.getUserEntitiesEndpoint(sessionId), requestData);
             if (TextUtils.isEmpty(response)) {
                 throw new AIServiceException("Empty response from ai service. Please check configuration and Internet connection.");
             }

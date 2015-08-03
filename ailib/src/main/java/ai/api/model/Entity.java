@@ -27,6 +27,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * User Entity what can be uploaded to the API.AI service and override (or extend) entities, described in agent.
+ * User Entities works only in specified session, and do not affect other sessions.
+ */
 public class Entity implements Serializable {
 
     @SerializedName("name")
@@ -34,6 +38,9 @@ public class Entity implements Serializable {
 
     @SerializedName("entries")
     private List<EntityEntry> entries;
+
+    @SerializedName("extend")
+    private Boolean extend;
 
     public Entity() {
     }
@@ -63,5 +70,13 @@ public class Entity implements Serializable {
             entries = new ArrayList<>();
         }
         entries.add(entry);
+    }
+
+    public Boolean getExtend() {
+        return extend;
+    }
+
+    public void setExtend(final boolean extend) {
+        this.extend = extend;
     }
 }

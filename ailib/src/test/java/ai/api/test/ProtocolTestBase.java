@@ -5,10 +5,10 @@ package ai.api.test;
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
  *
- * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * Copyright (C) 2015 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
  *
- ***********************************************************************************************************************
+ * *********************************************************************************************************************
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -30,6 +30,7 @@ import org.robolectric.Robolectric;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -534,11 +535,9 @@ public abstract class ProtocolTestBase {
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery("hi nori");
 
-            final Entity myDwarfs = new Entity("dwarfs");
-            myDwarfs.addEntry(new EntityEntry("Ori", new String[]{"ori", "Nori"}));
-            myDwarfs.addEntry(new EntityEntry("bifur", new String[]{"Bofur", "Bombur"}));
+            final Entity dwarfsEntity = createDwarfsEntity();
 
-            final List<Entity> extraEntities = Collections.singletonList(myDwarfs);
+            final List<Entity> extraEntities = Collections.singletonList(dwarfsEntity);
 
             aiRequest.setEntities(extraEntities);
 
@@ -605,12 +604,11 @@ public abstract class ProtocolTestBase {
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("hi Bofur");
 
-        final Entity myDwarfs = new Entity("not_dwarfs");
-        myDwarfs.addEntry(new EntityEntry("Nori", new String[] {"Nori","Ori"}));
-        myDwarfs.addEntry(new EntityEntry("Bifur", new String[]{"Bofur", "Bifur", "Bombur"}));
+        final Entity notDwarfs = createDwarfsEntity();
+        notDwarfs.setName("not_dwarfs");
 
         final ArrayList<Entity> extraEntities = new ArrayList<>();
-        extraEntities.add(myDwarfs);
+        extraEntities.add(notDwarfs);
 
         aiRequest.setEntities(extraEntities);
 
@@ -628,12 +626,11 @@ public abstract class ProtocolTestBase {
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
         final AIDataService secondDataService = new AIDataService(Robolectric.application, config);
 
-        final Entity myDwarfs = new Entity("dwarfs");
-        myDwarfs.addEntry(new EntityEntry("Ori", new String[]{"ori", "Nori"}));
-        myDwarfs.addEntry(new EntityEntry("bifur", new String[]{"Bofur", "Bombur"}));
+        final Entity dwarfsEntity = createDwarfsEntity();
 
-        final AIResponse uploadResult = aiDataService.uploadUserEntity(myDwarfs);
+        final AIResponse uploadResult = aiDataService.uploadUserEntity(dwarfsEntity);
         assertNotNull(uploadResult);
+        assertFalse(uploadResult.isError());
 
         {
             final AIRequest aiRequest = new AIRequest("hi nori");
@@ -666,6 +663,122 @@ public abstract class ProtocolTestBase {
     }
 
     @Test(expected = AIServiceException.class)
+    public void userEntitiesEmptyCollectionTest() throws AIServiceException {
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        updateConfig(config);
+
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        aiDataService.uploadUserEntities(Collections.<Entity>emptyList());
+    }
+
+    @Test
+    public void userEntitiesCollectionTest() throws AIServiceException {
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        updateConfig(config);
+
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService secondDataService = new AIDataService(Robolectric.application, config);
+
+        final Entity dwarfsEntity = createDwarfsEntity();
+        final Entity hobbitsEntity = createHobbitsEntity();
+
+        final AIResponse uploadResult = aiDataService.uploadUserEntities(Arrays.asList(dwarfsEntity, hobbitsEntity));
+        assertNotNull(uploadResult);
+        assertFalse(uploadResult.isError());
+
+        // check first entity
+        {
+            final AIRequest aiRequest = new AIRequest("hi nori");
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", aiResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
+
+            // check entities working for session, not for one request
+            final AIRequest secondRequest = new AIRequest("hi bombur");
+            final AIResponse secondResponse = makeRequest(aiDataService, secondRequest);
+
+            assertFalse(TextUtils.isEmpty(secondResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", secondResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am bifur", secondResponse.getResult().getFulfillment().getSpeech());
+        }
+
+        // check second entity
+        {
+            final AIRequest aiRequest = new AIRequest("hi Brandybuck");
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("hi_hobbit", aiResponse.getResult().getAction());
+            assertEquals("Hi, Gendalf! I am Meriadoc", aiResponse.getResult().getFulfillment().getSpeech());
+
+            // check entities working for session, not for one request
+            final AIRequest secondRequest = new AIRequest("hi peregrin");
+            final AIResponse secondResponse = makeRequest(aiDataService, secondRequest);
+
+            assertFalse(TextUtils.isEmpty(secondResponse.getResult().getResolvedQuery()));
+            assertEquals("hi_hobbit", secondResponse.getResult().getAction());
+            assertEquals("Hi, Gendalf! I am Peregrin", secondResponse.getResult().getFulfillment().getSpeech());
+        }
+
+        {
+            // check entities was not changed in another session
+
+            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIResponse aiResponse = makeRequest(secondDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", aiResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+        }
+
+    }
+
+    @Test
+    public void extendUserEntitiesTest() throws AIServiceException {
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        updateConfig(config);
+
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final Entity dwarfsEntity = createDwarfsEntity();
+        dwarfsEntity.setExtend(true);
+
+        final AIResponse uploadResult = aiDataService.uploadUserEntity(dwarfsEntity);
+        assertNotNull(uploadResult);
+        assertFalse(uploadResult.isError());
+
+        {
+            final AIRequest aiRequest = new AIRequest("hi nori");
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", aiResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
+        }
+
+        {
+            // check original entity values not changed
+            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("say_hi", aiResponse.getResult().getAction());
+            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+        }
+
+    }
+
+    @Test(expected = AIServiceException.class)
     public void wrongUserEntitiesTest() throws AIServiceException{
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
@@ -675,11 +788,23 @@ public abstract class ProtocolTestBase {
 
         final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
 
-        final Entity myDwarfs = new Entity("notDwarfs");
-        myDwarfs.addEntry(new EntityEntry("Ori", new String[]{"ori", "Nori"}));
-        myDwarfs.addEntry(new EntityEntry("bifur", new String[]{"Bofur", "Bombur"}));
+        final Entity myDwarfs = createDwarfsEntity();
+        myDwarfs.setName("notDwarfs");
+        aiDataService.uploadUserEntity(myDwarfs);
+    }
 
-        final AIResponse uploadResult = aiDataService.uploadUserEntity(myDwarfs);
+    private Entity createHobbitsEntity() {
+        final Entity hobbits = new Entity("hobbits");
+        hobbits.addEntry(new EntityEntry("Meriadoc", new String[]{"Brandybuck", "Merry"}));
+        hobbits.addEntry(new EntityEntry("Peregrin", new String[]{"Took", "Peregrin", "Pippin"}));
+        return hobbits;
+    }
+
+    private Entity createDwarfsEntity() {
+        final Entity dwarfs = new Entity("dwarfs");
+        dwarfs.addEntry(new EntityEntry("Ori", new String[]{"ori", "Nori"}));
+        dwarfs.addEntry(new EntityEntry("bifur", new String[]{"Bofur", "Bombur"}));
+        return dwarfs;
     }
 
     protected void updateConfig(AIConfiguration config) {

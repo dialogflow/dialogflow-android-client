@@ -225,7 +225,7 @@ public class AIConfiguration {
     /**
      * Set API service url. Used primarily for test requests.
      */
-    public void setServiceUrl(String serviceUrl) {
+    public void setServiceUrl(final String serviceUrl) {
         this.serviceUrl = serviceUrl;
     }
 
@@ -237,11 +237,11 @@ public class AIConfiguration {
         }
     }
 
-    public String getUserEntitiesEndpoint() {
+    String getUserEntitiesEndpoint(final String sessionId) {
         if (!TextUtils.isEmpty(protocolVersion)) {
-            return String.format("%s%s?v=%s", serviceUrl, USER_ENTITIES_ENDPOINT, protocolVersion);
+            return String.format("%s%s?v=%s&sessionId=%s", serviceUrl, USER_ENTITIES_ENDPOINT, protocolVersion, sessionId);
         } else {
-            return String.format("%s%s", serviceUrl, USER_ENTITIES_ENDPOINT);
+            return String.format("%s%s?sessionId=%s", serviceUrl, USER_ENTITIES_ENDPOINT, sessionId);
         }
     }
 
@@ -249,7 +249,7 @@ public class AIConfiguration {
         return recognizerStartSound;
     }
 
-    public void setRecognizerStartSound(AssetFileDescriptor recognizerStartSound) {
+    public void setRecognizerStartSound(final AssetFileDescriptor recognizerStartSound) {
         this.recognizerStartSound = recognizerStartSound;
     }
 
@@ -257,7 +257,7 @@ public class AIConfiguration {
         return recognizerStopSound;
     }
 
-    public void setRecognizerStopSound(AssetFileDescriptor recognizerStopSound) {
+    public void setRecognizerStopSound(final AssetFileDescriptor recognizerStopSound) {
         this.recognizerStopSound = recognizerStopSound;
     }
 
@@ -265,7 +265,7 @@ public class AIConfiguration {
         return recognizerCancelSound;
     }
 
-    public void setRecognizerCancelSound(AssetFileDescriptor recognizerCancelSound) {
+    public void setRecognizerCancelSound(final AssetFileDescriptor recognizerCancelSound) {
         this.recognizerCancelSound = recognizerCancelSound;
     }
 
