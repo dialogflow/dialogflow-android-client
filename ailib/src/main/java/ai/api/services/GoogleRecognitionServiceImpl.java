@@ -66,7 +66,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
     private final Handler handler;
 
     private volatile boolean wasReadyForSpeech;
-    private String googleRecognizerVersion;
 
 
     private final Map<Integer, String> errorMessages = new HashMap<Integer, String>();
@@ -93,13 +92,11 @@ public class GoogleRecognitionServiceImpl extends AIService {
         }
 
         handler = new Handler(context.getMainLooper());
-
-        googleRecognizerVersion = RecognizerChecker.getGoogleRecognizerVersion(context);
     }
 
     protected void initializeRecognizer() {
 
-        if (speechRecognizer != null && affectedWithGoogleSearchProblem()) {
+        if (speechRecognizer != null) {
             return;
         }
 
@@ -282,19 +279,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
         handler.post(runnable);
     }
 
-    /**
-     * Workaround for http://stackoverflow.com/questions/31071650/speechrecognizer-throws-onerror-on-the-first-listening
-     * @return
-     */
-    private boolean affectedWithGoogleSearchProblem() {
-        if (googleRecognizerVersion != null) {
-            if (googleRecognizerVersion.contains("4.7.13.19")) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private class InternalRecognitionListener implements RecognitionListener {
 
         @Override
@@ -331,11 +315,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
         @Override
         public void onError(final int error) {
-
-            // workaround for http://stackoverflow.com/questions/31071650/speechrecognizer-throws-onerror-on-the-first-listening
-            if (error == SpeechRecognizer.ERROR_NO_MATCH
-                    && affectedWithGoogleSearchProblem()
-                    && !wasReadyForSpeech) {
+            if (error == SpeechRecognizer.ERROR_NO_MATCH && !wasReadyForSpeech) {
                 return;
             }
 
