@@ -157,7 +157,8 @@ This section assumes that you have performed your own speech recognition and tha
 5. Send the request to the API.AI service using the method **aiDataService.request(aiRequest)**.
 6. Process the response.
 
-The following example code sends a query with the text "Hello":
+The following example code sends a query with the text "Hello".
+First, it initialize `aiDataService` and `aiRequest` instances
 ```java
 final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY,
     AIConfiguration.SupportedLanguages.English, 
@@ -167,14 +168,28 @@ final AIDataService aiDataService = new AIDataService(config);
 
 final AIRequest aiRequest = new AIRequest();
 aiRequest.setQuery("Hello");
+```
 
-try {
-    final AIResponse aiResponse = aiDataService.request(aiRequest);
-    // process response object here...
-
-} catch (final AIServiceException e) {
-    e.printStackTrace();
-}
+Then it calls the `aiDataService.request` method. Please note, that you must call `aiDataService.request` method from background thread, using `AsyncTask` class, for example.
+```java
+new AsyncTask<AIRequest, Void, AIResponse>() {
+    @Override
+    protected AIResponse doInBackground(AIRequest... requests) {
+        final AIRequest request = requests[0];
+        try {
+            final AIResponse response = aiDataService.request(aiRequest);
+            return response;
+        } catch (AIServiceException e) {
+        }
+        return null;
+    }
+    @Override
+    protected void onPostExecute(AIResponse aiResponse) {
+        if (aiResponse != null) {
+            // process aiResponse here
+        }
+    }
+}.execute(aiRequest);
 ```
     
 # <a name="tutorial" />Tutorial
