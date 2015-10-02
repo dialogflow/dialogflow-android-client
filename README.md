@@ -13,7 +13,7 @@ Two permissions are required to use the API.AI Android SDK:
 Add this dependencies to your project to use SDK
 
 ```
-compile 'ai.api:sdk:1.6.6@aar'
+compile 'ai.api:sdk:1.6.8@aar'
 // api.ai SDK dependencies
 compile 'com.android.support:appcompat-v7:22.0.0'
 compile 'com.google.code.gson:gson:2.3'
@@ -44,7 +44,7 @@ The API.AI Android SDK comes with a simple sample that illustrates how voice com
 2. Open [Android Studio](https://developer.android.com/sdk/installing/studio.html).
 3. Import the **api-ai-android-master** directory.
 4. Open the SDK Manager and be sure that you have installed Android Build Tools 19.1.
-5. In the Project browser, open **apiAISampleApp/src/main/java/ai.api.sample/MainActivity**.
+5. In the Project browser, open **apiAISampleApp/src/main/java/ai.api.sample/Config**.
 6. Towards the top of the file, you will see a declaration of a static final string called *ACCESS_TOKEN*. Set its value to be the client access token of your agent. Similarly, set the variable named *SUBSCRIPTION_KEY* to your subscription key.
 7. Attach an Android device, or have the emulator set up with an emulated device.
 8. From the **Run** menu, choose **Debug** (or click the Debug symbol). Choose your device.
@@ -64,7 +64,7 @@ To implement speech recognition and natural language processing features in your
 1. Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
 
     ```
-    compile 'ai.api:sdk:1.6.6@aar'
+    compile 'ai.api:sdk:1.6.8@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.google.code.gson:gson:2.3'
@@ -157,7 +157,8 @@ This section assumes that you have performed your own speech recognition and tha
 5. Send the request to the API.AI service using the method **aiDataService.request(aiRequest)**.
 6. Process the response.
 
-The following example code sends a query with the text "Hello":
+The following example code sends a query with the text "Hello".
+First, it initialize `aiDataService` and `aiRequest` instances
 ```java
 final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY,
     AIConfiguration.SupportedLanguages.English, 
@@ -167,14 +168,28 @@ final AIDataService aiDataService = new AIDataService(config);
 
 final AIRequest aiRequest = new AIRequest();
 aiRequest.setQuery("Hello");
+```
 
-try {
-    final AIResponse aiResponse = aiDataService.request(aiRequest);
-    // process response object here...
-
-} catch (final AIServiceException e) {
-    e.printStackTrace();
-}
+Then it calls the `aiDataService.request` method. Please note, that you must call `aiDataService.request` method from background thread, using `AsyncTask` class, for example.
+```java
+new AsyncTask<AIRequest, Void, AIResponse>() {
+    @Override
+    protected AIResponse doInBackground(AIRequest... requests) {
+        final AIRequest request = requests[0];
+        try {
+            final AIResponse response = aiDataService.request(aiRequest);
+            return response;
+        } catch (AIServiceException e) {
+        }
+        return null;
+    }
+    @Override
+    protected void onPostExecute(AIResponse aiResponse) {
+        if (aiResponse != null) {
+            // process aiResponse here
+        }
+    }
+}.execute(aiRequest);
 ```
     
 # <a name="tutorial" />Tutorial
@@ -198,7 +213,7 @@ Follow these steps to set up your environment and create new android app with AP
 Next you will integrate with the SDK to be able to make calls. Follow these steps:
 
 1. Open **AndroidManifest.xml** under **app/src/main**. 
-2. Just above the `<activity>` tag, add these line in order to give the app permission to access the internet and the microphone:
+2. Just above the `<application>` tag, add these line in order to give the app permission to access the internet and the microphone:
 
     ```xml
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -207,7 +222,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     
 3. Save **AndroidManifest.xml**.
 4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](docs/images/Dependencies.png)
-5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.6.6** item then click OK.<br/> ![Add dependency](docs/images/SearchApiAi.png)
+5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.6.8** item and append `@aar` to the end of library name (see image) then click OK.<br/> ![Add dependency](docs/images/Dependencies2.png)
     * Also you need to add dependencies of the SDK library : *com.android.support:appcompat-v7*, *com.google.code.gson:gson*, *commons-io:commons-io*. Add them in the same way.
 6. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
 7. Expand the import section and add the following lines to import the necessary API.AI classes:
@@ -216,10 +231,11 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     import ai.api.AIConfiguration;
     import ai.api.AIListener;
     import ai.api.AIService;
-    import ai.api.GsonFactory;
     import ai.api.model.AIError;
     import ai.api.model.AIResponse;
     import ai.api.model.Result;
+    import com.google.gson.JsonElement;
+    import java.util.Map;
     ```
     
 ## Create the user interface
@@ -238,14 +254,14 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 7. Create two private members in MainActivity for the widgets:
    
     ```java
-    private Button processButton;
+    private Button listenButton;
     private TextView resultTextView;
     ```
     
 8. At the end of the OnCreate method, add these lines to initialize the widgets:
     
     ```java
-    processButton = (Button) findViewById(R.id.processButton);
+    listenButton = (Button) findViewById(R.id.listenButton);
     resultTextView = (TextView) findViewById(R.id.resultTextView);
     ```
     
