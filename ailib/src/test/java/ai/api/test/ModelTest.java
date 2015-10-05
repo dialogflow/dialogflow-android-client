@@ -1,6 +1,7 @@
 package ai.api.test;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -16,6 +17,7 @@ import ai.api.model.AIResponse;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
@@ -34,7 +36,8 @@ public class ModelTest {
             "      \"time\": \"\",\n" +
             "      \"text\": \"feed cat\",\n" +
             "      \"priority\": \"\",\n" +
-            "      \"remind\": \"remind\"\n" +
+            "      \"remind\": \"remind\",\n" +
+            "      \"complex_param\": {\"nested_key\": \"nested_value\"}\n" +
             "    }\n" +
             "  },\n" +
             "  \"status\": {\n" +
@@ -61,13 +64,6 @@ public class ModelTest {
     }
 
     @Test
-    public void checkJUnitWork() {
-        // failing test gives much better feedback
-        // to show that all works correctly ;)
-        assertTrue(true);
-    }
-
-    @Test
     @Ignore
     public void getDateParameterTest() {
         final AIResponse aiResponse = gson.fromJson(TEST_JSON, AIResponse.class);
@@ -84,5 +80,16 @@ public class ModelTest {
         } catch (final Exception e) {
             assertTrue(e.getMessage(), false);
         }
+    }
+
+    @Test
+    public void getComplexParameterTest(){
+        final AIResponse aiResponse = gson.fromJson(TEST_JSON, AIResponse.class);
+
+        final JsonObject jsonObject = aiResponse.getResult().getComplexParameter("complex_param");
+
+        assertNotNull(jsonObject);
+        assertNotNull(jsonObject.get("nested_key"));
+        assertEquals("nested_value", jsonObject.get("nested_key").getAsString());
     }
 }

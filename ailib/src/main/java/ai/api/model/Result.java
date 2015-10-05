@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 
@@ -206,6 +207,22 @@ public class Result implements Serializable {
             return ParametersConverter.parseFloat(parameterStringValue);
         }
         return defaultValue;
+    }
+    public JsonObject getComplexParameter(final String name, final JsonObject defaultValue) {
+        if (parameters.containsKey(name)) {
+            final JsonObject jsonObject = parameters.get(name).getAsJsonObject();
+
+            if (jsonObject == null) {
+                return defaultValue;
+            }
+
+            return jsonObject;
+        }
+        return defaultValue;
+    }
+
+    public JsonObject getComplexParameter(final String name) {
+        return getComplexParameter(name, null);
     }
 
     public AIOutputContext[] getContexts() {
