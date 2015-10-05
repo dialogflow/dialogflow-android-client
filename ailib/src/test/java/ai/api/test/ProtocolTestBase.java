@@ -793,6 +793,30 @@ public abstract class ProtocolTestBase {
         aiDataService.uploadUserEntity(myDwarfs);
     }
 
+    @Test
+    public void inputContextWithParametersTest() throws AIServiceException {
+        final AIConfiguration config = new AIConfiguration(
+                "3485a96fb27744db83e78b8c4bc9e7b7",
+                "cb9693af-85ce-4fbf-844a-5563722fc27f",
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+
+        final AIContext weatherContext = new AIContext("weather");
+        weatherContext.setParameters(Collections.singletonMap("location", "London"));
+
+        final List<AIContext> contexts = Collections.singletonList(weatherContext);
+
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("and for tomorrow");
+        aiRequest.setContexts(contexts);
+
+        final AIResponse aiResponse = aiDataService.request(aiRequest);
+
+        assertEquals("Weather in London for tomorrow", aiResponse.getResult().getFulfillment().getSpeech());
+    }
+
     private Entity createHobbitsEntity() {
         final Entity hobbits = new Entity("hobbits");
         hobbits.addEntry(new EntityEntry("Meriadoc", new String[]{"Brandybuck", "Merry"}));

@@ -39,7 +39,7 @@ public class AIRequest extends QuestionMetadata implements Serializable {
     private float[] confidence;
 
     @SerializedName("contexts")
-    private ArrayList<String> contexts;
+    private List<AIContext> contexts;
 
     @SerializedName("resetContexts")
     private Boolean resetContexts;
@@ -94,23 +94,15 @@ public class AIRequest extends QuestionMetadata implements Serializable {
     }
 
     public void setContexts(final List<AIContext> contexts) {
-        if (contexts == null) {
-            this.contexts = null;
-            return;
-        }
-
-        this.contexts = new ArrayList<String>();
-        for (final AIContext c : contexts) {
-            this.contexts.add(c.getName());
-        }
+        this.contexts = contexts;
     }
 
     public void addContext(final AIContext aiContext) {
         if (contexts == null) {
-            contexts = new ArrayList<String>(1);
+            contexts = new ArrayList<>(1);
         }
 
-        contexts.add(aiContext.getName());
+        contexts.add(aiContext);
     }
 
     @Override

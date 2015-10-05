@@ -21,10 +21,18 @@ package ai.api.model;
  *
  ***********************************************************************************************************************/
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
+import java.util.Map;
 
 public class AIContext implements Serializable {
+
+    @SerializedName("name")
     private String name;
+
+    @SerializedName("parameters")
+    private Map<String, String> parameters;
 
     public AIContext() {
     }
@@ -39,5 +47,13 @@ public class AIContext implements Serializable {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(final Map<String, String> parameters) {
+        this.parameters = parameters;
     }
 }

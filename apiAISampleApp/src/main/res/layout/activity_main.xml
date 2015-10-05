@@ -24,13 +24,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_sample_text"
-            android:onClick="buttonSampleClick"/>
+            android:onClick="buttonSampleClick"
+            />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dialog_sample_text"
-            android:onClick="dialogSampleClick"/>
+            android:onClick="dialogSampleClick"
+            />
 
         </LinearLayout>
 

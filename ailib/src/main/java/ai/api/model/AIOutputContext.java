@@ -25,7 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Map;
 
 public class AIOutputContext implements Serializable {
 
@@ -33,7 +33,7 @@ public class AIOutputContext implements Serializable {
     private String name;
 
     @SerializedName("parameters")
-    private HashMap<String, JsonElement> parameters;
+    private Map<String, JsonElement> parameters;
 
     public String getName() {
         return name;
@@ -43,11 +43,11 @@ public class AIOutputContext implements Serializable {
         this.name = name;
     }
 
-    public HashMap<String, JsonElement> getParameters() {
+    public Map<String, JsonElement> getParameters() {
         return parameters;
     }
 
-    public void setParameters(final HashMap<String, JsonElement> parameters) {
+    public void setParameters(final Map<String, JsonElement> parameters) {
         this.parameters = parameters;
     }
 }
