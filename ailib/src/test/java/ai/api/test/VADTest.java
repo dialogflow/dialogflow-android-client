@@ -28,12 +28,13 @@ import org.robolectric.annotation.Config;
 
 import java.io.InputStream;
 
+import ai.api.BuildConfig;
 import ai.api.util.VoiceActivityDetector;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, manifest = Config.DEFAULT, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 public class VADTest {
 

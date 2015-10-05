@@ -28,13 +28,14 @@ import android.text.TextUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import ai.api.AIServiceException;
+import ai.api.BuildConfig;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 
@@ -42,7 +43,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 @Ignore("Tests for development purposes. Disabled by default.")
 public class ProtocolDevTest extends ProtocolTestBase {
@@ -100,7 +101,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
             config.setServiceUrl(devUrl);
 
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery("привет");
@@ -131,7 +132,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
             config.setServiceUrl(devUrl);
 
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery("hello");

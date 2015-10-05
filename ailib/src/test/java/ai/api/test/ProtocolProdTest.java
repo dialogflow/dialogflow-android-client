@@ -25,7 +25,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+import ai.api.BuildConfig;
+
+@Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 public class ProtocolProdTest extends ProtocolTestBase {
 

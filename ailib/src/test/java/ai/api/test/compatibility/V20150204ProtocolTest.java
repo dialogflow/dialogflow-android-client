@@ -25,8 +25,8 @@ import com.google.gson.Gson;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.io.InputStream;
@@ -35,6 +35,7 @@ import java.util.Calendar;
 
 import ai.api.AIConfiguration;
 import ai.api.AIServiceException;
+import ai.api.BuildConfig;
 import ai.api.GsonFactory;
 import ai.api.model.AIRequest;
 import ai.api.test.compatibility.v20150204_protocol_model.AIResponseV20150204;
@@ -46,7 +47,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Test for backward compatibility to the first protocol version ("20150204")
  */
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 public class V20150204ProtocolTest {
 
@@ -64,7 +65,7 @@ public class V20150204ProtocolTest {
 
         config.setProtocolVersion(PROTOCOL_VERSION);
 
-        final SimpleProtocolTestingService aiService = new SimpleProtocolTestingService(Robolectric.application, config);
+        final SimpleProtocolTestingService aiService = new SimpleProtocolTestingService(RuntimeEnvironment.application, config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("hello");
@@ -89,7 +90,7 @@ public class V20150204ProtocolTest {
 
         config.setProtocolVersion(PROTOCOL_VERSION);
 
-        final SimpleProtocolTestingService aiService = new SimpleProtocolTestingService(Robolectric.application, config);
+        final SimpleProtocolTestingService aiService = new SimpleProtocolTestingService(RuntimeEnvironment.application, config);
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
         final AIRequest aiRequest = new AIRequest();

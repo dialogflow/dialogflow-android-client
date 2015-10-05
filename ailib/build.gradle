@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'robolectric'
 
 android {
     compileSdkVersion Integer.parseInt(project.ANDROID_BUILD_SDK_VERSION)
@@ -11,8 +10,6 @@ android {
         targetSdkVersion Integer.parseInt(project.ANDROID_BUILD_TARGET_SDK_VERSION)
         versionCode Integer.parseInt(project.VERSION_CODE)
         versionName project.VERSION_NAME
-
-        testInstrumentationRunner 'com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner'
     }
     sourceSets {
         androidTest {
@@ -26,8 +23,11 @@ android {
     }
     buildTypes {
         release {
-            //runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            buildConfigField "int", "TESTS_SDK", "19"
+        }
+        debug{
+            buildConfigField "int", "TESTS_SDK", "19"
         }
     }
     productFlavors {
@@ -42,31 +42,18 @@ android {
     }
 }
 
-robolectric {
-    include '**/*Test.class'
-    exclude '**/espresso/**/*.class'
-}
-
 dependencies {
     repositories {
         mavenLocal()
         mavenCentral()
     }
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:support-v4:23.0.1'
     compile 'com.google.code.gson:gson:2.3'
     compile 'commons-io:commons-io:2.4'
-    androidTestCompile 'org.robolectric:robolectric:2.4'
-    androidTestCompile 'com.squareup.assertj:assertj-android:1.0.0'
-    androidTestCompile 'junit:junit:4.12'
-}
-
-apply plugin: 'idea'
-
-idea {
-    module {
-        testOutputDir = file('build/test-classes')
-    }
+    testCompile "junit:junit:4.12"
+    testCompile "org.assertj:assertj-core:1.7.0"
+    testCompile "org.robolectric:robolectric:3.0"
 }
 
 apply from: '../gradle-mvn-push.gradle'

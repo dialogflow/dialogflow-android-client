@@ -26,7 +26,7 @@ import android.text.TextUtils;
 import com.google.gson.JsonElement;
 
 import org.junit.Test;
-import org.robolectric.Robolectric;
+import org.robolectric.RuntimeEnvironment;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("Hello");
@@ -102,7 +102,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
@@ -133,7 +133,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("Hello");
@@ -177,7 +177,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("weather");
@@ -226,7 +226,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
@@ -261,7 +261,7 @@ public abstract class ProtocolTestBase {
 
             updateConfig(config);
 
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery(query);
@@ -285,7 +285,7 @@ public abstract class ProtocolTestBase {
 
             updateConfig(secondConfig);
 
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, secondConfig);
+            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, secondConfig);
 
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery(query);
@@ -313,8 +313,8 @@ public abstract class ProtocolTestBase {
 
         try {
 
-            final AIDataService firstService = new AIDataService(Robolectric.application, config);
-            final AIDataService secondService = new AIDataService(Robolectric.application, config);
+            final AIDataService firstService = new AIDataService(RuntimeEnvironment.application, config);
+            final AIDataService secondService = new AIDataService(RuntimeEnvironment.application, config);
 
             {
                 final AIRequest weatherRequest = new AIRequest();
@@ -354,7 +354,7 @@ public abstract class ProtocolTestBase {
         updateConfig(config);
 
         try {
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
             final AIResponse response = aiDataService.request(new AIRequest("what is your name"));
 
             assertNotNull(response.getResult().getParameters());
@@ -392,7 +392,7 @@ public abstract class ProtocolTestBase {
         updateConfig(config);
 
         try {
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery("привет");
@@ -420,7 +420,7 @@ public abstract class ProtocolTestBase {
         updateConfig(config);
 
         try {
-            final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery("oi");
@@ -446,7 +446,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("Hello");
@@ -470,7 +470,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final InputStream voiceStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
@@ -493,7 +493,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
         try {
 
             {
@@ -528,8 +528,8 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
-        final AIDataService secondService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService secondService = new AIDataService(RuntimeEnvironment.application, config);
 
         {
             final AIRequest aiRequest = new AIRequest();
@@ -599,7 +599,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("hi Bofur");
@@ -623,8 +623,8 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
-        final AIDataService secondDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService secondDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final Entity dwarfsEntity = createDwarfsEntity();
 
@@ -670,7 +670,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
         aiDataService.uploadUserEntities(Collections.<Entity>emptyList());
     }
 
@@ -682,8 +682,8 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
-        final AIDataService secondDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService secondDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final Entity dwarfsEntity = createDwarfsEntity();
         final Entity hobbitsEntity = createHobbitsEntity();
@@ -749,7 +749,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
         final Entity dwarfsEntity = createDwarfsEntity();
         dwarfsEntity.setExtend(true);
 
@@ -786,7 +786,7 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final Entity myDwarfs = createDwarfsEntity();
         myDwarfs.setName("notDwarfs");
@@ -801,7 +801,7 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final AIContext weatherContext = new AIContext("weather");
         weatherContext.setParameters(Collections.singletonMap("location", "London"));

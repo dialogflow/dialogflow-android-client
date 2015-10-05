@@ -10,6 +10,7 @@ import org.robolectric.annotation.Config;
 
 import java.util.Date;
 
+import ai.api.BuildConfig;
 import ai.api.GsonFactory;
 import ai.api.model.AIResponse;
 
@@ -17,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 public class ModelTest {
 
@@ -57,6 +58,13 @@ public class ModelTest {
         assertTrue(aiResponse.getResult().getParameters().containsKey("text"));
         assertTrue(aiResponse.getResult().getParameters().containsKey("remind"));
 
+    }
+
+    @Test
+    public void checkJUnitWork() {
+        // failing test gives much better feedback
+        // to show that all works correctly ;)
+        assertTrue(true);
     }
 
     @Test

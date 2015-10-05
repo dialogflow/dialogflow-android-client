@@ -8,12 +8,13 @@ import org.robolectric.annotation.Config;
 
 import java.util.Date;
 
+import ai.api.BuildConfig;
 import ai.api.util.ParametersConverter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 public class ParametersConverterTest {
 

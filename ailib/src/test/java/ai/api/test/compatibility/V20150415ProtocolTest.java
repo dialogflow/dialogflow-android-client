@@ -24,8 +24,8 @@ package ai.api.test.compatibility;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.Collections;
@@ -34,6 +34,7 @@ import java.util.List;
 import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import ai.api.AIServiceException;
+import ai.api.BuildConfig;
 import ai.api.model.AIContext;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
@@ -43,7 +44,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test for backward compatibility to the first protocol version ("20150415")
  */
-@Config(emulateSdk = 18, manifest = Config.NONE)
+@Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 @Ignore
 public class V20150415ProtocolTest {
@@ -59,7 +60,7 @@ public class V20150415ProtocolTest {
 
         config.setProtocolVersion(PROTOCOL_VERSION);
 
-        final AIDataService aiDataService = new AIDataService(Robolectric.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final AIContext weatherContext = new AIContext("weather");
         weatherContext.setParameters(Collections.singletonMap("location", "London"));
