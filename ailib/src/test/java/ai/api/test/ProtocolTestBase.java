@@ -47,6 +47,7 @@ import ai.api.model.EntityEntry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public abstract class ProtocolTestBase {
@@ -70,13 +71,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void textRequestTest() {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        updateConfig(config);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = createDataService();
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("Hello");
@@ -92,6 +87,16 @@ public abstract class ProtocolTestBase {
             e.printStackTrace();
             assertTrue(e.getMessage(), false);
         }
+    }
+
+    private AIDataService createDataService() {
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        updateConfig(config);
+
+        return new AIDataService(RuntimeEnvironment.application, config);
     }
 
     @Test
@@ -126,14 +131,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void inputContextTest() {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(),
-                getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        updateConfig(config);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = createDataService();
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("Hello");
@@ -170,14 +168,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void outputContextTest() {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(),
-                getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        updateConfig(config);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = createDataService();
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("weather");
@@ -255,13 +246,7 @@ public abstract class ProtocolTestBase {
         final String query = "I want pizza";
 
         {
-            final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                    AIConfiguration.SupportedLanguages.English,
-                    AIConfiguration.RecognitionEngine.System);
-
-            updateConfig(config);
-
-            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+            final AIDataService aiDataService = createDataService();
 
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery(query);
@@ -360,7 +345,7 @@ public abstract class ProtocolTestBase {
             assertNotNull(response.getResult().getParameters());
             assertFalse(response.getResult().getParameters().isEmpty());
 
-            final AIOutputContext context = response.getResult().getContexts()[0];
+            final AIOutputContext context = response.getResult().getContexts().get(0);
             assertNotNull(context.getParameters());
 
             {
@@ -593,13 +578,7 @@ public abstract class ProtocolTestBase {
 
     @Test(expected = AIServiceException.class)
     public void wrongRequestEntitiesTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        updateConfig(config);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = createDataService();
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("hi Bofur");
@@ -664,13 +643,7 @@ public abstract class ProtocolTestBase {
 
     @Test(expected = AIServiceException.class)
     public void userEntitiesEmptyCollectionTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        updateConfig(config);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = createDataService();
         aiDataService.uploadUserEntities(Collections.<Entity>emptyList());
     }
 
@@ -743,13 +716,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void extendUserEntitiesTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        updateConfig(config);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = createDataService();
         final Entity dwarfsEntity = createDwarfsEntity();
         dwarfsEntity.setExtend(true);
 
@@ -780,13 +747,7 @@ public abstract class ProtocolTestBase {
 
     @Test(expected = AIServiceException.class)
     public void wrongUserEntitiesTest() throws AIServiceException{
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        updateConfig(config);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = createDataService();
 
         final Entity myDwarfs = createDwarfsEntity();
         myDwarfs.setName("notDwarfs");
@@ -795,13 +756,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void inputContextWithParametersTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(
-                "3485a96fb27744db83e78b8c4bc9e7b7",
-                "cb9693af-85ce-4fbf-844a-5563722fc27f",
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = createDataService();
 
         final AIContext weatherContext = new AIContext("weather");
         weatherContext.setParameters(Collections.singletonMap("location", "London"));
@@ -812,7 +767,7 @@ public abstract class ProtocolTestBase {
         aiRequest.setQuery("and for tomorrow");
         aiRequest.setContexts(contexts);
 
-        final AIResponse aiResponse = aiDataService.request(aiRequest);
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
         assertEquals("Weather in London for tomorrow", aiResponse.getResult().getFulfillment().getSpeech());
     }
