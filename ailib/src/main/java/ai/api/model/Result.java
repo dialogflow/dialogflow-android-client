@@ -55,7 +55,7 @@ public class Result implements Serializable {
      * Currently active contexts
      */
     @SerializedName("contexts")
-    private AIOutputContext[] contexts;
+    private List<AIOutputContext> contexts;
 
 
     @SerializedName("metadata")
@@ -225,8 +225,26 @@ public class Result implements Serializable {
         return getComplexParameter(name, null);
     }
 
-    public AIOutputContext[] getContexts() {
+    public List<AIOutputContext> getContexts() {
         return contexts;
+    }
+
+    public AIOutputContext getContext(final String name) {
+        if (TextUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("name argument must be not empty");
+        }
+
+        if (contexts == null) {
+            return null;
+        }
+
+        for (final AIOutputContext c : contexts) {
+            if (name.equalsIgnoreCase(c.getName())) {
+                return c;
+            }
+        }
+
+        return null;
     }
 
     /**
