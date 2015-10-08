@@ -40,7 +40,7 @@ import ai.api.util.ParametersConverter;
 
 public class Result implements Serializable {
 
-    private static final String DATE_FORMAT_ERROR_MESSAGE = "'%s' parameter has value '%s' and can't be parsed as a Date";
+    private static final String DATE_FORMAT_ERROR_MESSAGE = "'%s' parameter has value '%s' and can't be parsed as a Date or Time";
 
     @SerializedName("action")
     private String action;
@@ -109,7 +109,7 @@ public class Result implements Serializable {
         return defaultValue;
     }
 
-    public Date getDateParameter(final String name) throws ParseException {
+    public Date getDateParameter(final String name) throws IllegalArgumentException {
         return getDateParameter(name, null);
     }
 
@@ -131,7 +131,7 @@ public class Result implements Serializable {
         return defaultValue;
     }
 
-    public Date getDateTimeParameter(final String name) throws ParseException {
+    public Date getDateTimeParameter(final String name) throws IllegalArgumentException {
         return getDateTimeParameter(name, null);
     }
 
@@ -153,7 +153,7 @@ public class Result implements Serializable {
         return defaultValue;
     }
 
-    public Date getTimeParameter(final String name) throws ParseException {
+    public Date getTimeParameter(final String name) throws IllegalArgumentException {
         return getTimeParameter(name, null);
     }
 
