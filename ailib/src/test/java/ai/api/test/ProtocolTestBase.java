@@ -772,6 +772,66 @@ public abstract class ProtocolTestBase {
         assertEquals("Weather in London for tomorrow", aiResponse.getResult().getFulfillment().getSpeech());
     }
 
+    @Test
+    public void contextWithLifespanTest() throws AIServiceException{
+        final AIDataService aiDataService = createDataService();
+
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("weather in london");
+
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+        assertEquals(5, aiResponse.getResult().getContext("weather").getLifespan().intValue());
+        assertEquals(2, aiResponse.getResult().getContext("shortContext").getLifespan().intValue());
+        assertEquals(10, aiResponse.getResult().getContext("longContext").getLifespan().intValue());
+
+        // check if contexts live as much time as it must
+        AIResponse nextResponse = null;
+
+        for (int i = 0; i < 3; i++) {
+            nextResponse = makeRequest(aiDataService, new AIRequest("another request"));
+        }
+
+        assertNull(nextResponse.getResult().getContext("shortContext"));
+        assertNotNull(nextResponse.getResult().getContext("weather"));
+        assertNotNull(nextResponse.getResult().getContext("longContext"));
+
+        for (int i = 0; i < 3; i++) {
+            nextResponse = makeRequest(aiDataService, new AIRequest("another request"));
+        }
+
+        assertNull(nextResponse.getResult().getContext("shortContext"));
+        assertNull(nextResponse.getResult().getContext("weather"));
+        assertNotNull(nextResponse.getResult().getContext("longContext"));
+    }
+
+    @Test
+    public void inputContextWithLifespanTest() throws AIServiceException {
+        final AIDataService aiDataService = createDataService();
+
+        final AIContext weatherContext = new AIContext("weather");
+        weatherContext.setParameters(Collections.singletonMap("location", "London"));
+        weatherContext.setLifespan(2);
+
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("and for tomorrow");
+        aiRequest.setContexts(Collections.singletonList(weatherContext));
+
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+        assertEquals("Weather in London for tomorrow", aiResponse.getResult().getFulfillment().getSpeech());
+        assertNotNull(aiResponse.getResult().getContext("weather"));
+
+        AIResponse nextResponse = null;
+        for (int i = 0; i < 2; i++) {
+            nextResponse = makeRequest(aiDataService, new AIRequest("next request"));
+        }
+
+        assertNotNull(nextResponse.getResult().getContext("weather"));
+        nextResponse = makeRequest(aiDataService, new AIRequest("next request"));
+        assertNull(nextResponse.getResult().getContext("weather"));
+    }
+
     private Entity createHobbitsEntity() {
         final Entity hobbits = new Entity("hobbits");
         hobbits.addEntry(new EntityEntry("Meriadoc", new String[]{"Brandybuck", "Merry"}));
