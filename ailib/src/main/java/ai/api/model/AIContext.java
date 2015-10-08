@@ -34,6 +34,9 @@ public class AIContext implements Serializable {
     @SerializedName("parameters")
     private Map<String, String> parameters;
 
+    @SerializedName("lifespan")
+    private Integer lifespan;
+
     public AIContext() {
     }
 
@@ -55,5 +58,21 @@ public class AIContext implements Serializable {
 
     public void setParameters(final Map<String, String> parameters) {
         this.parameters = parameters;
+    }
+
+    /**
+     * Lifespan of the context measured in requests
+     * @return count of requests context will live
+     */
+    public Integer getLifespan() {
+        return lifespan;
+    }
+
+    /**
+     * Lifespan of the context measured in requests
+     * @param lifespan count of requests context will live
+     */
+    public void setLifespan(final Integer lifespan) {
+        this.lifespan = lifespan;
     }
 }
