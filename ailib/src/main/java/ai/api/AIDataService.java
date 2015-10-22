@@ -316,9 +316,15 @@ public class AIDataService {
         } catch (final IOException e) {
             if (connection != null) {
                 try {
-                    final String errorString = IOUtils.toString(connection.getErrorStream(), Charsets.UTF_8);
-                    Log.d(TAG, "" + errorString);
-                    return errorString;
+                    final InputStream errorStream = connection.getErrorStream();
+                    if (errorStream != null) {
+                        final String errorString = IOUtils.toString(errorStream, Charsets.UTF_8);
+                        Log.d(TAG, "" + errorString);
+                        return errorString;
+                    }
+                    else {
+                        throw new AIServiceException("Can't connect to the api.ai service.", e);
+                    }
                 } catch (final IOException ex) {
                     Log.w(TAG, "Can't read error response", ex);
                 }
