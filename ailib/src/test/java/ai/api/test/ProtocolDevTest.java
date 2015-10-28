@@ -49,8 +49,8 @@ import static org.junit.Assert.assertTrue;
 public class ProtocolDevTest extends ProtocolTestBase {
 
     // Testing keys
-    protected static final String ACCESS_TOKEN = "9586504322be4f8ba31cfdebc40eb76f";
-    protected static final String SUBSCRIPTION_KEY = "cb9693af-85ce-4fbf-844a-5563722fc27f";
+    protected static final String ACCESS_TOKEN = "a410386b327946c6ac162aad10cf9788";
+    protected static final String SUBSCRIPTION_KEY = "no difference";
 
     @Override
     protected String getAccessToken() {
@@ -59,7 +59,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     @Override
     protected String getSecondAccessToken() {
-        return "e807a6a95b15400a8ad18de3c577955e";
+        return "212bf93686444afab30e20ed6f2dff1d";
     }
 
     @Override
@@ -88,7 +88,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
     }
 
     protected String getDevUrl() {
-        return "";
+        return "https://dev.api.ai/api/";
     }
 
     @Test
@@ -123,7 +123,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
     }
 
     @Test
-    public void AIDataServiceDevTest() {
+    public void AIDataServiceDevTest() throws AIServiceException {
         final String devUrl = getDevUrl();
         if (!TextUtils.isEmpty(devUrl)) {
             final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
@@ -137,24 +137,18 @@ public class ProtocolDevTest extends ProtocolTestBase {
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery("hello");
 
-            try {
-                final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-                assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
-                assertEquals("greeting", aiResponse.getResult().getAction());
-                assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
-
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
-            }
+            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+            assertEquals("greeting", aiResponse.getResult().getAction());
+            assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
         } else {
             assertTrue(true);
         }
     }
 
     @Override
-    protected void updateConfig(AIConfiguration config) {
+    protected void updateConfig(final AIConfiguration config) {
         final String devUrl = getDevUrl();
         if (!TextUtils.isEmpty(devUrl)) {
             config.setServiceUrl(devUrl);

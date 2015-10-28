@@ -100,33 +100,21 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void voiceRequestTest() {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.Speaktoit);
-
-        updateConfig(config);
-
-        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+    public void voiceRequestTest() throws AIServiceException {
+        final AIDataService aiDataService = createDataService();
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
-        try {
-            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream);
-            assertNotNull(aiResponse);
-            assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
-            assertFalse(TextUtils.isEmpty(aiResponse.getId()));
-            assertNotNull(aiResponse.getResult());
+        final AIResponse aiResponse = aiDataService.voiceRequest(inputStream);
+        assertNotNull(aiResponse);
+        assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
+        assertFalse(TextUtils.isEmpty(aiResponse.getId()));
+        assertNotNull(aiResponse.getResult());
 
-            final String resolvedQuery = aiResponse.getResult().getResolvedQuery();
-            assertFalse(TextUtils.isEmpty(resolvedQuery));
-            assertTrue(resolvedQuery.contains("what is your"));
-            assertTrue(resolvedQuery.contains("name"));
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
-        }
+        final String resolvedQuery = aiResponse.getResult().getResolvedQuery();
+        assertFalse(TextUtils.isEmpty(resolvedQuery));
+        assertTrue(resolvedQuery.contains("what is your"));
+        assertTrue(resolvedQuery.contains("name"));
     }
 
     @Test
