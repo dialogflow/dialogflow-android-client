@@ -61,6 +61,7 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     protected static final int[] STATE_WAITING = {R.attr.state_waiting};
     protected static final int[] STATE_SPEAKING = {R.attr.state_speaking};
+    protected static final int[] STATE_INITIALIZING_TTS = {R.attr.state_initializing_tts};
 
     private float animationStage = 0;
     private boolean animationSecondPhase = false;
@@ -144,7 +145,8 @@ public class AIButton extends SoundLevelButton implements AIListener {
         normal,
         busy, // transitive state with disabled mic
         listening, // state with sound indicator
-        speaking;
+        speaking,
+        initializingTts;
 
         public static MicState fromAttrs(final TypedArray viewAttrs) {
             if (viewAttrs.getBoolean(R.styleable.SoundLevelButton_state_listening, false))
@@ -153,6 +155,9 @@ public class AIButton extends SoundLevelButton implements AIListener {
                 return busy;
             if (viewAttrs.getBoolean(R.styleable.SoundLevelButton_state_speaking, false))
                 return speaking;
+            if (viewAttrs.getBoolean(R.styleable.SoundLevelButton_state_initializing_tts, false))
+                return initializingTts;
+
             return normal;
         }
     }
@@ -295,6 +300,9 @@ public class AIButton extends SoundLevelButton implements AIListener {
                 case speaking:
                     mergeDrawableStates(state, STATE_SPEAKING);
                     break;
+                case initializingTts:
+                    mergeDrawableStates(state, STATE_INITIALIZING_TTS);
+                    break;
             }
         }
         return state;
@@ -322,7 +330,7 @@ public class AIButton extends SoundLevelButton implements AIListener {
         }
     }
 
-    private void changeState(final MicState toState) {
+    protected void changeState(final MicState toState) {
         switch (toState) {
             case normal:
                 stopProcessingAnimation();
@@ -337,6 +345,10 @@ public class AIButton extends SoundLevelButton implements AIListener {
                 setDrawSoundLevel(true);
                 break;
             case speaking:
+                stopProcessingAnimation();
+                setDrawSoundLevel(false);
+                break;
+            case initializingTts:
                 stopProcessingAnimation();
                 setDrawSoundLevel(false);
                 break;

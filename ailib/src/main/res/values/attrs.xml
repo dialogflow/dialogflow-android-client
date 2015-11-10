@@ -14,5 +14,6 @@
 	    <attr name="state_listening" format="boolean"/>
 	    <attr name="state_waiting" format="boolean"/>
 	    <attr name="state_speaking" format="boolean"/>
+		<attr name="state_initializing_tts" format="boolean"/>
 	</declare-styleable>
 </resources>
