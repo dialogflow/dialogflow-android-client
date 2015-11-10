@@ -358,6 +358,10 @@ public class AIButton extends SoundLevelButton implements AIListener {
         refreshDrawableState();
     }
 
+    protected MicState getCurrentState() {
+        return currentState;
+    }
+
     private void startProcessingAnimation() {
         setDrawCenter(true);
         animationSecondPhase = false;

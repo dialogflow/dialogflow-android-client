@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:drawable="@drawable/speaker" app:state_speaking="true"/>
     <item android:drawable="@drawable/cube" app:state_waiting="true"/>
-    <item android:drawable="@drawable/microphone_control"/>
     <item android:drawable="@drawable/speaker_silent" app:state_initializing_tts="true"/>
+    <item android:drawable="@drawable/speaker" app:state_speaking="true"/>
+    <item android:drawable="@drawable/microphone_control"/>
 </selector>
