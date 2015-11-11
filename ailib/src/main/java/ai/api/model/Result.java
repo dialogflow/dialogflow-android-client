@@ -73,6 +73,9 @@ public class Result implements Serializable {
     @SerializedName("fulfillment")
     private Fulfillment fulfillment;
 
+    @SerializedName("actionIncomplete")
+    private boolean actionIncomplete;
+
     @NonNull
     public String getAction() {
         if (action == null) {
@@ -264,6 +267,14 @@ public class Result implements Serializable {
 
     public void setFulfillment(final Fulfillment fulfillment) {
         this.fulfillment = fulfillment;
+    }
+
+    public boolean isActionIncomplete() {
+        return actionIncomplete;
+    }
+
+    public void setActionIncomplete(final boolean actionIncomplete) {
+        this.actionIncomplete = actionIncomplete;
     }
 
     void trimParameters() {
