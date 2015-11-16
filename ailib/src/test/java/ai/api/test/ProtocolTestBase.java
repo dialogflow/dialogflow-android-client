@@ -24,6 +24,7 @@ package ai.api.test;
 import android.text.TextUtils;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
@@ -818,6 +819,26 @@ public abstract class ProtocolTestBase {
         assertNotNull(nextResponse.getResult().getContext("weather"));
         nextResponse = makeRequest(aiDataService, new AIRequest("next request"));
         assertNull(nextResponse.getResult().getContext("weather"));
+    }
+
+    @Test
+    public void compositeEntitiesTest() throws AIServiceException {
+        final AIDataService aiDataService = createDataService();
+        final AIRequest aiRequest = new AIRequest("hello remind me to feed cat");
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+        final String stringParam = aiResponse.getResult().getStringParameter("greeting");
+        assertEquals("hello", stringParam);
+
+        final String emptyParam = aiResponse.getResult().getStringParameter("pet");
+        assertNull(emptyParam);
+
+        final JsonObject jsonParam = aiResponse.getResult().getComplexParameter("action");
+        assertNotNull(jsonParam);
+
+        final String actionPet = jsonParam.get("pet").getAsString();
+        assertEquals("cat", actionPet);
+
     }
 
     private Entity createHobbitsEntity() {
