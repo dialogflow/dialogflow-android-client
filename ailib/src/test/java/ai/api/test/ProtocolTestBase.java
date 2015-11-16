@@ -37,6 +37,7 @@ import java.util.List;
 import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import ai.api.AIServiceException;
+import ai.api.SessionIdStorage;
 import ai.api.model.AIContext;
 import ai.api.model.AIOutputContext;
 import ai.api.model.AIRequest;
@@ -95,6 +96,8 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.System);
 
         updateConfig(config);
+
+        SessionIdStorage.resetSessionId(RuntimeEnvironment.application);
 
         return new AIDataService(RuntimeEnvironment.application, config);
     }
@@ -300,7 +303,7 @@ public abstract class ProtocolTestBase {
                 final AIRequest checkSecondRequest = new AIRequest();
                 checkSecondRequest.setQuery("check weather");
                 final AIResponse checkSecondResponse = makeRequest(secondService, checkSecondRequest);
-                assertTrue(TextUtils.isEmpty(checkSecondResponse.getResult().getAction()));
+                assertNotNull(checkSecondResponse.getResult().getAction());
             }
 
             {
@@ -319,40 +322,29 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void testParameters(){
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
+    public void testParameters() throws AIServiceException {
 
-        updateConfig(config);
+        final AIDataService aiDataService = createDataService();
+        final AIResponse response = aiDataService.request(new AIRequest("what is your name"));
 
-        try {
-            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
-            final AIResponse response = aiDataService.request(new AIRequest("what is your name"));
+        assertNotNull(response.getResult().getParameters());
+        assertFalse(response.getResult().getParameters().isEmpty());
 
-            assertNotNull(response.getResult().getParameters());
-            assertFalse(response.getResult().getParameters().isEmpty());
+        final AIOutputContext context = response.getResult().getContexts().get(0);
+        assertNotNull(context.getParameters());
 
-            final AIOutputContext context = response.getResult().getContexts().get(0);
-            assertNotNull(context.getParameters());
-
-            {
-                assertTrue(context.getParameters().containsKey("param"));
-                final JsonElement contextParam = context.getParameters().get("param");
-                assertEquals("blabla", contextParam.getAsString());
-            }
-
-            {
-                assertTrue(context.getParameters().containsKey("my_name"));
-                final JsonElement contextParam = context.getParameters().get("my_name");
-                assertEquals("Sam", contextParam.getAsString());
-            }
-
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
+        {
+            assertTrue(context.getParameters().containsKey("param"));
+            final JsonElement contextParam = context.getParameters().get("param");
+            assertEquals("blabla", contextParam.getAsString());
         }
+
+        {
+            assertTrue(context.getParameters().containsKey("my_name"));
+            final JsonElement contextParam = context.getParameters().get("my_name");
+            assertEquals("Sam", contextParam.getAsString());
+        }
+
     }
 
     @Test
@@ -523,13 +515,13 @@ public abstract class ProtocolTestBase {
         }
 
         {
-            // check entities working in session, not for one request
-            final AIRequest secondRequest = new AIRequest("hi bombur");
+            // check entities also work in another instance
+            final AIRequest secondRequest = new AIRequest("hi nori");
             final AIResponse secondResponse = makeRequest(aiDataService, secondRequest);
 
             assertFalse(TextUtils.isEmpty(secondResponse.getResult().getResolvedQuery()));
             assertEquals("say_hi", secondResponse.getResult().getAction());
-            assertEquals("hi Bilbo, I am bifur", secondResponse.getResult().getFulfillment().getSpeech());
+            assertEquals("hi Bilbo, I am Ori", secondResponse.getResult().getFulfillment().getSpeech());
         }
 
         // check previous entities overwritten
@@ -542,19 +534,19 @@ public abstract class ProtocolTestBase {
             assertTrue(TextUtils.isEmpty(aiResponse.getResult().getFulfillment().getSpeech()));
         }
 
-        // check entities was not changed in another session
+        // check entities work in another instance
 
         {
-            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIRequest aiRequest = new AIRequest("hi nori");
             final AIResponse aiResponse = makeRequest(secondService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
             assertEquals("say_hi", aiResponse.getResult().getAction());
-            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+            assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
         }
 
         {
-            final AIRequest aiRequest = new AIRequest("hi nori");
+            final AIRequest aiRequest = new AIRequest("hi dwalin");
             final AIResponse aiResponse = makeRequest(secondService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
@@ -617,14 +609,14 @@ public abstract class ProtocolTestBase {
         }
 
         {
-            // check entities was not changed in another session
+            // check entities changed for another instance
 
-            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIRequest aiRequest = new AIRequest("hi bombur");
             final AIResponse aiResponse = makeRequest(secondDataService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
             assertEquals("say_hi", aiResponse.getResult().getAction());
-            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+            assertEquals("hi Bilbo, I am bifur", aiResponse.getResult().getFulfillment().getSpeech());
         }
 
     }
@@ -690,14 +682,14 @@ public abstract class ProtocolTestBase {
         }
 
         {
-            // check entities was not changed in another session
+            // check entities was changed in another instance
 
-            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIRequest aiRequest = new AIRequest("hi bombur");
             final AIResponse aiResponse = makeRequest(secondDataService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
             assertEquals("say_hi", aiResponse.getResult().getAction());
-            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+            assertEquals("hi Bilbo, I am bifur", aiResponse.getResult().getFulfillment().getSpeech());
         }
 
     }

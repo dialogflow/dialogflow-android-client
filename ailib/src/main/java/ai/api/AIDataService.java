@@ -45,7 +45,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import ai.api.http.HttpClient;
 import ai.api.model.AIContext;
@@ -77,7 +76,7 @@ public class AIDataService {
         this.context = context;
         this.config = config;
 
-        sessionId = UUID.randomUUID().toString();
+        sessionId = SessionIdStorage.getSessionId(context);
     }
 
     /**

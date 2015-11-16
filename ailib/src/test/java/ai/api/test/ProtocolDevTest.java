@@ -41,7 +41,6 @@ import ai.api.model.AIResponse;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
@@ -87,50 +86,40 @@ public class ProtocolDevTest extends ProtocolTestBase {
         return "c82b0a650c9a4758984fb53411f271e4";
     }
 
-    protected String getDevUrl() {
-        return "https://dev.api.ai/api/";
+    private final String DEV_URL = "https://dev.api.ai/api/";
+
+    @Override
+    protected void updateConfig(final AIConfiguration config) {
+        config.setServiceUrl(DEV_URL);
     }
 
     @Test
-    public void AIDataServiceDevRuTest() {
-        final String devUrl = getDevUrl();
-        if (!TextUtils.isEmpty(devUrl)) {
+    public void AIDataServiceDevRuTest() throws AIServiceException {
             final AIConfiguration config = new AIConfiguration("43a7541fb0a94fae8f1bef406a2d9ca8", getSubscriptionKey(),
                     AIConfiguration.SupportedLanguages.Russian,
                     AIConfiguration.RecognitionEngine.System);
 
-            config.setServiceUrl(devUrl);
+        config.setServiceUrl(DEV_URL);
 
             final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery("привет");
 
-            try {
                 final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
                 assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
                 assertEquals("helloAction", aiResponse.getResult().getAction());
                 assertEquals("Добрый день", aiResponse.getResult().getFulfillment().getSpeech());
-
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
-            }
-        } else {
-            assertTrue(true);
-        }
     }
 
     @Test
     public void AIDataServiceDevTest() throws AIServiceException {
-        final String devUrl = getDevUrl();
-        if (!TextUtils.isEmpty(devUrl)) {
             final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                     AIConfiguration.SupportedLanguages.English,
                     AIConfiguration.RecognitionEngine.System);
 
-            config.setServiceUrl(devUrl);
+        config.setServiceUrl(DEV_URL);
 
             final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
@@ -142,16 +131,6 @@ public class ProtocolDevTest extends ProtocolTestBase {
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
             assertEquals("greeting", aiResponse.getResult().getAction());
             assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
-        } else {
-            assertTrue(true);
-        }
     }
 
-    @Override
-    protected void updateConfig(final AIConfiguration config) {
-        final String devUrl = getDevUrl();
-        if (!TextUtils.isEmpty(devUrl)) {
-            config.setServiceUrl(devUrl);
-        }
-    }
 }
