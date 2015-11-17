@@ -80,6 +80,10 @@ public class AIDataService {
         sessionId = SessionIdStorage.getSessionId(context);
     }
 
+    public AIResponse request(@NonNull final AIRequest request) throws AIServiceException {
+        return request(request, null);
+    }
+
     /**
      * Make request to the ai service. This method must not be called in the UI Thread
      *
@@ -87,7 +91,7 @@ public class AIDataService {
      * @return response object from service
      */
     @NonNull
-    public AIResponse request(final AIRequest request) throws AIServiceException {
+    public AIResponse request(@NonNull final AIRequest request, @Nullable final RequestExtras requestExtras) throws AIServiceException {
         if (request == null) {
             throw new IllegalArgumentException("Request argument must not be null");
         }
@@ -100,11 +104,25 @@ public class AIDataService {
             request.setSessionId(sessionId);
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
+            Map<String, String> additionalHeaders = null;
+
+            if (requestExtras != null) {
+                if (requestExtras.hasContexts()) {
+                    request.setContexts(requestExtras.getContexts());
+                }
+
+                if (requestExtras.hasEntities()) {
+                    request.setEntities(requestExtras.getEntities());
+                }
+
+                additionalHeaders = requestExtras.getAdditionalHeaders();
+            }
+
             final String queryData = gson.toJson(request);
 
             Log.d(TAG, "Request json: " + queryData);
 
-            final String response = doTextRequest(queryData);
+            final String response = doTextRequest(config.getQuestionUrl(), queryData, additionalHeaders);
 
             if (TextUtils.isEmpty(response)) {
                 throw new AIServiceException("Empty response from ai service. Please check configuration and Internet connection.");
@@ -196,7 +214,7 @@ public class AIDataService {
 
             Log.d(TAG, "Request json: " + queryData);
 
-            final String response = doSoundRequest(voiceStream, queryData);
+            final String response = doSoundRequest(voiceStream, queryData, additionalHeaders);
 
             if (TextUtils.isEmpty(response)) {
                 throw new AIServiceException("Empty response from ai service. Please check configuration.");

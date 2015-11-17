@@ -33,6 +33,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -129,7 +130,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
         }
     }
 
-    private void sendRequest(@NonNull final AIRequest aiRequest) {
+    private void sendRequest(@NonNull final AIRequest aiRequest, @Nullable final RequestExtras requestExtras) {
 
         if (aiRequest == null) {
             throw new IllegalArgumentException("aiRequest must be not null");
@@ -143,7 +144,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
             protected AIResponse doInBackground(final AIRequest... params) {
                 final AIRequest request = params[0];
                 try {
-                    final AIResponse response = aiDataService.request(request);
+                    final AIResponse response = aiDataService.request(request, requestExtras);
                     return response;
                 } catch (final AIServiceException e) {
                     aiError = new AIError(e);
@@ -361,19 +362,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
                         aiRequest.setQuery(recognitionResults.get(0));
                     }
 
-                    if (requestExtras != null) {
-                        if (requestExtras.hasContexts()) {
-                            aiRequest.setContexts(requestExtras.getContexts());
-                        }
-
-                        if (requestExtras.hasEntities()) {
-                            aiRequest.setEntities(requestExtras.getEntities());
-                        }
-                    }
-
                     // notify listeners about the last recogntion result for more accurate user feedback
                     GoogleRecognitionServiceImpl.this.onPartialResults(recognitionResults);
-                    GoogleRecognitionServiceImpl.this.sendRequest(aiRequest);
+                    GoogleRecognitionServiceImpl.this.sendRequest(aiRequest, requestExtras);
                 }
             }
         }
