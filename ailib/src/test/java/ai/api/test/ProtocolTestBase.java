@@ -38,6 +38,7 @@ import java.util.List;
 import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import ai.api.AIServiceException;
+import ai.api.SessionIdStorage;
 import ai.api.model.AIContext;
 import ai.api.model.AIOutputContext;
 import ai.api.model.AIRequest;
@@ -71,23 +72,18 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void textRequestTest() {
+    public void textRequestTest() throws AIServiceException {
         final AIDataService aiDataService = createDataService();
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("Hello");
 
-        try {
-            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
-            assertEquals("greeting", aiResponse.getResult().getAction());
-            assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
+        assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+        assertEquals("greeting", aiResponse.getResult().getAction());
+        assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
 
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
-        }
     }
 
     private AIDataService createDataService() {
@@ -96,6 +92,8 @@ public abstract class ProtocolTestBase {
                 AIConfiguration.RecognitionEngine.System);
 
         updateConfig(config);
+
+        SessionIdStorage.resetSessionId(RuntimeEnvironment.application);
 
         return new AIDataService(RuntimeEnvironment.application, config);
     }
@@ -119,63 +117,50 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void inputContextTest() {
+    public void inputContextTest() throws AIServiceException {
         final AIDataService aiDataService = createDataService();
 
-        final AIRequest aiRequest = new AIRequest();
-        aiRequest.setQuery("Hello");
+        final AIRequest aiRequest = new AIRequest("Hello");
 
         AIResponse aiResponse;
         String action;
 
-        try {
-            cleanContexts(aiDataService);
+        cleanContexts(aiDataService);
 
-            aiResponse = makeRequest(aiDataService, aiRequest);
-            action = aiResponse.getResult().getAction();
-            assertEquals("greeting", action);
+        aiResponse = makeRequest(aiDataService, aiRequest);
+        action = aiResponse.getResult().getAction();
+        assertEquals("greeting", action);
 
-            aiRequest.addContext(new AIContext("firstContext"));
-            aiResponse = makeRequest(aiDataService, aiRequest);
-            action = aiResponse.getResult().getAction();
-            assertEquals("firstGreeting", action);
+        aiRequest.addContext(new AIContext("firstContext"));
+        aiResponse = makeRequest(aiDataService, aiRequest);
+        action = aiResponse.getResult().getAction();
+        assertEquals("firstGreeting", action);
 
-            aiRequest.setResetContexts(true);
-            aiRequest.setContexts(null);
-            aiRequest.addContext(new AIContext("secondContext"));
-            aiResponse = makeRequest(aiDataService, aiRequest);
-            action = aiResponse.getResult().getAction();
-            assertEquals("secondGreeting", action);
+        aiRequest.setResetContexts(true);
+        aiRequest.setContexts(null);
+        aiRequest.addContext(new AIContext("secondContext"));
+        aiResponse = makeRequest(aiDataService, aiRequest);
+        action = aiResponse.getResult().getAction();
+        assertEquals("secondGreeting", action);
 
-            cleanContexts(aiDataService);
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
-        }
+        cleanContexts(aiDataService);
     }
 
     @Test
-    public void outputContextTest() {
+    public void outputContextTest() throws AIServiceException {
         final AIDataService aiDataService = createDataService();
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("weather");
 
-        try {
-            cleanContexts(aiDataService);
+        cleanContexts(aiDataService);
 
-            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
-            final String action = aiResponse.getResult().getAction();
-            assertEquals("showWeather", action);
-            assertNotNull(aiResponse.getResult().getContexts());
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+        final String action = aiResponse.getResult().getAction();
+        assertEquals("showWeather", action);
+        assertNotNull(aiResponse.getResult().getContexts());
 
-            assertContainsContext(aiResponse, "weather");
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
-        }
+        assertContainsContext(aiResponse, "weather");
     }
 
     private void assertContainsContext(final AIResponse aiResponse, final String contextName) {
@@ -199,7 +184,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void outputContextVoiceTest() {
+    public void outputContextVoiceTest() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);
@@ -210,27 +195,21 @@ public abstract class ProtocolTestBase {
 
         final InputStream inputStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
-        try {
-            final AIResponse aiResponse = aiDataService.voiceRequest(inputStream);
-            assertNotNull(aiResponse);
-            assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
-            assertFalse(TextUtils.isEmpty(aiResponse.getId()));
-            assertNotNull(aiResponse.getResult());
+        final AIResponse aiResponse = aiDataService.voiceRequest(inputStream);
+        assertNotNull(aiResponse);
+        assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
+        assertFalse(TextUtils.isEmpty(aiResponse.getId()));
+        assertNotNull(aiResponse.getResult());
 
-            final String resolvedQuery = aiResponse.getResult().getResolvedQuery();
-            assertFalse(TextUtils.isEmpty(resolvedQuery));
-            assertTrue(resolvedQuery.contains("what is your"));
+        final String resolvedQuery = aiResponse.getResult().getResolvedQuery();
+        assertFalse(TextUtils.isEmpty(resolvedQuery));
+        assertTrue(resolvedQuery.contains("what is your"));
 
-            assertContainsContext(aiResponse, "name_question");
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
-        }
+        assertContainsContext(aiResponse, "name_question");
     }
 
     @Test
-    public void differentAgentsTest() {
+    public void differentAgentsTest() throws AIServiceException {
 
         final String query = "I want pizza";
 
@@ -240,16 +219,11 @@ public abstract class ProtocolTestBase {
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery(query);
 
-            try {
-                final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-                assertNotNull(aiResponse.getResult());
-                assertEquals("pizza", aiResponse.getResult().getAction());
+            assertNotNull(aiResponse.getResult());
+            assertEquals("pizza", aiResponse.getResult().getAction());
 
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
-            }
         }
 
         {
@@ -264,100 +238,77 @@ public abstract class ProtocolTestBase {
             final AIRequest aiRequest = new AIRequest();
             aiRequest.setQuery(query);
 
-            try {
-                final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-                assertNotNull(aiResponse.getResult());
-                assertTrue(TextUtils.isEmpty(aiResponse.getResult().getAction()));
+            assertNotNull(aiResponse.getResult());
+            assertTrue(TextUtils.isEmpty(aiResponse.getResult().getAction()));
 
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
-            }
+
         }
     }
 
     @Test
-    public void sessionTest() {
+    public void sessionTest() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
         updateConfig(config);
 
-        try {
+        final AIDataService firstService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService secondService = new AIDataService(RuntimeEnvironment.application, config);
 
-            final AIDataService firstService = new AIDataService(RuntimeEnvironment.application, config);
-            final AIDataService secondService = new AIDataService(RuntimeEnvironment.application, config);
+        {
+            final AIRequest weatherRequest = new AIRequest();
+            weatherRequest.setQuery("weather");
+            final AIResponse weatherResponse = makeRequest(firstService, weatherRequest);
+            assertNotNull(weatherResponse);
+        }
 
-            {
-                final AIRequest weatherRequest = new AIRequest();
-                weatherRequest.setQuery("weather");
-                final AIResponse weatherResponse = makeRequest(firstService, weatherRequest);
-                assertNotNull(weatherResponse);
-            }
+        {
+            final AIRequest checkSecondRequest = new AIRequest();
+            checkSecondRequest.setQuery("check weather");
+            final AIResponse checkSecondResponse = makeRequest(secondService, checkSecondRequest);
+            assertNotNull(checkSecondResponse.getResult().getAction());
+        }
 
-            {
-                final AIRequest checkSecondRequest = new AIRequest();
-                checkSecondRequest.setQuery("check weather");
-                final AIResponse checkSecondResponse = makeRequest(secondService, checkSecondRequest);
-                assertTrue(TextUtils.isEmpty(checkSecondResponse.getResult().getAction()));
-            }
+        {
+            final AIRequest checkFirstRequest = new AIRequest();
+            checkFirstRequest.setQuery("check weather");
+            final AIResponse checkFirstResponse = makeRequest(firstService, checkFirstRequest);
+            assertNotNull(checkFirstResponse.getResult().getAction());
+            assertTrue(checkFirstResponse.getResult().getAction().equalsIgnoreCase("checked"));
+        }
+    }
 
-            {
-                final AIRequest checkFirstRequest = new AIRequest();
-                checkFirstRequest.setQuery("check weather");
-                final AIResponse checkFirstResponse = makeRequest(firstService, checkFirstRequest);
-                assertNotNull(checkFirstResponse.getResult().getAction());
-                assertTrue(checkFirstResponse.getResult().getAction().equalsIgnoreCase("checked"));
-            }
+    @Test
+    public void testParameters() throws AIServiceException {
 
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
+        final AIDataService aiDataService = createDataService();
+        final AIResponse response = aiDataService.request(new AIRequest("what is your name"));
+
+        assertNotNull(response.getResult().getParameters());
+        assertFalse(response.getResult().getParameters().isEmpty());
+
+        final AIOutputContext context = response.getResult().getContexts().get(0);
+        assertNotNull(context.getParameters());
+
+        {
+            assertTrue(context.getParameters().containsKey("param"));
+            final JsonElement contextParam = context.getParameters().get("param");
+            assertEquals("blabla", contextParam.getAsString());
+        }
+
+        {
+            assertTrue(context.getParameters().containsKey("my_name"));
+            final JsonElement contextParam = context.getParameters().get("my_name");
+            assertEquals("Sam", contextParam.getAsString());
         }
 
     }
 
     @Test
-    public void testParameters(){
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.System);
-
-        updateConfig(config);
-
-        try {
-            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
-            final AIResponse response = aiDataService.request(new AIRequest("what is your name"));
-
-            assertNotNull(response.getResult().getParameters());
-            assertFalse(response.getResult().getParameters().isEmpty());
-
-            final AIOutputContext context = response.getResult().getContexts().get(0);
-            assertNotNull(context.getParameters());
-
-            {
-                assertTrue(context.getParameters().containsKey("param"));
-                final JsonElement contextParam = context.getParameters().get("param");
-                assertEquals("blabla", contextParam.getAsString());
-            }
-
-            {
-                assertTrue(context.getParameters().containsKey("my_name"));
-                final JsonElement contextParam = context.getParameters().get("my_name");
-                assertEquals("Sam", contextParam.getAsString());
-            }
-
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
-        }
-    }
-
-    @Test
-    public void testRussianLanguage() {
+    public void testRussianLanguage() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getRuAccessToken(),
                 getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.Russian,
@@ -365,27 +316,19 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        try {
-            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
-            final AIRequest aiRequest = new AIRequest();
-            aiRequest.setQuery("привет");
+        final AIRequest aiRequest = new AIRequest("привет");
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+        assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
 
-            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
-
-            assertEquals("helloAction", aiResponse.getResult().getAction());
-            assertEquals("Добрый день", aiResponse.getResult().getFulfillment().getSpeech());
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
-        }
+        assertEquals("helloAction", aiResponse.getResult().getAction());
+        assertEquals("Добрый день", aiResponse.getResult().getFulfillment().getSpeech());
     }
 
     @Test
-    public void testBrazilLanguage() {
+    public void testBrazilLanguage() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getPtBrAccessToken(),
                 getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.PortugueseBrazil,
@@ -393,23 +336,17 @@ public abstract class ProtocolTestBase {
 
         updateConfig(config);
 
-        try {
-            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
-            final AIRequest aiRequest = new AIRequest();
-            aiRequest.setQuery("oi");
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("oi");
 
-            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+        assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
 
-            assertEquals("helloAction", aiResponse.getResult().getAction());
-            assertEquals("como você está", aiResponse.getResult().getFulfillment().getSpeech());
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
-        }
+        assertEquals("helloAction", aiResponse.getResult().getAction());
+        assertEquals("como você está", aiResponse.getResult().getFulfillment().getSpeech());
     }
 
     @Test
@@ -460,7 +397,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
-    public void resetContextsTest() {
+    public void resetContextsTest() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);
@@ -468,30 +405,25 @@ public abstract class ProtocolTestBase {
         updateConfig(config);
 
         final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
-        try {
 
-            {
-                final AIRequest aiRequest = new AIRequest("what is your name");
+        {
+            final AIRequest aiRequest = new AIRequest("what is your name");
 
-                final AIResponse aiResponse = aiDataService.request(aiRequest);
-                assertContainsContext(aiResponse, "name_question");
+            final AIResponse aiResponse = aiDataService.request(aiRequest);
+            assertContainsContext(aiResponse, "name_question");
 
-                final boolean resetSucceed = aiDataService.resetContexts();
-                assertTrue(resetSucceed);
-            }
-
-            {
-                final AIRequest aiRequest = new AIRequest("hello");
-                final AIResponse aiResponse = aiDataService.request(aiRequest);
-                assertNotNull(aiResponse);
-                assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
-                assertNotContainsContext(aiResponse, "name_question");
-            }
-
-        } catch (final AIServiceException e) {
-            e.printStackTrace();
-            assertTrue(e.getMessage(), false);
+            final boolean resetSucceed = aiDataService.resetContexts();
+            assertTrue(resetSucceed);
         }
+
+        {
+            final AIRequest aiRequest = new AIRequest("hello");
+            final AIResponse aiResponse = aiDataService.request(aiRequest);
+            assertNotNull(aiResponse);
+            assertFalse(aiResponse.getStatus().getErrorDetails(), aiResponse.isError());
+            assertNotContainsContext(aiResponse, "name_question");
+        }
+
     }
 
     @Test
@@ -524,13 +456,13 @@ public abstract class ProtocolTestBase {
         }
 
         {
-            // check entities working in session, not for one request
-            final AIRequest secondRequest = new AIRequest("hi bombur");
+            // check entities also work in another instance
+            final AIRequest secondRequest = new AIRequest("hi nori");
             final AIResponse secondResponse = makeRequest(aiDataService, secondRequest);
 
             assertFalse(TextUtils.isEmpty(secondResponse.getResult().getResolvedQuery()));
             assertEquals("say_hi", secondResponse.getResult().getAction());
-            assertEquals("hi Bilbo, I am bifur", secondResponse.getResult().getFulfillment().getSpeech());
+            assertEquals("hi Bilbo, I am Ori", secondResponse.getResult().getFulfillment().getSpeech());
         }
 
         // check previous entities overwritten
@@ -543,19 +475,19 @@ public abstract class ProtocolTestBase {
             assertTrue(TextUtils.isEmpty(aiResponse.getResult().getFulfillment().getSpeech()));
         }
 
-        // check entities was not changed in another session
+        // check entities work in another instance
 
         {
-            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIRequest aiRequest = new AIRequest("hi nori");
             final AIResponse aiResponse = makeRequest(secondService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
             assertEquals("say_hi", aiResponse.getResult().getAction());
-            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+            assertEquals("hi Bilbo, I am Ori", aiResponse.getResult().getFulfillment().getSpeech());
         }
 
         {
-            final AIRequest aiRequest = new AIRequest("hi nori");
+            final AIRequest aiRequest = new AIRequest("hi dwalin");
             final AIResponse aiResponse = makeRequest(secondService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
@@ -618,14 +550,14 @@ public abstract class ProtocolTestBase {
         }
 
         {
-            // check entities was not changed in another session
+            // check entities changed for another instance
 
-            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIRequest aiRequest = new AIRequest("hi bombur");
             final AIResponse aiResponse = makeRequest(secondDataService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
             assertEquals("say_hi", aiResponse.getResult().getAction());
-            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+            assertEquals("hi Bilbo, I am bifur", aiResponse.getResult().getFulfillment().getSpeech());
         }
 
     }
@@ -691,14 +623,14 @@ public abstract class ProtocolTestBase {
         }
 
         {
-            // check entities was not changed in another session
+            // check entities was changed in another instance
 
-            final AIRequest aiRequest = new AIRequest("hi dwalin");
+            final AIRequest aiRequest = new AIRequest("hi bombur");
             final AIResponse aiResponse = makeRequest(secondDataService, aiRequest);
 
             assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
             assertEquals("say_hi", aiResponse.getResult().getAction());
-            assertEquals("hi Bilbo, I am Balin", aiResponse.getResult().getFulfillment().getSpeech());
+            assertEquals("hi Bilbo, I am bifur", aiResponse.getResult().getFulfillment().getSpeech());
         }
 
     }

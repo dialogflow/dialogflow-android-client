@@ -85,8 +85,11 @@ public class ProtocolDevTest extends ProtocolTestBase {
         return "c82b0a650c9a4758984fb53411f271e4";
     }
 
-    protected String getDevUrl() {
-        return "https://dev.api.ai/api/";
+    private final String DEV_URL = "https://dev.api.ai/api/";
+
+    @Override
+    protected void updateConfig(final AIConfiguration config) {
+        config.setServiceUrl(DEV_URL);
     }
 
     @Test
@@ -96,14 +99,12 @@ public class ProtocolDevTest extends ProtocolTestBase {
                 AIConfiguration.SupportedLanguages.Russian,
                 AIConfiguration.RecognitionEngine.System);
 
-
-        config.setServiceUrl(devUrl);
+        config.setServiceUrl(DEV_URL);
 
         final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("привет");
-
 
         final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
@@ -115,13 +116,11 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     @Test
     public void AIDataServiceDevTest() throws AIServiceException {
-
         final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
-
-        config.setServiceUrl(devUrl);
+        config.setServiceUrl(DEV_URL);
 
         final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
@@ -130,18 +129,10 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
         final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
 
-
         assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
         assertEquals("greeting", aiResponse.getResult().getAction());
         assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
 
     }
 
-    @Override
-    protected void updateConfig(final AIConfiguration config) {
-        final String devUrl = getDevUrl();
-        if (!TextUtils.isEmpty(devUrl)) {
-            config.setServiceUrl(devUrl);
-        }
-    }
 }
