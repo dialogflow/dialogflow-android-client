@@ -2,30 +2,29 @@ package ai.api.test;
 
 /**
  * ********************************************************************************************************************
- * <p/>
+ *
  * API.AI Android SDK - client-side libraries for API.AI
  * =================================================
- * <p/>
+ *
  * Copyright (C) 2014 by Speaktoit, Inc. (https://www.speaktoit.com)
  * https://www.api.ai
- * <p/>
+ *
  * **********************************************************************************************************************
- * <p/>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * <p/>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- * <p/>
+ *
  * *********************************************************************************************************************
  */
 
 import android.text.TextUtils;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -41,11 +40,10 @@ import ai.api.model.AIResponse;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
-@Ignore("Tests for development purposes. Disabled by default.")
+//@Ignore("Tests for development purposes. Disabled by default.")
 public class ProtocolDevTest extends ProtocolTestBase {
 
     // Testing keys
@@ -92,59 +90,51 @@ public class ProtocolDevTest extends ProtocolTestBase {
     }
 
     @Test
-    public void AIDataServiceDevRuTest() {
-        final String devUrl = getDevUrl();
-        if (!TextUtils.isEmpty(devUrl)) {
-            final AIConfiguration config = new AIConfiguration("43a7541fb0a94fae8f1bef406a2d9ca8", getSubscriptionKey(),
-                    AIConfiguration.SupportedLanguages.Russian,
-                    AIConfiguration.RecognitionEngine.System);
 
-            config.setServiceUrl(devUrl);
+    public void AIDataServiceDevRuTest() throws AIServiceException {
+        final AIConfiguration config = new AIConfiguration("43a7541fb0a94fae8f1bef406a2d9ca8", getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.Russian,
+                AIConfiguration.RecognitionEngine.System);
 
-            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
-            final AIRequest aiRequest = new AIRequest();
-            aiRequest.setQuery("привет");
+        config.setServiceUrl(devUrl);
 
-            try {
-                final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
-                assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
-                assertEquals("helloAction", aiResponse.getResult().getAction());
-                assertEquals("Добрый день", aiResponse.getResult().getFulfillment().getSpeech());
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("привет");
 
-            } catch (final AIServiceException e) {
-                e.printStackTrace();
-                assertTrue(e.getMessage(), false);
-            }
-        } else {
-            assertTrue(true);
-        }
+
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+        assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+        assertEquals("helloAction", aiResponse.getResult().getAction());
+        assertEquals("Добрый день", aiResponse.getResult().getFulfillment().getSpeech());
+
     }
 
     @Test
     public void AIDataServiceDevTest() throws AIServiceException {
-        final String devUrl = getDevUrl();
-        if (!TextUtils.isEmpty(devUrl)) {
-            final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
-                    AIConfiguration.SupportedLanguages.English,
-                    AIConfiguration.RecognitionEngine.System);
 
-            config.setServiceUrl(devUrl);
+        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
 
-            final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
-            final AIRequest aiRequest = new AIRequest();
-            aiRequest.setQuery("hello");
+        config.setServiceUrl(devUrl);
 
-            final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+        final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
 
-            assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
-            assertEquals("greeting", aiResponse.getResult().getAction());
-            assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
-        } else {
-            assertTrue(true);
-        }
+        final AIRequest aiRequest = new AIRequest();
+        aiRequest.setQuery("hello");
+
+        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+
+
+        assertFalse(TextUtils.isEmpty(aiResponse.getResult().getResolvedQuery()));
+        assertEquals("greeting", aiResponse.getResult().getAction());
+        assertEquals("Hi! How are you?", aiResponse.getResult().getFulfillment().getSpeech());
+
     }
 
     @Override

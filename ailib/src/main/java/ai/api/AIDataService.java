@@ -45,7 +45,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import java.util.UUID;
+import java.util.Map;
 
 import ai.api.http.HttpClient;
 import ai.api.model.AIContext;
@@ -179,6 +181,8 @@ public class AIDataService {
             request.setSessionId(sessionId);
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
+            Map<String, String> additionalHeaders = null;
+
             if (requestExtras != null) {
                 if (requestExtras.hasContexts()) {
                     request.setContexts(requestExtras.getContexts());
@@ -186,6 +190,8 @@ public class AIDataService {
                 if (requestExtras.hasEntities()) {
                     request.setEntities(requestExtras.getEntities());
                 }
+
+                additionalHeaders = requestExtras.getAdditionalHeaders();
             }
 
             final String queryData = gson.toJson(request);
@@ -283,6 +289,12 @@ public class AIDataService {
     }
 
     protected String doTextRequest(final String endpoint, final String requestJson) throws MalformedURLException, AIServiceException {
+        return doTextRequest(endpoint, requestJson, null);
+    }
+
+    protected String doTextRequest(@NonNull final String endpoint,
+                                   @NonNull final String requestJson, 
+                                   @Nullable final Map<String, String> additionalHeaders) throws MalformedURLException, AIServiceException {
 
         HttpURLConnection connection = null;
 
@@ -301,6 +313,12 @@ public class AIDataService {
             connection.addRequestProperty("ocp-apim-subscription-key", config.getSubscriptionKey());
             connection.addRequestProperty("Content-Type", "application/json; charset=utf-8");
             connection.addRequestProperty("Accept", "application/json");
+
+            if (additionalHeaders != null) {
+                for (final Map.Entry<String, String> entry : additionalHeaders.entrySet()) {
+                    connection.addRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
 
             connection.connect();
 
@@ -340,10 +358,16 @@ public class AIDataService {
 
     }
 
+    protected String doSoundRequest(@NonNull final InputStream voiceStream, @NonNull final String queryData) throws MalformedURLException, AIServiceException {
+        return doSoundRequest(voiceStream, queryData, null);
+    }
+
     /**
      * Method extracted for testing purposes
      */
-    protected String doSoundRequest(@NonNull final InputStream voiceStream, @NonNull final String queryData) throws MalformedURLException, AIServiceException {
+    protected String doSoundRequest(@NonNull final InputStream voiceStream,
+                                    @NonNull final String queryData,
+                                    @Nullable final Map<String, String> additionalHeaders) throws MalformedURLException, AIServiceException {
 
         HttpURLConnection connection = null;
         HttpClient httpClient = null;
@@ -355,6 +379,13 @@ public class AIDataService {
             connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
             connection.addRequestProperty("ocp-apim-subscription-key", config.getSubscriptionKey());
             connection.addRequestProperty("Accept", "application/json");
+
+            if (additionalHeaders != null) {
+                for (final Map.Entry<String, String> entry : additionalHeaders.entrySet()) {
+                    connection.addRequestProperty(entry.getKey(), entry.getValue());
+                }
+            }
+
             connection.setRequestMethod("POST");
             connection.setDoInput(true);
             connection.setDoOutput(true);

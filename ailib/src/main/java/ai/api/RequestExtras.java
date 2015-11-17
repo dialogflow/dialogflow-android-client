@@ -22,6 +22,7 @@ package ai.api;
  ***********************************************************************************************************************/
 
 import java.util.List;
+import java.util.Map;
 
 import ai.api.model.AIContext;
 import ai.api.model.AIRequest;
@@ -35,6 +36,8 @@ public class RequestExtras {
     private List<Entity> entities;
 
     private Boolean resetContexts;
+
+    private Map<String, String> additionalHeaders;
 
     public RequestExtras() {
         contexts = null;
@@ -70,6 +73,14 @@ public class RequestExtras {
         this.resetContexts = resetContexts;
     }
 
+    public Map<String, String> getAdditionalHeaders() {
+        return additionalHeaders;
+    }
+
+    public void setAdditionalHeaders(final Map<String, String> additionalHeaders) {
+        this.additionalHeaders = additionalHeaders;
+    }
+
     public boolean hasContexts() {
         if (contexts != null && !contexts.isEmpty()) {
             return true;
@@ -79,6 +90,13 @@ public class RequestExtras {
 
     public boolean hasEntities() {
         if (entities != null && !entities.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasAdditionalHeaders() {
+        if (additionalHeaders != null && !additionalHeaders.isEmpty()) {
             return true;
         }
         return false;

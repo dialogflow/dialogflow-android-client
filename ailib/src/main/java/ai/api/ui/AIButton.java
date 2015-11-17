@@ -44,6 +44,7 @@ import ai.api.AIService;
 import ai.api.AIServiceException;
 import ai.api.PartialResultsListener;
 import ai.api.R;
+import ai.api.RequestExtras;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
@@ -215,12 +216,16 @@ public class AIButton extends SoundLevelButton implements AIListener {
     }
 
     public void startListening() {
+        startListening(null);
+    }
+
+    public void startListening(final RequestExtras requestExtras) {
         if (aiService != null) {
             if (currentState == MicState.normal) {
                 eventsExecutor.submit(new Runnable() {
                     @Override
                     public void run() {
-                        aiService.startListening();
+                        aiService.startListening(requestExtras);
                     }
                 });
             }
