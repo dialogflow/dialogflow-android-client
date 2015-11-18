@@ -762,7 +762,7 @@ public abstract class ProtocolTestBase {
         final String stringParam = aiResponse.getResult().getStringParameter("greeting");
         assertEquals("hello", stringParam);
 
-        final String emptyParam = aiResponse.getResult().getStringParameter("pet");
+        final String emptyParam = aiResponse.getResult().getStringParameter("pet", null);
         assertNull(emptyParam);
 
         final JsonObject jsonParam = aiResponse.getResult().getComplexParameter("action");

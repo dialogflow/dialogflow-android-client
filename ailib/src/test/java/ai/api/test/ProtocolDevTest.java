@@ -67,7 +67,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     @Override
     protected String getRuAccessToken() {
-        return "43a7541fb0a94fae8f1bef406a2d9ca8";
+        return "e479d45dc09046c1984d6c546973dd60";
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     @Override
     protected String getPtBrAccessToken() {
-        return "521282797a864a029e1f965fa973cf61";
+        return "2291f2e31fe34a2fab224fd228c39bf2";
     }
 
     @Override
@@ -93,9 +93,8 @@ public class ProtocolDevTest extends ProtocolTestBase {
     }
 
     @Test
-
     public void AIDataServiceDevRuTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration("43a7541fb0a94fae8f1bef406a2d9ca8", getSubscriptionKey(),
+        final AIConfiguration config = new AIConfiguration("e479d45dc09046c1984d6c546973dd60", getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.Russian,
                 AIConfiguration.RecognitionEngine.System);
 
