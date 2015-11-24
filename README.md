@@ -395,6 +395,12 @@ RequestExtras requestExtras = new RequestExtras(null, entities);
 aiService.startListening(requestExtras);
 ```
 
+Also you can upload user entities with separate method
+
+```java
+aiService.uploadUserEntities(entities);
+```
+
 ## Bluetooth support
 
 Do these steps to make SDK work with Bluetooth devices:
