@@ -42,6 +42,9 @@ public class Entity implements Serializable {
     @SerializedName("extend")
     private Boolean extend;
 
+    @SerializedName("isEnum")
+    private Boolean isEnum;
+
     public Entity() {
     }
 
@@ -78,5 +81,13 @@ public class Entity implements Serializable {
 
     public void setExtend(final boolean extend) {
         this.extend = extend;
+    }
+
+    public Boolean isEnum() {
+        return isEnum;
+    }
+
+    public void setIsEnum(final Boolean isEnum) {
+        this.isEnum = isEnum;
     }
 }

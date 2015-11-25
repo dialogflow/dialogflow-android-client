@@ -770,7 +770,32 @@ public abstract class ProtocolTestBase {
 
         final String actionPet = jsonParam.get("pet").getAsString();
         assertEquals("cat", actionPet);
+    }
 
+    @Test
+    public void testUserEnumEntities() throws AIServiceException {
+        final AIConfiguration aiConfiguration = new AIConfiguration("d6f9f914aa5349959ac520327598d7da",
+                "cb9693af-85ce-4fbf-844a-5563722fc27f",
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.Speaktoit);
+        updateConfig(aiConfiguration);
+        SessionIdStorage.resetSessionId(RuntimeEnvironment.application);
+
+        final AIDataService dataService = new AIDataService(RuntimeEnvironment.application, aiConfiguration);
+
+        final String requestText = "I want milk";
+        final AIRequest request = new AIRequest(requestText);
+
+        final Entity productsListEntity = new Entity("productsList");
+        productsListEntity.setIsEnum(true);
+        productsListEntity.addEntry(new EntityEntry("@productsFood:productId"));
+        request.setEntities(Collections.singletonList(productsListEntity));
+
+        final AIResponse aiResponse = makeRequest(dataService, request);
+
+        assertFalse(aiResponse.getResult().getParameters().isEmpty());
+        final JsonObject productParameter = aiResponse.getResult().getComplexParameter("product");
+        assertEquals("milk", productParameter.get("productId").getAsString());
     }
 
     private Entity createHobbitsEntity() {
