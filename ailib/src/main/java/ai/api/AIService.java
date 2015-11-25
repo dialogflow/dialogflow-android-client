@@ -35,7 +35,7 @@ import ai.api.services.GoogleRecognitionServiceImpl;
 import ai.api.services.SpeaktoitRecognitionServiceImpl;
 
 /**
- * Main SDK class fro working with API.AI service.
+ * Main SDK class for working with API.AI service.
  */
 public abstract class AIService {
 
