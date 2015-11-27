@@ -77,6 +77,10 @@ public class RequestExtras {
         return additionalHeaders;
     }
 
+    /**
+     * Additional headers to be passed to API.AI service. Must not be used in normal cases.
+     * @param additionalHeaders map with headers
+     */
     public void setAdditionalHeaders(final Map<String, String> additionalHeaders) {
         this.additionalHeaders = additionalHeaders;
     }
