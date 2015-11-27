@@ -363,10 +363,9 @@ public abstract class ProtocolTestBase {
         aiRequest.setQuery("Hello");
 
         try {
-            final AIResponse aiResponse = aiDataService.request(aiRequest);
+            aiDataService.request(aiRequest);
             assertTrue("Method should produce exception", false);
         } catch (final AIServiceException e) {
-            e.printStackTrace();
             assertNotNull(e.getResponse());
             assertEquals("unauthorized", e.getResponse().getStatus().getErrorType());
             assertEquals("Authorization failed. Please check your access keys.", e.getMessage());
@@ -382,14 +381,12 @@ public abstract class ProtocolTestBase {
         updateConfig(config);
 
         final AIDataService aiDataService = new AIDataService(RuntimeEnvironment.application, config);
-
         final InputStream voiceStream = getClass().getClassLoader().getResourceAsStream("what_is_your_name.raw");
 
         try {
-            final AIResponse aiResponse = aiDataService.voiceRequest(voiceStream);
+            aiDataService.voiceRequest(voiceStream);
             assertTrue("Method should produce exception", false);
         } catch (final AIServiceException e) {
-            e.printStackTrace();
             assertNotNull(e.getResponse());
             assertEquals("unauthorized", e.getResponse().getStatus().getErrorType());
             assertEquals("Authorization failed. Please check your access keys.", e.getMessage());
@@ -509,10 +506,9 @@ public abstract class ProtocolTestBase {
 
         final ArrayList<Entity> extraEntities = new ArrayList<>();
         extraEntities.add(notDwarfs);
-
         aiRequest.setEntities(extraEntities);
 
-        final AIResponse aiResponse = makeRequest(aiDataService, aiRequest);
+        makeRequest(aiDataService, aiRequest);
     }
 
     @Test
@@ -774,14 +770,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void testUserEnumEntities() throws AIServiceException {
-        final AIConfiguration aiConfiguration = new AIConfiguration("d6f9f914aa5349959ac520327598d7da",
-                "cb9693af-85ce-4fbf-844a-5563722fc27f",
-                AIConfiguration.SupportedLanguages.English,
-                AIConfiguration.RecognitionEngine.Speaktoit);
-        updateConfig(aiConfiguration);
-        SessionIdStorage.resetSessionId(RuntimeEnvironment.application);
-
-        final AIDataService dataService = new AIDataService(RuntimeEnvironment.application, aiConfiguration);
+        final AIDataService dataService = createDataService();
 
         final String requestText = "I want milk";
         final AIRequest request = new AIRequest(requestText);
@@ -812,7 +801,7 @@ public abstract class ProtocolTestBase {
         return dwarfs;
     }
 
-    protected void updateConfig(AIConfiguration config) {
+    protected void updateConfig(final AIConfiguration config) {
 
     }
 
