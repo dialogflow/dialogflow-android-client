@@ -44,7 +44,7 @@ import java.util.Map;
 import ai.api.AIConfiguration;
 import ai.api.AIService;
 import ai.api.AIServiceException;
-import ai.api.PartialResultsListener;
+import ai.api.RecognitionResultsListener;
 import ai.api.RequestExtras;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
@@ -62,7 +62,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
     private volatile boolean recognitionActive = false;
 
     private RequestExtras requestExtras;
-    private PartialResultsListener partialResultsListener;
+    private RecognitionResultsListener recognitionResultsListener;
 
     private final Handler handler;
 
@@ -266,13 +266,19 @@ public class GoogleRecognitionServiceImpl extends AIService {
     public void resume() {
     }
 
-    public void setPartialResultsListener(PartialResultsListener partialResultsListener) {
-        this.partialResultsListener = partialResultsListener;
+    public void setRecognitionResultsListener(final RecognitionResultsListener recognitionResultsListener) {
+        this.recognitionResultsListener = recognitionResultsListener;
     }
 
     protected void onPartialResults(final List<String> partialResults) {
-        if (partialResultsListener != null) {
-            partialResultsListener.onPartialResults(partialResults);
+        if (recognitionResultsListener != null) {
+            recognitionResultsListener.onPartialResults(partialResults);
+        }
+    }
+
+    protected void onRecognitionResults(final List<String> recognitionResults) {
+        if (recognitionResultsListener != null) {
+            recognitionResultsListener.onRecognitionResults(recognitionResults);
         }
     }
 
@@ -363,7 +369,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     }
 
                     // notify listeners about the last recogntion result for more accurate user feedback
-                    GoogleRecognitionServiceImpl.this.onPartialResults(recognitionResults);
+                    GoogleRecognitionServiceImpl.this.onRecognitionResults(recognitionResults);
                     GoogleRecognitionServiceImpl.this.sendRequest(aiRequest, requestExtras);
                 }
             }

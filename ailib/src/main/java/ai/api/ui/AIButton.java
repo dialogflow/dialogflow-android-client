@@ -42,7 +42,7 @@ import ai.api.AIConfiguration;
 import ai.api.AIListener;
 import ai.api.AIService;
 import ai.api.AIServiceException;
-import ai.api.PartialResultsListener;
+import ai.api.RecognitionResultsListener;
 import ai.api.R;
 import ai.api.RequestExtras;
 import ai.api.model.AIError;
@@ -70,7 +70,7 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     private AIService aiService;
     private AIButtonListener resultsListener;
-    private PartialResultsListener partialResultsListener;
+    private RecognitionResultsListener recognitionResultsListener;
 
     private final ExecutorService eventsExecutor = Executors.newSingleThreadExecutor();
 
@@ -196,11 +196,18 @@ public class AIButton extends SoundLevelButton implements AIListener {
         aiService.setListener(this);
 
         if (aiService instanceof GoogleRecognitionServiceImpl) {
-            ((GoogleRecognitionServiceImpl) aiService).setPartialResultsListener(new PartialResultsListener() {
+            ((GoogleRecognitionServiceImpl) aiService).setRecognitionResultsListener(new RecognitionResultsListener() {
                 @Override
                 public void onPartialResults(final List<String> partialResults) {
-                    if (partialResultsListener != null) {
-                        partialResultsListener.onPartialResults(partialResults);
+                    if (recognitionResultsListener != null) {
+                        recognitionResultsListener.onPartialResults(partialResults);
+                    }
+                }
+
+                @Override
+                public void onRecognitionResults(final List<String> recognitionResults) {
+                    if (recognitionResultsListener != null) {
+                        recognitionResultsListener.onRecognitionResults(recognitionResults);
                     }
                 }
             });
@@ -211,8 +218,8 @@ public class AIButton extends SoundLevelButton implements AIListener {
         this.resultsListener = resultsListener;
     }
 
-    public void setPartialResultsListener(final PartialResultsListener partialResultsListener) {
-        this.partialResultsListener = partialResultsListener;
+    public void setRecognitionResultsListener(final RecognitionResultsListener recognitionResultsListener) {
+        this.recognitionResultsListener = recognitionResultsListener;
     }
 
     public void startListening() {

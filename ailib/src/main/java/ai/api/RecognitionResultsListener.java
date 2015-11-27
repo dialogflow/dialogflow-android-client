@@ -23,6 +23,7 @@ package ai.api;
 
 import java.util.List;
 
-public interface PartialResultsListener {
+public interface RecognitionResultsListener {
     void onPartialResults(final List<String> partialResults);
+    void onRecognitionResults(final List<String> recognitionResults);
 }

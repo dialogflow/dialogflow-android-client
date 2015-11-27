@@ -34,7 +34,7 @@ import java.util.List;
 import ai.api.AIConfiguration;
 import ai.api.AIService;
 import ai.api.AIServiceException;
-import ai.api.PartialResultsListener;
+import ai.api.RecognitionResultsListener;
 import ai.api.R;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;
@@ -144,10 +144,20 @@ public class AIDialog {
             }
         });
 
-        aiButton.setPartialResultsListener(new PartialResultsListener() {
+        aiButton.setRecognitionResultsListener(new RecognitionResultsListener() {
             @Override
             public void onPartialResults(final List<String> partialResults) {
                 final String result = partialResults.get(0);
+                updateTextField(result);
+            }
+
+            @Override
+            public void onRecognitionResults(final List<String> recognitionResults) {
+                final String result = recognitionResults.get(0);
+                updateTextField(result);
+            }
+
+            private void updateTextField(final String result) {
                 if (!TextUtils.isEmpty(result)) {
                     handler.post(new Runnable() {
                         @Override
