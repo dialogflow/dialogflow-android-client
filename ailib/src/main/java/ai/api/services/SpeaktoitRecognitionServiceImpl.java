@@ -238,11 +238,6 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
         });
     }
 
-    @Override
-    public void onRmsChanged(double energy) {
-        onAudioLevelChanged((float) energy);
-    }
-
     private class RecorderStream extends InputStream {
 
         private final AudioRecord audioRecord;
@@ -285,6 +280,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
                         bytes = new byte[newLength];
                         System.arraycopy(temp, frameSize, bytes, 0, newLength);
                     }
+                    onAudioLevelChanged((float) vad.calculateRms());
                 }
             }
             return bytesRead != 0 ? bytesRead : AudioRecord.ERROR_INVALID_OPERATION;

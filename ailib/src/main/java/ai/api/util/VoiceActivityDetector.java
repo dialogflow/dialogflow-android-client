@@ -73,6 +73,9 @@ public class VoiceActivityDetector {
     private boolean enabled = true;
     private boolean process = true;
 
+    private double sum = 0;
+    private int size = 0;
+
     public VoiceActivityDetector(final int sampleRate) {
         this.sampleRate = sampleRate;
     }
@@ -122,10 +125,14 @@ public class VoiceActivityDetector {
         double energy = 0.0;
 
         final int frameSize = frame.limit();
+        size += frameSize;
 
         for (int i = 0; i < frameSize; i++) {
-            final double amplitude = (double) frame.get(i) / (double) Short.MAX_VALUE;
+            final short raw = frame.get(i);
+            final double amplitude = (double) raw / (double) Short.MAX_VALUE;
             energy += (float) amplitude * (float) amplitude / (double) frameSize;
+
+            sum += raw * raw;
 
             final int sign = (float) amplitude > 0 ? 1 : -1;
             if (lastSign != 0 && sign != lastSign) {
@@ -133,9 +140,6 @@ public class VoiceActivityDetector {
             }
             lastSign = sign;
         }
-
-        //TODO Normalize audio level for smooth mic button animation
-        onChangeLevel(energy * 1000);
 
         boolean result = false;
         if (++frameNumber < NOISE_FRAMES) {
@@ -151,10 +155,11 @@ public class VoiceActivityDetector {
         return result;
     }
 
-    private void onChangeLevel(final double energy) {
-        if (eventsListener != null) {
-            eventsListener.onRmsChanged(energy);
-        }
+    public double calculateRms() {
+        final double rms = Math.sqrt(sum / size) / 100;
+        sum = 0;
+        size = 0;
+        return rms;
     }
 
     public void reset() {
@@ -228,7 +233,5 @@ public class VoiceActivityDetector {
         void onSpeechCancel();
 
         void onSpeechEnd();
-
-        void onRmsChanged(double level);
     }
 }
