@@ -29,20 +29,20 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 public class SoundLevelCircleDrawable extends Drawable {
-	private static final String TAG = SoundLevelCircleDrawable.class.getName();
+        public static final int HALO_COLOR_DEF = Color.argb(16, 0x0, 0x0, 0x0);
+        public static final int CENTER_COLOR_DEF = 0xffF26C29;
+        private static final float MIN_VALUE = 1f / 2;
+        private static final float MAX_VALUE = 10;
+        private static final float INITIAL_VALUE = 2.5f;
 
 	private final float maxRadius;
 	private final float minRadius;
 	private final float circleCenterX;
 	private final float circleCenterY;
-	private float minMicLevel = 1f / 2;
-	private float maxMicLevel = 10;
-	public static final int HALO_COLOR_DEF = Color.argb(16, 0x0, 0x0, 0x0);
-	public static final int CENTER_COLOR_DEF = 0xffF26C29;
-	private static final float INITIAL_VALUE = 2.5f;
+	private float minMicLevel = MIN_VALUE;
+	private float maxMicLevel = MAX_VALUE;
 
 	private boolean drawSoundLevel = false;
 
@@ -137,7 +137,9 @@ public class SoundLevelCircleDrawable extends Drawable {
 		if (this.drawSoundLevel != drawSoundLevel) {
 			this.drawSoundLevel = drawSoundLevel;
 			if (drawSoundLevel) {
-				smoothedLevel = INITIAL_VALUE;
+			    minMicLevel = MIN_VALUE;
+			    maxMicLevel = MAX_VALUE;
+			    smoothedLevel = INITIAL_VALUE;
 			}
 			return true;
 		} else
