@@ -35,8 +35,6 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import ai.api.AIConfiguration;
 import ai.api.AIListener;
@@ -72,17 +70,10 @@ public class AIButton extends SoundLevelButton implements AIListener {
     private AIButtonListener resultsListener;
     private PartialResultsListener partialResultsListener;
 
-    private final ExecutorService eventsExecutor = Executors.newSingleThreadExecutor();
-
     @Override
     public void onResult(final AIResponse result) {
 
-        post(new Runnable() {
-            @Override
-            public void run() {
-                changeState(MicState.normal);
-            }
-        });
+        changeState(MicState.normal);
 
         if (resultsListener != null) {
             resultsListener.onResult(result);
@@ -91,12 +82,7 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onError(final AIError error) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                changeState(MicState.normal);
-            }
-        });
+        changeState(MicState.normal);
 
         if (resultsListener != null) {
             resultsListener.onError(error);
@@ -110,22 +96,12 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onListeningStarted() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                changeState(MicState.listening);
-            }
-        });
+        changeState(MicState.listening);
     }
 
     @Override
     public void onListeningCanceled() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                changeState(MicState.normal);
-            }
-        });
+        changeState(MicState.normal);
 
         if (resultsListener != null) {
             resultsListener.onCancelled();
@@ -134,12 +110,7 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onListeningFinished() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                changeState(MicState.busy);
-            }
-        });
+        changeState(MicState.busy);
     }
 
     public enum MicState {
@@ -222,12 +193,7 @@ public class AIButton extends SoundLevelButton implements AIListener {
     public void startListening(final RequestExtras requestExtras) {
         if (aiService != null) {
             if (currentState == MicState.normal) {
-                eventsExecutor.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        aiService.startListening(requestExtras);
-                    }
-                });
+                aiService.startListening(requestExtras);
             }
         } else {
             throw new IllegalStateException("Call initialize method before usage");
@@ -261,28 +227,13 @@ public class AIButton extends SoundLevelButton implements AIListener {
         if (aiService != null) {
             switch (currentState) {
                 case normal:
-                    eventsExecutor.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            aiService.startListening();
-                        }
-                    });
+                    aiService.startListening();
                     break;
                 case busy:
-                    eventsExecutor.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            aiService.cancel();
-                        }
-                    });
+                    aiService.cancel();
                     break;
                 default:
-                    eventsExecutor.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            aiService.stopListening();
-                        }
-                    });
+                    aiService.stopListening();
                     break;
             }
         }
