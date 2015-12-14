@@ -67,11 +67,6 @@ public class VADTest {
             public void onSpeechEnd() {
                 voiceDetected = true;
             }
-
-            @Override
-            public void onRmsChanged(double level) {
-
-            }
         });
 
         try {
@@ -111,10 +106,6 @@ public class VADTest {
                 voiceDetected = true;
             }
 
-            @Override
-            public void onRmsChanged(double level) {
-
-            }
         });
 
         try {
@@ -155,10 +146,6 @@ public class VADTest {
                 voiceDetected = true;
             }
 
-            @Override
-            public void onRmsChanged(double level) {
-
-            }
         });
 
         try {
@@ -199,11 +186,6 @@ public class VADTest {
             @Override
             public void onSpeechEnd() {
                 voiceDetected = true;
-            }
-
-            @Override
-            public void onRmsChanged(double level) {
-
             }
 
         });
