@@ -728,7 +728,7 @@ public abstract class ProtocolTestBase {
 
         final AIContext weatherContext = new AIContext("weather");
         weatherContext.setParameters(Collections.singletonMap("location", "London"));
-        weatherContext.setLifespan(2);
+        weatherContext.setLifespan(3);
 
         final AIRequest aiRequest = new AIRequest();
         aiRequest.setQuery("and for tomorrow");
