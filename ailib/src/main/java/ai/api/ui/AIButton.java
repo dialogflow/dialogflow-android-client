@@ -72,8 +72,12 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onResult(final AIResponse result) {
-
-        changeState(MicState.normal);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.normal);
+            }
+        });
 
         if (resultsListener != null) {
             resultsListener.onResult(result);
@@ -82,7 +86,12 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onError(final AIError error) {
-        changeState(MicState.normal);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.normal);
+            }
+        });
 
         if (resultsListener != null) {
             resultsListener.onError(error);
@@ -96,12 +105,22 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onListeningStarted() {
-        changeState(MicState.listening);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.listening);
+            }
+        });
     }
 
     @Override
     public void onListeningCanceled() {
-        changeState(MicState.normal);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.normal);
+            }
+        });
 
         if (resultsListener != null) {
             resultsListener.onCancelled();
@@ -110,7 +129,12 @@ public class AIButton extends SoundLevelButton implements AIListener {
 
     @Override
     public void onListeningFinished() {
-        changeState(MicState.busy);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                changeState(MicState.busy);
+            }
+        });
     }
 
     public enum MicState {
