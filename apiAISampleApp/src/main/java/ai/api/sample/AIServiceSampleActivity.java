@@ -194,7 +194,10 @@ public class AIServiceSampleActivity extends BaseActivity
                 Log.i(TAG, "Resolved query: " + result.getResolvedQuery());
 
                 Log.i(TAG, "Action: " + result.getAction());
-                Log.i(TAG, "Speech: " + result.getFulfillment().getSpeech());
+
+                final String speech = result.getFulfillment().getSpeech();
+                Log.i(TAG, "Speech: " + speech);
+                TTS.speak(speech);
 
                 final Metadata metadata = result.getMetadata();
                 if (metadata != null) {

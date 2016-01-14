@@ -22,7 +22,6 @@ package ai.api.sample;
  ***********************************************************************************************************************/
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -126,7 +125,9 @@ public class AIButtonSampleActivity extends BaseActivity implements AIButton.AIB
                 Log.i(TAG, "Resolved query: " + result.getResolvedQuery());
 
                 Log.i(TAG, "Action: " + result.getAction());
-                Log.i(TAG, "Speech: " + result.getFulfillment().getSpeech());
+                final String speech = result.getFulfillment().getSpeech();
+                Log.i(TAG, "Speech: " + speech);
+                TTS.speak(speech);
 
                 final Metadata metadata = result.getMetadata();
                 if (metadata != null) {
