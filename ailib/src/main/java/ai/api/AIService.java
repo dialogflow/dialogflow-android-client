@@ -21,6 +21,7 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
+import android.Manifest;
 import android.content.Context;
 
 import java.util.Collection;
@@ -33,6 +34,8 @@ import ai.api.model.AIResponse;
 import ai.api.model.Entity;
 import ai.api.services.GoogleRecognitionServiceImpl;
 import ai.api.services.SpeaktoitRecognitionServiceImpl;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 
 /**
  * Main SDK class for working with API.AI service.
@@ -191,5 +194,17 @@ public abstract class AIService {
      */
     public AIResponse uploadUserEntities(final Collection<Entity> userEntities) throws AIServiceException {
         return aiDataService.uploadUserEntities(userEntities);
+    }
+
+    protected boolean checkPermissions() {
+
+        final int permissionCheck = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.RECORD_AUDIO);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        }
+
+        return true;
     }
 }

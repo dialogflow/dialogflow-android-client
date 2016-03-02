@@ -109,6 +109,13 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
     public void startListening(final RequestExtras requestExtras) {
         synchronized (recognizerLock) {
             if (!isRecording) {
+
+                if (!checkPermissions()) {
+                    final AIError aiError = new AIError("RECORD_AUDIO permission is denied. Please request permission from user.");
+                    onError(aiError);
+                    return;
+                }
+
                 isRecording = true;
                 extras = requestExtras;
 

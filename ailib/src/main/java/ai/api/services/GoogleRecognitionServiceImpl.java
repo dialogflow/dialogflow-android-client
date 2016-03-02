@@ -165,6 +165,12 @@ public class GoogleRecognitionServiceImpl extends AIService {
             synchronized (speechRecognizerLock) {
                 this.requestExtras = requestExtras;
 
+                if (!checkPermissions()) {
+                    final AIError aiError = new AIError("RECORD_AUDIO permission is denied. Please request permission from user.");
+                    onError(aiError);
+                    return;
+                }
+
                 initializeRecognizer();
 
                 recognitionActive = true;
@@ -180,7 +186,6 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 sttIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
 
                 // WORKAROUND for https://code.google.com/p/android/issues/detail?id=75347
-                // TODO Must be removed after fix in Android
                 sttIntent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{});
 
                 try {
