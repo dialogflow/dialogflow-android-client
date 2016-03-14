@@ -98,6 +98,18 @@ public abstract class ProtocolTestBase {
         return new AIDataService(RuntimeEnvironment.application, config);
     }
 
+    private AIDataService createDataService(final String accessToken) {
+        final AIConfiguration config = new AIConfiguration(accessToken, getSubscriptionKey(),
+                AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.RecognitionEngine.System);
+
+        updateConfig(config);
+
+        SessionIdStorage.resetSessionId(RuntimeEnvironment.application);
+
+        return new AIDataService(RuntimeEnvironment.application, config);
+    }
+
     @Test
     public void voiceRequestTest() throws AIServiceException {
         final AIDataService aiDataService = createDataService();
@@ -785,6 +797,23 @@ public abstract class ProtocolTestBase {
         assertFalse(aiResponse.getResult().getParameters().isEmpty());
         final JsonObject productParameter = aiResponse.getResult().getComplexParameter("product");
         assertEquals("milk", productParameter.get("productId").getAsString());
+    }
+
+    @Test
+    public void testSourceField() throws AIServiceException {
+        final AIDataService aiDataService = createDataService("23e7d37f6dd24e4eb7dbbd7491f832cf");
+
+        final AIRequest domainsRequest = new AIRequest("hi");
+        final AIResponse domainsResponse = makeRequest(aiDataService, domainsRequest);
+
+        assertEquals("domains", domainsResponse.getResult().getSource());
+        assertEquals("smalltalk.greetings", domainsResponse.getResult().getAction());
+
+        final AIRequest agentRequest = new AIRequest("not from domains");
+        final AIResponse agentResponse = makeRequest(aiDataService, agentRequest);
+
+        assertEquals("agent", agentResponse.getResult().getSource());
+        assertEquals("Yes, it is not from domains", agentResponse.getResult().getFulfillment().getSpeech());
     }
 
     private Entity createHobbitsEntity() {

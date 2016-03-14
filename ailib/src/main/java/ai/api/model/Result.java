@@ -45,6 +45,9 @@ public class Result implements Serializable {
     @SerializedName("action")
     private String action;
 
+    @SerializedName("source")
+    private String source;
+
     /**
      * This field will be deserialized as hashMap container with all parameters and it's values
      */
@@ -86,6 +89,14 @@ public class Result implements Serializable {
 
     public void setAction(final String action) {
         this.action = action;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(final String source) {
+        this.source = source;
     }
 
     public Metadata getMetadata() {
