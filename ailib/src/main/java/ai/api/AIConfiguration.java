@@ -143,6 +143,8 @@ public class AIConfiguration {
 
     private boolean voiceActivityDetectionEnabled = true;
 
+    private boolean normalizeInputSound = false;
+
     public AIConfiguration(final String apiKey, final String subscriptionKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
         this.apiKey = apiKey;
         this.subscriptionKey = subscriptionKey;
@@ -227,6 +229,19 @@ public class AIConfiguration {
      */
     public void setServiceUrl(final String serviceUrl) {
         this.serviceUrl = serviceUrl;
+    }
+
+    /**
+     * With setting this field to true you can enable sound amplification if it's too quiet. This option improves recognition quality on some devices.
+     * This option does not affect System recognition.
+     * @param normalizeInputSound
+     */
+    public void setNormalizeInputSound(final boolean normalizeInputSound) {
+        this.normalizeInputSound = normalizeInputSound;
+    }
+
+    public boolean isNormalizeInputSound() {
+        return normalizeInputSound;
     }
 
     public String getQuestionUrl() {

@@ -33,6 +33,9 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -247,10 +250,19 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
 
     private class RecorderStream extends InputStream {
 
+        @SuppressWarnings("MagicNumber")
+        private final float dbLevel = (float) Math.pow(10.0, -1.0 / 20.0);
+
         private final AudioRecord audioRecord;
 
         private byte[] bytes;
         private final Object bytesLock = new Object();
+
+        int max = 0;
+        int min = 0;
+        float offset = 0;
+        float count = 1;
+        int extent;
 
         private RecorderStream(final AudioRecord audioRecord) {
             this.audioRecord = audioRecord;
@@ -268,6 +280,9 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
             final int bytesRead = audioRecord.read(buffer, byteOffset, byteCount);
             if (bytesRead > 0) {
                 synchronized (bytesLock) {
+                    if (config.isNormalizeInputSound())
+                        normalize(buffer, bytesRead);
+
                     byte[] temp = bytes;
                     int tempLength = temp != null ? temp.length : 0;
                     bytes = new byte[tempLength + bytesRead];
@@ -291,6 +306,23 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
                 }
             }
             return bytesRead != 0 ? bytesRead : AudioRecord.ERROR_INVALID_OPERATION;
+        }
+
+        private void normalize(@NonNull final byte[] buffer, final int bytesRead) {
+            final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead).order(ByteOrder.LITTLE_ENDIAN);
+            final ShortBuffer shorts = byteBuffer.asShortBuffer();
+            for (int i = 0; i < shorts.limit(); i++) {
+                final short sample = shorts.get(i);
+                max = Math.max(max, sample);
+                min = Math.min(min, sample);
+                offset = (count - 1) / count * offset + sample / count;
+                count += 1;
+            }
+            extent = Math.max(Math.abs(max), Math.abs(min));
+            final float factor = dbLevel * Short.MAX_VALUE / extent;
+            for (int i = 0; i < shorts.limit(); i++) {
+                byteBuffer.putShort((short) ((shorts.get(i) - offset) * factor));
+            }
         }
     }
 
