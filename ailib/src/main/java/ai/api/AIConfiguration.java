@@ -157,7 +157,7 @@ public class AIConfiguration {
 
     private boolean voiceActivityDetectionEnabled = true;
 
-    private boolean normalizeInputSound = false;
+    private boolean normalizeInputSound = true;
 
     private Proxy proxy;
 
