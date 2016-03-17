@@ -119,16 +119,13 @@ public class AIDataService {
             }
 
             final String queryData = gson.toJson(request);
-
-            Log.d(TAG, "Request json: " + queryData);
-
             final String response = doTextRequest(config.getQuestionUrl(), queryData, additionalHeaders);
 
             if (TextUtils.isEmpty(response)) {
                 throw new AIServiceException("Empty response from ai service. Please check configuration and Internet connection.");
             }
 
-            Log.d(TAG, "Response json: " + response);
+            Log.d(TAG, "Response json: " + response.replaceAll("[\r\n]+", " "));
 
             final AIResponse aiResponse = gson.fromJson(response, AIResponse.class);
 

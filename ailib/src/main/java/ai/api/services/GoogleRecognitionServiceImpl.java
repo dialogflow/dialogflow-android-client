@@ -106,6 +106,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
     }
 
     protected void clearRecognizer() {
+        Log.d(TAG, "clearRecognizer");
         if (speechRecognizer != null) {
             synchronized (speechRecognizerLock) {
                 if (speechRecognizer != null) {
@@ -175,18 +176,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
                 recognitionActive = true;
 
-                final Intent sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-                sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-
-                final String language = config.getLanguage().replace('-', '_');
-
-                sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language);
-                sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, language);
-                sttIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
-
-                // WORKAROUND for https://code.google.com/p/android/issues/detail?id=75347
-                sttIntent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{});
+                final Intent sttIntent = createRecognitionIntent();
 
                 try {
                     wasReadyForSpeech = false;
@@ -200,6 +190,23 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 cancel();
             }
         }
+    }
+
+    private Intent createRecognitionIntent() {
+        final Intent sttIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+
+        final String language = config.getLanguage().replace('-', '_');
+
+        sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, language);
+        sttIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, language);
+        sttIntent.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);
+        sttIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, context.getPackageName());
+
+        // WORKAROUND for https://code.google.com/p/android/issues/detail?id=75347
+        sttIntent.putExtra("android.speech.extra.EXTRA_ADDITIONAL_LANGUAGES", new String[]{language});
+        return sttIntent;
     }
 
     @Override
@@ -220,6 +227,25 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     speechRecognizer.cancel();
                 }
                 onListeningCancelled();
+            }
+        }
+    }
+
+    private void restartRecognition(){
+        recognitionActive = false;
+
+        synchronized (speechRecognizerLock) {
+            try {
+                if (speechRecognizer != null) {
+                    speechRecognizer.cancel();
+
+                    final Intent intent = createRecognitionIntent();
+                    wasReadyForSpeech = false;
+                    speechRecognizer.startListening(intent);
+                    recognitionActive = true;
+                }
+            } catch (Exception e) {
+                stopListening();
             }
         }
     }
@@ -285,6 +311,8 @@ public class GoogleRecognitionServiceImpl extends AIService {
         @Override
         public void onError(final int error) {
             if (error == SpeechRecognizer.ERROR_NO_MATCH && !wasReadyForSpeech) {
+                Log.d(TAG, "SpeechRecognizer.ERROR_NO_MATCH, restartRecognition()");
+                restartRecognition();
                 return;
             }
 
