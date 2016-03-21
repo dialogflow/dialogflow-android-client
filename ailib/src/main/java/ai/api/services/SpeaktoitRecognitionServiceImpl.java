@@ -49,6 +49,9 @@ import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 import ai.api.util.VoiceActivityDetector;
 
+import static ai.api.util.VoiceActivityDetector.FRAME_SIZE_IN_BYTES;
+import static ai.api.util.VoiceActivityDetector.NOISE_BYTES;
+
 public class SpeaktoitRecognitionServiceImpl extends AIService implements
         VoiceActivityDetector.SpeechEventsListener,
         MediaPlayer.OnCompletionListener,
@@ -258,9 +261,10 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
         private byte[] bytes;
         private final Object bytesLock = new Object();
 
+        int offset = 0;
         int max = 0;
         int min = 0;
-        float offset = 0;
+        float alignment = 0;
         float count = 1;
         int extent;
 
@@ -291,16 +295,15 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
                     }
                     System.arraycopy(buffer, 0, bytes, tempLength, bytesRead);
 
-                    final int frameSize = VoiceActivityDetector.FRAME_SIZE_IN_BYTES;
-                    while (bytes.length >= frameSize) {
-                        final byte[] b = new byte[frameSize];
-                        System.arraycopy(bytes, 0, b, 0, frameSize);
-                        vad.processBuffer(b, frameSize);
+                    while (bytes.length >= FRAME_SIZE_IN_BYTES) {
+                        final byte[] b = new byte[FRAME_SIZE_IN_BYTES];
+                        System.arraycopy(bytes, 0, b, 0, FRAME_SIZE_IN_BYTES);
+                        vad.processBuffer(b, FRAME_SIZE_IN_BYTES);
 
                         temp = bytes;
-                        final int newLength = temp.length - frameSize;
+                        final int newLength = temp.length - FRAME_SIZE_IN_BYTES;
                         bytes = new byte[newLength];
-                        System.arraycopy(temp, frameSize, bytes, 0, newLength);
+                        System.arraycopy(temp, FRAME_SIZE_IN_BYTES, bytes, 0, newLength);
                     }
                     onAudioLevelChanged((float) vad.calculateRms());
                 }
@@ -309,20 +312,24 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
         }
 
         private void normalize(@NonNull final byte[] buffer, final int bytesRead) {
-            final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, 0, bytesRead).order(ByteOrder.LITTLE_ENDIAN);
-            final ShortBuffer shorts = byteBuffer.asShortBuffer();
-            for (int i = 0; i < shorts.limit(); i++) {
-                final short sample = shorts.get(i);
-                max = Math.max(max, sample);
-                min = Math.min(min, sample);
-                offset = (count - 1) / count * offset + sample / count;
-                count += 1;
+            final int remainOffset = NOISE_BYTES - offset;
+            if (bytesRead >= remainOffset) {
+                final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, remainOffset, bytesRead).order(ByteOrder.LITTLE_ENDIAN);
+                final ShortBuffer shorts = byteBuffer.asShortBuffer();
+                for (int i = 0; i < shorts.limit(); i++) {
+                    final short sample = shorts.get(i);
+                    max = Math.max(max, sample);
+                    min = Math.min(min, sample);
+                    alignment = (count - 1) / count * alignment + sample / count;
+                    count++;
+                }
+                extent = Math.max(Math.abs(max), Math.abs(min));
+                final float factor = dbLevel * Short.MAX_VALUE / extent;
+                for (int i = 0; i < shorts.limit(); i++) {
+                    byteBuffer.putShort((short) ((shorts.get(i) - alignment) * factor));
+                }
             }
-            extent = Math.max(Math.abs(max), Math.abs(min));
-            final float factor = dbLevel * Short.MAX_VALUE / extent;
-            for (int i = 0; i < shorts.limit(); i++) {
-                byteBuffer.putShort((short) ((shorts.get(i) - offset) * factor));
-            }
+            offset += Math.min(bytesRead, remainOffset);
         }
     }
 

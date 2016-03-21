@@ -37,7 +37,8 @@ public class VoiceActivityDetector {
     private static final long MIN_SILENCE_MILLIS = 800;
     private static final long MAX_SILENCE_MILLIS = 3500;
     private static final long SILENCE_DIFF_MILLIS = MAX_SILENCE_MILLIS - MIN_SILENCE_MILLIS;
-    private static final long NOISE_FRAMES = 15;
+    private static final int NOISE_FRAMES = 15;
+    public static final int NOISE_BYTES = NOISE_FRAMES * FRAME_SIZE_IN_BYTES;
     private static final double ENERGY_FACTOR = 3.1;
     private static final int MIN_CZ = 5;
     private static final int MAX_CZ = 15;
