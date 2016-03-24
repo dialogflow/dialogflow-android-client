@@ -100,7 +100,7 @@ public class AIDataService {
 
         try {
 
-            request.setLanguage(config.getLanguage());
+            request.setLanguage(config.getApiAiLanguage());
             request.setSessionId(sessionId);
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 
@@ -190,7 +190,7 @@ public class AIDataService {
         try {
             final AIRequest request = new AIRequest();
 
-            request.setLanguage(config.getLanguage());
+            request.setLanguage(config.getApiAiLanguage());
             request.setSessionId(sessionId);
             request.setTimezone(Calendar.getInstance().getTimeZone().getID());
 

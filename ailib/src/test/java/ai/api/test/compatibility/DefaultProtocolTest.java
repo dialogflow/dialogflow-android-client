@@ -146,7 +146,7 @@ public class DefaultProtocolTest {
     }
 
     private void prepareRequest(final AIRequest request, final AIConfiguration config) {
-        request.setLanguage(config.getLanguage());
+        request.setLanguage(config.getApiAiLanguage());
         request.setTimezone(Calendar.getInstance().getTimeZone().getID());
     }
 

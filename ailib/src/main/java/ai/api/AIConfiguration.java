@@ -61,6 +61,8 @@ public class AIConfiguration {
      */
     public enum SupportedLanguages {
         English("en"),
+        EnglishUS("en-US", "en"),
+        EnglishGB("en-GB", "en"),
         Russian("ru"),
         German("de"),
         Portuguese("pt"),
@@ -75,15 +77,26 @@ public class AIConfiguration {
         ChineseTaiwan("zh-TW");
 
         private final String languageTag;
+        private final String apiaiLanguage;
 
         private SupportedLanguages(final String languageTag) {
             this.languageTag = languageTag;
+            this.apiaiLanguage = languageTag;
+        }
+
+        private SupportedLanguages(final String languageTag, final String apiaiLanguage) {
+            this.languageTag = languageTag;
+            this.apiaiLanguage = apiaiLanguage;
         }
 
         public static SupportedLanguages fromLanguageTag(final String languageTag) {
             switch (languageTag) {
                 case "en":
                     return English;
+                case "en-US":
+                    return EnglishUS;
+                case "en-GB":
+                    return EnglishGB;
                 case "ru":
                     return Russian;
                 case "de":
@@ -116,7 +129,7 @@ public class AIConfiguration {
 
     private final String apiKey;
     private final String subscriptionKey;
-    private final String language;
+    private final SupportedLanguages language;
     private final RecognitionEngine recognitionEngine;
 
     /**
@@ -148,7 +161,7 @@ public class AIConfiguration {
     public AIConfiguration(final String apiKey, final String subscriptionKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
         this.apiKey = apiKey;
         this.subscriptionKey = subscriptionKey;
-        this.language = language.languageTag;
+        this.language = language;
         this.recognitionEngine = recognitionEngine;
 
         protocolVersion = CURRENT_PROTOCOL_VERSION;
@@ -170,7 +183,11 @@ public class AIConfiguration {
     }
 
     public String getLanguage() {
-        return language;
+        return language.languageTag;
+    }
+
+    public String getApiAiLanguage() {
+        return language.apiaiLanguage;
     }
 
     public RecognitionEngine getRecognitionEngine() {
