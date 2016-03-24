@@ -130,7 +130,7 @@ public class AIConfiguration {
     private AssetFileDescriptor recognizerStopSound;
 
     /**
-     * Speaktoit recognition cancel sound resouce descriptor
+     * Speaktoit recognition cancel sound resource descriptor
      */
     private AssetFileDescriptor recognizerCancelSound;
 
