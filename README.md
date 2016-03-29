@@ -15,7 +15,7 @@ Add this dependencies to your project to use SDK
 ```
 compile 'ai.api:sdk:1.8.1@aar'
 // api.ai SDK dependencies
-compile 'com.android.support:appcompat-v7:22.0.0'
+compile 'com.android.support:appcompat-v7:23.2.1'
 compile 'com.google.code.gson:gson:2.3'
 compile 'commons-io:commons-io:2.4'
 ```
@@ -66,7 +66,7 @@ To implement speech recognition and natural language processing features in your
     ```
     compile 'ai.api:sdk:1.8.1@aar'
     // api.ai SDK dependencies
-    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.google.code.gson:gson:2.3'
     compile 'commons-io:commons-io:2.4'
     ```
