@@ -1,72 +1,77 @@
 package ai.api.util;
 
+/***********************************************************************************************************************
+ *
+ * API.AI Android SDK - client-side libraries for API.AI
+ * =================================================
+ *
+ * Copyright (C) 2016 by Speaktoit, Inc. (https://www.speaktoit.com)
+ * https://www.api.ai
+ *
+ * *********************************************************************************************************************
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ *
+ ***********************************************************************************************************************/
+
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import ai.api.GsonFactory;
-import ai.api.R;
 
 public class VersionConfig {
 
     private static final String TAG = VersionConfig.class.getName();
     private static final Pattern DOT_PATTERN = Pattern.compile(".", Pattern.LITERAL);
 
+    private static final Map<String, VersionConfig> configuration = new HashMap<>();
+
+    static {
+        configuration.put("5.9.26", new VersionConfig(true));
+        configuration.put("4.7.13", new VersionConfig(false));
+    }
+
     private boolean destroyRecognizer = true;
+
+    private VersionConfig() {
+    }
+
+    private VersionConfig(final boolean destroyRecognizer) {
+        this.destroyRecognizer = destroyRecognizer;
+    }
 
     @Nullable
     public static VersionConfig init(final Context context) {
-        String configJson = null;
-        final InputStream is = context.getResources().openRawResource(R.raw.version_config);
-        try {
-            configJson = IOUtils.toString(is, "UTF-8");
-        } catch (final IOException e) {
-            Log.e(TAG, "Cannot load version config", e);
-            return null;
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
-
-        VersionConfig config = null;
-        if (!TextUtils.isEmpty(configJson)) {
-            try {
-                config = fromJson(context, configJson);
-            } catch (JSONException e) {
-                Log.e(TAG, "Cannot load version config", e);
-            }
-        }
-
+        final VersionConfig config = getConfigByVersion(context);
         return config;
     }
 
-    private static VersionConfig fromJson(final Context context, final String configJson) throws JSONException {
-        final JSONObject json = new JSONObject(configJson);
+    private static VersionConfig getConfigByVersion(final Context context) {
+        final long number = numberFromBuildVersion(RecognizerChecker.getGoogleRecognizerVersion(context));
 
         final VersionConfig config = new VersionConfig();
+        long prevVersionNumber = 0;
 
-        final JSONArray googleApps = json.getJSONArray("googleApp");
-        if (googleApps != null) {
-            final long number = numberFromBuildVersion(RecognizerChecker.getGoogleRecognizerVersion(context));
-            long prevVersionNumber = 0;
-            for (int i = 0; i < googleApps.length(); i++) {
-                final JSONObject googleApp = googleApps.getJSONObject(i);
-                final String versionName = googleApp.getString("version");
-                if (!TextUtils.isEmpty(versionName)) {
-                    final long versionNumber = numberFromBuildVersion(versionName);
-                    if (number >= versionNumber && prevVersionNumber < versionNumber) {
-                        config.destroyRecognizer = googleApp.getBoolean("destroyRecognizer");
-                        prevVersionNumber = versionNumber;
-                    }
+        for (final Map.Entry<String, VersionConfig> configEntry : configuration.entrySet()) {
+            final String versionName = configEntry.getKey();
+
+            if (!TextUtils.isEmpty(versionName)) {
+                final long versionNumber = numberFromBuildVersion(versionName);
+                if (number >= versionNumber && prevVersionNumber < versionNumber) {
+                    config.destroyRecognizer = configEntry.getValue().destroyRecognizer;
+                    prevVersionNumber = versionNumber;
                 }
             }
         }
