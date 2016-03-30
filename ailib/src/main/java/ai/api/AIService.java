@@ -197,14 +197,11 @@ public abstract class AIService {
     }
 
     protected boolean checkPermissions() {
-
-        final int permissionCheck = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.RECORD_AUDIO);
-
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            return false;
+        boolean granted = true;
+        try {
+            granted = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        } catch (final Exception ignored) {
         }
-
-        return true;
+        return granted;
     }
 }
