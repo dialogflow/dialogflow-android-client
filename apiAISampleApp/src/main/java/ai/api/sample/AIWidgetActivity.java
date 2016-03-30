@@ -23,7 +23,7 @@ public class AIWidgetActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_sample);
         final AIConfiguration config = new AIConfiguration(this, Config.ACCESS_TOKEN,
-                Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
         aiDialog = new AIDialog(this, config);

@@ -60,7 +60,7 @@ public class AIButtonSampleActivity extends BaseActivity implements AIButton.AIB
         aiButton = (AIButton) findViewById(R.id.micButton);
 
         final AIConfiguration config = new AIConfiguration(this, Config.ACCESS_TOKEN,
-                Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
+                AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
         config.setRecognizerStartSound(getResources().openRawResourceFd(R.raw.test_start));

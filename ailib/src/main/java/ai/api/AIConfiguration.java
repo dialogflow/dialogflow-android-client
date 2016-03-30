@@ -133,7 +133,6 @@ public class AIConfiguration {
     }
 
     private final String apiKey;
-    private final String subscriptionKey;
     private final SupportedLanguages language;
     private final RecognitionEngine recognitionEngine;
 
@@ -163,9 +162,8 @@ public class AIConfiguration {
 
     private boolean normalizeInputSound = false;
 
-    public AIConfiguration(final Context context, final String apiKey, final String subscriptionKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
+    public AIConfiguration(final Context context, final String apiKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
         this.apiKey = apiKey;
-        this.subscriptionKey = subscriptionKey;
         this.language = language;
         this.recognitionEngine = recognitionEngine;
 
@@ -183,10 +181,6 @@ public class AIConfiguration {
 
     public String getApiKey() {
         return apiKey;
-    }
-
-    public String getSubscriptionKey() {
-        return subscriptionKey;
     }
 
     public String getLanguage() {

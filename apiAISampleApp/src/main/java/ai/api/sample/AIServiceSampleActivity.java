@@ -104,7 +104,7 @@ public class AIServiceSampleActivity extends BaseActivity
     private void initService(final LanguageConfig selectedLanguage) {
         final AIConfiguration.SupportedLanguages lang = AIConfiguration.SupportedLanguages.fromLanguageTag(selectedLanguage.getLanguageCode());
         final AIConfiguration config = new AIConfiguration(this, selectedLanguage.getAccessToken(),
-                "62f2522a-7404-4c28-b9ac-097ca5d8b32d", lang,
+                lang,
                 AIConfiguration.RecognitionEngine.System);
 
         if (aiService != null) {
