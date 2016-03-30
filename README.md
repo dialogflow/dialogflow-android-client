@@ -22,7 +22,7 @@ compile 'commons-io:commons-io:2.4'
 
 Currently, speech recognition is performed using Google's Android SDK, either on the client device or in the cloud. Recognized text is passed to the API.AI through HTTP requests. Also you can try Speaktoit recognition engine (Use [AIConfiguration.RecognitionEngine.Speaktoit](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java#L37)).
 
-Authentication is accomplished through setting the client access token and subscription key when initializing an [AIConfiguration](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java) object. The client access token specifies which agent will be used for natural language processing, subscription key used for managing subscription info.
+Authentication is accomplished through setting the client access token when initializing an [AIConfiguration](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java) object. The client access token specifies which agent will be used for natural language processing.
 
 **Note:** The API.AI Android SDK only makes query requests, and cannot be used to manage entities and intents. Instead, use the API.AI user interface or REST API to  create, retrieve, update, and delete entities and intents.
 
@@ -45,7 +45,7 @@ The API.AI Android SDK comes with a simple sample that illustrates how voice com
 3. Import the **api-ai-android-master** directory.
 4. Open the SDK Manager and be sure that you have installed Android Build Tools 19.1.
 5. In the Project browser, open **apiAISampleApp/src/main/java/ai.api.sample/Config**.
-6. Towards the top of the file, you will see a declaration of a static final string called *ACCESS_TOKEN*. Set its value to be the client access token of your agent. Similarly, set the variable named *SUBSCRIPTION_KEY* to your subscription key.
+6. Towards the top of the file, you will see a declaration of a static final string called *ACCESS_TOKEN*. Set its value to be the client access token of your agent.
 7. Attach an Android device, or have the emulator set up with an emulated device.
 8. From the **Run** menu, choose **Debug** (or click the Debug symbol). Choose your device.
 9. You should see an app running with three buttons: **Listen**, **StopListen**, and **Cancel**.
@@ -100,7 +100,6 @@ Once you've added the SDK library, follow these steps:
 
     ```java
     final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
-                "SUBSCRIPTION_KEY",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
     ```
@@ -160,7 +159,7 @@ This section assumes that you have performed your own speech recognition and tha
 The following example code sends a query with the text "Hello".
 First, it initialize `aiDataService` and `aiRequest` instances
 ```java
-final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, SUBSCRIPTION_KEY,
+final AIConfiguration config = new AIConfiguration(ACCESS_TOKEN, 
     AIConfiguration.SupportedLanguages.English, 
     AIConfiguration.RecognitionEngine.System);
 
@@ -279,11 +278,11 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     private AIService aiService;
     ```
     
-3. In the OnCreate method, add the following line to set up the configuration to use system speech recognition. Replace CLIENT_ACCESS_TOKEN and SUBSCRIPTION KEY with your client access token and subscription key. 
+3. In the OnCreate method, add the following line to set up the configuration to use system speech recognition. Replace CLIENT_ACCESS_TOKEN with your client access token. 
     
     ```java
      final AIConfiguration config = new AIConfiguration("CLIENT_ACCESS_TOKEN",
-            "SUBSCRIPTION_KEY", AIConfiguration.SupportedLanguages.English,
+            AIConfiguration.SupportedLanguages.English,
             AIConfiguration.RecognitionEngine.System);
     ```
     
