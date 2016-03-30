@@ -1,0 +1,12 @@
+{
+  "googleApp": [
+    {
+      "version": "5.9.26",
+      "destroyRecognizer": true
+    },
+    {
+      "version": "4.7.13",
+      "destroyRecognizer": false
+    }
+  ]
+}

@@ -95,7 +95,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     @Test
     public void AIDataServiceDevRuTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration("e479d45dc09046c1984d6c546973dd60", getSubscriptionKey(),
+        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, "e479d45dc09046c1984d6c546973dd60", getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.Russian,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -116,7 +116,7 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     @Test
     public void AIDataServiceDevTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(getAccessToken(), getSubscriptionKey(),
+        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getAccessToken(), getSubscriptionKey(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 

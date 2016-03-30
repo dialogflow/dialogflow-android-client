@@ -329,6 +329,10 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 GoogleRecognitionServiceImpl.this.onError(aiError);
             }
 
+            if (config.isDestroyRecognizer()) {
+                clearRecognizer();
+            }
+
             recognitionActive = false;
         }
 
@@ -360,6 +364,10 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     GoogleRecognitionServiceImpl.this.onPartialResults(recognitionResults);
                     GoogleRecognitionServiceImpl.this.sendRequest(aiRequest, requestExtras);
                 }
+            }
+
+            if (config.isDestroyRecognizer()) {
+                clearRecognizer();
             }
 
             recognitionActive = false;

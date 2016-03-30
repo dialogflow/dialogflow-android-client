@@ -59,7 +59,7 @@ public class AIButtonSampleActivity extends BaseActivity implements AIButton.AIB
         resultTextView = (TextView) findViewById(R.id.resultTextView);
         aiButton = (AIButton) findViewById(R.id.micButton);
 
-        final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
+        final AIConfiguration config = new AIConfiguration(this, Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 

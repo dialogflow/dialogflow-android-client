@@ -22,7 +22,7 @@ public class AIWidgetActivity extends ActionBarActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_widget_sample);
-        final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
+        final AIConfiguration config = new AIConfiguration(this, Config.ACCESS_TOKEN,
                 Config.SUBSCRIPTION_KEY, AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 

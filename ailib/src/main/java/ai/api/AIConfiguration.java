@@ -21,8 +21,11 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
+import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
+
+import ai.api.util.VersionConfig;
 
 public class AIConfiguration {
 
@@ -34,6 +37,8 @@ public class AIConfiguration {
     protected static final String USER_ENTITIES_ENDPOINT = "userEntities";
 
     private String serviceUrl;
+
+    private VersionConfig versionConfig;
 
     public enum RecognitionEngine {
 
@@ -79,12 +84,12 @@ public class AIConfiguration {
         private final String languageTag;
         private final String apiaiLanguage;
 
-        private SupportedLanguages(final String languageTag) {
+        SupportedLanguages(final String languageTag) {
             this.languageTag = languageTag;
             this.apiaiLanguage = languageTag;
         }
 
-        private SupportedLanguages(final String languageTag, final String apiaiLanguage) {
+        SupportedLanguages(final String languageTag, final String apiaiLanguage) {
             this.languageTag = languageTag;
             this.apiaiLanguage = apiaiLanguage;
         }
@@ -158,7 +163,7 @@ public class AIConfiguration {
 
     private boolean normalizeInputSound = false;
 
-    public AIConfiguration(final String apiKey, final String subscriptionKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
+    public AIConfiguration(final Context context, final String apiKey, final String subscriptionKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
         this.apiKey = apiKey;
         this.subscriptionKey = subscriptionKey;
         this.language = language;
@@ -172,6 +177,8 @@ public class AIConfiguration {
         }
 
         serviceUrl = SERVICE_PROD_URL;
+
+        versionConfig = VersionConfig.init(context);
     }
 
     public String getApiKey() {
@@ -300,5 +307,10 @@ public class AIConfiguration {
     public void setRecognizerCancelSound(final AssetFileDescriptor recognizerCancelSound) {
         this.recognizerCancelSound = recognizerCancelSound;
     }
+
+    public boolean isDestroyRecognizer() {
+        return versionConfig == null || versionConfig.isDestroyRecognizer();
+    }
+
 
 }
