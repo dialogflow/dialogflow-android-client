@@ -21,11 +21,8 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
-
-import ai.api.util.VersionConfig;
 
 public class AIConfiguration {
 
@@ -37,8 +34,6 @@ public class AIConfiguration {
     protected static final String USER_ENTITIES_ENDPOINT = "userEntities";
 
     private String serviceUrl;
-
-    private VersionConfig versionConfig;
 
     public enum RecognitionEngine {
 
@@ -162,8 +157,8 @@ public class AIConfiguration {
 
     private boolean normalizeInputSound = false;
 
-    public AIConfiguration(final Context context, final String apiKey, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
-        this.apiKey = apiKey;
+    public AIConfiguration(final String clientAccessToken, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
+        this.apiKey = clientAccessToken;
         this.language = language;
         this.recognitionEngine = recognitionEngine;
 
@@ -175,8 +170,6 @@ public class AIConfiguration {
         }
 
         serviceUrl = SERVICE_PROD_URL;
-
-        versionConfig = VersionConfig.init(context);
     }
 
     public String getApiKey() {
@@ -301,10 +294,5 @@ public class AIConfiguration {
     public void setRecognizerCancelSound(final AssetFileDescriptor recognizerCancelSound) {
         this.recognizerCancelSound = recognizerCancelSound;
     }
-
-    public boolean isDestroyRecognizer() {
-        return versionConfig == null || versionConfig.isDestroyRecognizer();
-    }
-
 
 }

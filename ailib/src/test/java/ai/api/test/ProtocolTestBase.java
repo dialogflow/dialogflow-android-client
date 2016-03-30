@@ -87,7 +87,7 @@ public abstract class ProtocolTestBase {
     }
 
     private AIDataService createDataService() {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -99,7 +99,7 @@ public abstract class ProtocolTestBase {
     }
 
     private AIDataService createDataService(final String accessToken) {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, accessToken,
+        final AIConfiguration config = new AIConfiguration(accessToken,
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -197,7 +197,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void outputContextVoiceTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);
 
@@ -239,7 +239,7 @@ public abstract class ProtocolTestBase {
         }
 
         {
-            final AIConfiguration secondConfig = new AIConfiguration(RuntimeEnvironment.application, getSecondAccessToken(),
+            final AIConfiguration secondConfig = new AIConfiguration(getSecondAccessToken(),
                     AIConfiguration.SupportedLanguages.English,
                     AIConfiguration.RecognitionEngine.System);
 
@@ -261,7 +261,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void sessionTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -321,7 +321,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void testRussianLanguage() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getRuAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getRuAccessToken(),
                 AIConfiguration.SupportedLanguages.Russian,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -340,7 +340,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void testBrazilLanguage() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getPtBrAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getPtBrAccessToken(),
                 AIConfiguration.SupportedLanguages.PortugueseBrazil,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -361,7 +361,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void errorTextRequestTest() {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, "WRONG_ACCESS_TOKEN",
+        final AIConfiguration config = new AIConfiguration("WRONG_ACCESS_TOKEN",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -384,7 +384,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void errorVoiceRequestTest() {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, "WRONG_ACCESS_TOKEN",
+        final AIConfiguration config = new AIConfiguration("WRONG_ACCESS_TOKEN",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -405,7 +405,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void resetContextsTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);
 
@@ -435,7 +435,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void requestEntitiesTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -523,7 +523,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void userEntitiesTest() throws AIServiceException{
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
@@ -576,7 +576,7 @@ public abstract class ProtocolTestBase {
 
     @Test
     public void userEntitiesCollectionTest() throws AIServiceException {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application, getAccessToken(),
+        final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 

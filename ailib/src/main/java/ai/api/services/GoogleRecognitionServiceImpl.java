@@ -21,6 +21,7 @@ package ai.api.services;
  *
  ***********************************************************************************************************************/
 
+import ai.api.util.VersionConfig;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -59,6 +60,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
     private final Object speechRecognizerLock = new Object();
     private RequestExtras requestExtras;
     private PartialResultsListener partialResultsListener;
+    private final VersionConfig versionConfig;
 
     private volatile boolean recognitionActive = false;
     private volatile boolean wasReadyForSpeech;
@@ -86,6 +88,8 @@ public class GoogleRecognitionServiceImpl extends AIService {
             Log.w(TAG, "Google Recognizer application not found on device. " +
                     "Quality of the recognition may be low. Please check if Google Search application installed and enabled.");
         }
+
+        versionConfig = VersionConfig.init(context);
     }
 
     protected void initializeRecognizer() {
@@ -275,6 +279,10 @@ public class GoogleRecognitionServiceImpl extends AIService {
         }
     }
 
+    private boolean isDestroyRecognizer() {
+        return versionConfig == null || versionConfig.isDestroyRecognizer();
+    }
+
     private class InternalRecognitionListener implements RecognitionListener {
 
         @Override
@@ -329,7 +337,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 GoogleRecognitionServiceImpl.this.onError(aiError);
             }
 
-            if (config.isDestroyRecognizer()) {
+            if (isDestroyRecognizer()) {
                 clearRecognizer();
             }
 
@@ -366,7 +374,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
                 }
             }
 
-            if (config.isDestroyRecognizer()) {
+            if (isDestroyRecognizer()) {
                 clearRecognizer();
             }
 

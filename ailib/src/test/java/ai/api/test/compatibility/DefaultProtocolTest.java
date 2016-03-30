@@ -58,7 +58,7 @@ public class DefaultProtocolTest {
 
     @Test
     public void legacyContextsTest() {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application,
+        final AIConfiguration config = new AIConfiguration(
                 "3485a96fb27744db83e78b8c4bc9e7b7",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
@@ -99,7 +99,7 @@ public class DefaultProtocolTest {
 
     @Test
     public void outputContextVoiceTest() {
-        final AIConfiguration config = new AIConfiguration(RuntimeEnvironment.application,
+        final AIConfiguration config = new AIConfiguration(
                 "3485a96fb27744db83e78b8c4bc9e7b7",
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.Speaktoit);

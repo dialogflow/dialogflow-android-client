@@ -57,7 +57,7 @@ public class AIDialogSampleActivity extends BaseActivity implements AIDialog.AID
 
         resultTextView = (TextView) findViewById(R.id.resultTextView);
 
-        final AIConfiguration config = new AIConfiguration(this, Config.ACCESS_TOKEN,
+        final AIConfiguration config = new AIConfiguration(Config.ACCESS_TOKEN,
                 AIConfiguration.SupportedLanguages.English,
                 AIConfiguration.RecognitionEngine.System);
 
