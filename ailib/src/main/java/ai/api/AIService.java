@@ -200,7 +200,7 @@ public abstract class AIService {
         boolean granted = true;
         try {
             granted = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
-        } catch (final Exception ignored) {
+        } catch (final Throwable ignored) {
         }
         return granted;
     }
