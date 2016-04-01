@@ -24,6 +24,8 @@ package ai.api;
 import android.content.res.AssetFileDescriptor;
 import android.text.TextUtils;
 
+import java.net.Proxy;
+
 public class AIConfiguration {
 
     private static final String SERVICE_PROD_URL = "https://api.api.ai/v1/";
@@ -156,6 +158,8 @@ public class AIConfiguration {
     private boolean voiceActivityDetectionEnabled = true;
 
     private boolean normalizeInputSound = false;
+
+    private Proxy proxy;
 
     public AIConfiguration(final String clientAccessToken, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
         this.apiKey = clientAccessToken;
@@ -295,4 +299,11 @@ public class AIConfiguration {
         this.recognizerCancelSound = recognizerCancelSound;
     }
 
+    public Proxy getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(final Proxy proxy) {
+        this.proxy = proxy;
+    }
 }

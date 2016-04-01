@@ -37,10 +37,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpRetryException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -319,7 +316,12 @@ public class AIDataService {
 
             Log.d(TAG, "Request json: " + queryData);
 
-            connection = (HttpURLConnection) url.openConnection();
+            if (config.getProxy() != null) {
+                connection = (HttpURLConnection) url.openConnection(config.getProxy());
+            } else {
+                connection = (HttpURLConnection) url.openConnection();
+            }
+
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
@@ -387,7 +389,12 @@ public class AIDataService {
         try {
             final URL url = new URL(config.getQuestionUrl());
 
-            connection = (HttpURLConnection) url.openConnection();
+            if (config.getProxy() != null) {
+                connection = (HttpURLConnection) url.openConnection(config.getProxy());
+            } else {
+                connection = (HttpURLConnection) url.openConnection();
+            }
+
             connection.addRequestProperty("Authorization", "Bearer " + config.getApiKey());
             connection.addRequestProperty("Accept", "application/json");
 
