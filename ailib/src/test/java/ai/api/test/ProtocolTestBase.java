@@ -21,6 +21,7 @@ package ai.api.test;
  *
  ***********************************************************************************************************************/
 
+import ai.api.model.*;
 import android.text.TextUtils;
 
 import com.google.gson.JsonElement;
@@ -39,12 +40,6 @@ import ai.api.AIConfiguration;
 import ai.api.AIDataService;
 import ai.api.AIServiceException;
 import ai.api.SessionIdStorage;
-import ai.api.model.AIContext;
-import ai.api.model.AIOutputContext;
-import ai.api.model.AIRequest;
-import ai.api.model.AIResponse;
-import ai.api.model.Entity;
-import ai.api.model.EntityEntry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -812,6 +807,25 @@ public abstract class ProtocolTestBase {
 
         assertEquals("agent", agentResponse.getResult().getSource());
         assertEquals("Yes, it is not from domains", agentResponse.getResult().getFulfillment().getSpeech());
+    }
+
+    @Test
+    public void locationFieldTest() throws AIServiceException {
+        final AIDataService aiDataService = createDataService("23e7d37f6dd24e4eb7dbbd7491f832cf");
+
+        final AIRequest emptyLocationRequest = new AIRequest("weather");
+        final AIResponse emptyLocationResponse = makeRequest(aiDataService, emptyLocationRequest);
+        assertTrue(TextUtils.isEmpty(emptyLocationResponse.getResult().getFulfillment().getSpeech()));
+
+        final AIRequest locationRequest = new AIRequest("weather");
+        locationRequest.setLocation(new Location(55.05, 82.95));
+        final AIResponse locationResponse = makeRequest(aiDataService, locationRequest);
+
+        assertNotNull(locationResponse);
+        assertNotNull(locationResponse.getResult().getFulfillment().getSpeech());
+        assertTrue(locationResponse.getResult().getFulfillment().getSpeech().contains("Novosibirsk"));
+        assertTrue(locationResponse.getResult().getFulfillment().getSpeech().contains("degree"));
+
     }
 
     private Entity createHobbitsEntity() {

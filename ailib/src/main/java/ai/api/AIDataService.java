@@ -104,14 +104,7 @@ public class AIDataService {
             Map<String, String> additionalHeaders = null;
 
             if (requestExtras != null) {
-                if (requestExtras.hasContexts()) {
-                    request.setContexts(requestExtras.getContexts());
-                }
-
-                if (requestExtras.hasEntities()) {
-                    request.setEntities(requestExtras.getEntities());
-                }
-
+                fillRequest(request, requestExtras);
                 additionalHeaders = requestExtras.getAdditionalHeaders();
             }
 
@@ -145,6 +138,20 @@ public class AIDataService {
             throw new AIServiceException("Wrong service answer format. Please, connect to API.AI Service support", je);
         }
 
+    }
+
+    private void fillRequest(@NonNull final AIRequest request, @NonNull final RequestExtras requestExtras) {
+        if (requestExtras.hasContexts()) {
+            request.setContexts(requestExtras.getContexts());
+        }
+
+        if (requestExtras.hasEntities()) {
+            request.setEntities(requestExtras.getEntities());
+        }
+
+        if (requestExtras.getLocation() != null) {
+            request.setLocation(requestExtras.getLocation());
+        }
     }
 
     /**
@@ -194,13 +201,7 @@ public class AIDataService {
             Map<String, String> additionalHeaders = null;
 
             if (requestExtras != null) {
-                if (requestExtras.hasContexts()) {
-                    request.setContexts(requestExtras.getContexts());
-                }
-                if (requestExtras.hasEntities()) {
-                    request.setEntities(requestExtras.getEntities());
-                }
-
+                fillRequest(request, requestExtras);
                 additionalHeaders = requestExtras.getAdditionalHeaders();
             }
 

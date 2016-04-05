@@ -43,6 +43,9 @@ public class QuestionMetadata implements Serializable {
     @SerializedName("entities")
     private List<Entity> entities;
 
+    @SerializedName("location")
+    private Location location;
+
     public String getTimezone() {
         return timezone;
     }
@@ -84,6 +87,14 @@ public class QuestionMetadata implements Serializable {
             entities = new ArrayList<>();
         }
         entities.add(entity);
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(final Location location) {
+        this.location = location;
     }
 
     @Override

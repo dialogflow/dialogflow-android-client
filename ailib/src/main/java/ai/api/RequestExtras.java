@@ -27,6 +27,7 @@ import java.util.Map;
 import ai.api.model.AIContext;
 import ai.api.model.AIRequest;
 import ai.api.model.Entity;
+import ai.api.model.Location;
 
 /**
  * Extra data for request
@@ -38,6 +39,8 @@ public class RequestExtras {
     private Boolean resetContexts;
 
     private Map<String, String> additionalHeaders;
+
+    private Location location;
 
     public RequestExtras() {
         contexts = null;
@@ -83,6 +86,14 @@ public class RequestExtras {
      */
     public void setAdditionalHeaders(final Map<String, String> additionalHeaders) {
         this.additionalHeaders = additionalHeaders;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(final Location location) {
+        this.location = location;
     }
 
     public boolean hasContexts() {
