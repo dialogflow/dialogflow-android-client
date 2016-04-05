@@ -21,6 +21,7 @@ package ai.api.test;
  *
  ***********************************************************************************************************************/
 
+import ai.api.*;
 import ai.api.model.*;
 import android.text.TextUtils;
 
@@ -35,11 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import ai.api.AIConfiguration;
-import ai.api.AIDataService;
-import ai.api.AIServiceException;
-import ai.api.SessionIdStorage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -813,10 +809,21 @@ public abstract class ProtocolTestBase {
     public void locationFieldTest() throws AIServiceException {
         final AIDataService aiDataService = createDataService("23e7d37f6dd24e4eb7dbbd7491f832cf");
 
+        // no location means empty weather
         final AIRequest emptyLocationRequest = new AIRequest("weather");
         final AIResponse emptyLocationResponse = makeRequest(aiDataService, emptyLocationRequest);
         assertTrue(TextUtils.isEmpty(emptyLocationResponse.getResult().getFulfillment().getSpeech()));
 
+        // location can be set using RequestExtras
+        final RequestExtras requestExtras = new RequestExtras();
+        requestExtras.setLocation(new Location(55.05, 82.95));
+        final AIResponse extrasResponse = aiDataService.request(emptyLocationRequest, requestExtras);
+        assertNotNull(extrasResponse);
+        assertNotNull(extrasResponse.getResult().getFulfillment().getSpeech());
+        assertTrue(extrasResponse.getResult().getFulfillment().getSpeech().contains("Novosibirsk"));
+        assertTrue(extrasResponse.getResult().getFulfillment().getSpeech().contains("degree"));
+
+        // location can be set explicitly
         final AIRequest locationRequest = new AIRequest("weather");
         locationRequest.setLocation(new Location(55.05, 82.95));
         final AIResponse locationResponse = makeRequest(aiDataService, locationRequest);
