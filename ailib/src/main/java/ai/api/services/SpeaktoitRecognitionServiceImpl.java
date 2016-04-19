@@ -314,7 +314,7 @@ public class SpeaktoitRecognitionServiceImpl extends AIService implements
         private void normalize(@NonNull final byte[] buffer, final int bytesRead) {
             final int remainOffset = NOISE_BYTES - offset;
             if (bytesRead >= remainOffset) {
-                final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, remainOffset, bytesRead).order(ByteOrder.LITTLE_ENDIAN);
+                final ByteBuffer byteBuffer = ByteBuffer.wrap(buffer, remainOffset, bytesRead - remainOffset).order(ByteOrder.LITTLE_ENDIAN);
                 final ShortBuffer shorts = byteBuffer.asShortBuffer();
                 for (int i = 0; i < shorts.limit(); i++) {
                     final short sample = shorts.get(i);
