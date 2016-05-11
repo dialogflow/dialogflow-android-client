@@ -24,5 +24,4 @@ package ai.api.sample;
 public abstract class Config {
     // copy this keys from your developer dashboard
     public static final String ACCESS_TOKEN = "3485a96fb27744db83e78b8c4bc9e7b7";
-    public static final String SUBSCRIPTION_KEY = "cb9693af-85ce-4fbf-844a-5563722fc27f";
 }

@@ -49,7 +49,6 @@ public class ProtocolDevTest extends ProtocolTestBase {
 
     // Testing keys
     protected static final String ACCESS_TOKEN = "a410386b327946c6ac162aad10cf9788";
-    protected static final String SUBSCRIPTION_KEY = "no difference";
 
     @Override
     protected String getAccessToken() {
@@ -59,11 +58,6 @@ public class ProtocolDevTest extends ProtocolTestBase {
     @Override
     protected String getSecondAccessToken() {
         return "212bf93686444afab30e20ed6f2dff1d";
-    }
-
-    @Override
-    protected String getSubscriptionKey() {
-        return SUBSCRIPTION_KEY;
     }
 
     @Override

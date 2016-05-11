@@ -49,8 +49,6 @@ public abstract class ProtocolTestBase {
 
     protected abstract String getSecondAccessToken();
 
-    protected abstract String getSubscriptionKey();
-
     protected abstract String getRuAccessToken();
 
     protected abstract String getBrAccessToken();

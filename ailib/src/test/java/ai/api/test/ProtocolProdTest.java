@@ -33,7 +33,6 @@ public class ProtocolProdTest extends ProtocolTestBase {
 
     // Testing keys
     protected static final String ACCESS_TOKEN = "3485a96fb27744db83e78b8c4bc9e7b7";
-    protected static final String SUBSCRIPTION_KEY = "cb9693af-85ce-4fbf-844a-5563722fc27f";
 
     protected String getAccessToken() {
         return ACCESS_TOKEN;
@@ -43,11 +42,6 @@ public class ProtocolProdTest extends ProtocolTestBase {
     protected String getSecondAccessToken() {
         return "968235e8e4954cf0bb0dc07736725ecd";
     }
-
-    protected String getSubscriptionKey() {
-        return SUBSCRIPTION_KEY;
-    }
-
 
     protected String getRuAccessToken(){
         return "07806228a357411d83064309a279c7fd";
