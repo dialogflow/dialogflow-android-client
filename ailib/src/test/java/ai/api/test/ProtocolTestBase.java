@@ -767,8 +767,7 @@ public abstract class ProtocolTestBase {
         assertEquals("cat", actionPet);
     }
 
-    // TODO Fix test
-    //@Test
+    @Test
     public void testUserEnumEntities() throws AIServiceException {
         final AIDataService dataService = createDataService();
 
