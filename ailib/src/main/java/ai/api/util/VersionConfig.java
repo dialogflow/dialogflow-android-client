@@ -39,23 +39,23 @@ public class VersionConfig {
     private static final Map<String, VersionConfig> configuration = new HashMap<>();
 
     static {
-        configuration.put("5.9.26", new VersionConfig(true));
-        configuration.put("4.7.13", new VersionConfig(false));
+        configuration.put("5.9.26", new VersionConfig(true, true));
+        configuration.put("4.7.13", new VersionConfig(false, false));
     }
 
     private boolean destroyRecognizer = true;
+    private boolean autoStopRecognizer = false;
 
     private VersionConfig() {
     }
 
-    private VersionConfig(final boolean destroyRecognizer) {
+    private VersionConfig(final boolean destroyRecognizer, final boolean autoStopRecognizer) {
         this.destroyRecognizer = destroyRecognizer;
+        this.autoStopRecognizer = autoStopRecognizer;
     }
 
-    @Nullable
     public static VersionConfig init(final Context context) {
-        final VersionConfig config = getConfigByVersion(context);
-        return config;
+        return getConfigByVersion(context);
     }
 
     private static VersionConfig getConfigByVersion(final Context context) {
@@ -71,6 +71,7 @@ public class VersionConfig {
                 final long versionNumber = numberFromBuildVersion(versionName);
                 if (number >= versionNumber && prevVersionNumber < versionNumber) {
                     config.destroyRecognizer = configEntry.getValue().destroyRecognizer;
+                    config.autoStopRecognizer = configEntry.getValue().autoStopRecognizer;
                     prevVersionNumber = versionNumber;
                 }
             }
@@ -81,6 +82,10 @@ public class VersionConfig {
 
     public boolean isDestroyRecognizer() {
         return destroyRecognizer;
+    }
+
+    public boolean isAutoStopRecognizer() {
+        return autoStopRecognizer;
     }
 
     private static long numberFromBuildVersion(final String buildVersion) {

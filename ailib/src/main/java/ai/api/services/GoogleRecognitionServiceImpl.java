@@ -21,7 +21,6 @@ package ai.api.services;
  *
  ***********************************************************************************************************************/
 
-import ai.api.util.VersionConfig;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,6 +28,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
@@ -51,10 +51,12 @@ import ai.api.model.AIError;
 import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.util.RecognizerChecker;
+import ai.api.util.VersionConfig;
 
 public class GoogleRecognitionServiceImpl extends AIService {
 
     private static final String TAG = GoogleRecognitionServiceImpl.class.getName();
+    private static final long STOP_DELAY = 1000;
 
     private SpeechRecognizer speechRecognizer;
     private final Object speechRecognizerLock = new Object();
@@ -64,6 +66,9 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
     private volatile boolean recognitionActive = false;
     private volatile boolean wasReadyForSpeech;
+
+    private final Handler handler = new Handler();
+    private Runnable stopRunnable;
 
     private final Map<Integer, String> errorMessages = new HashMap<>();
 
@@ -90,6 +95,30 @@ public class GoogleRecognitionServiceImpl extends AIService {
         }
 
         versionConfig = VersionConfig.init(context);
+        if (versionConfig.isAutoStopRecognizer()) {
+            stopRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    stopListening();
+                }
+            };
+        }
+    }
+
+    /**
+     * Manage recognizer cancellation runnable.
+     *
+     * @param action (int) (0 - stop, 1 - restart)
+     */
+    private void updateStopRunnable(final int action) {
+        if (stopRunnable != null) {
+            if (action == 0) {
+                handler.removeCallbacks(stopRunnable);
+            } else if (action == 1) {
+                handler.removeCallbacks(stopRunnable);
+                handler.postDelayed(stopRunnable, STOP_DELAY);
+            }
+        }
     }
 
     protected void initializeRecognizer() {
@@ -235,7 +264,8 @@ public class GoogleRecognitionServiceImpl extends AIService {
         }
     }
 
-    private void restartRecognition(){
+    private void restartRecognition() {
+        updateStopRunnable(0);
         recognitionActive = false;
 
         synchronized (speechRecognizerLock) {
@@ -279,8 +309,10 @@ public class GoogleRecognitionServiceImpl extends AIService {
         }
     }
 
-    private boolean isDestroyRecognizer() {
-        return versionConfig == null || versionConfig.isDestroyRecognizer();
+    private void stopInternal() {
+        updateStopRunnable(0);
+        if (versionConfig.isDestroyRecognizer()) clearRecognizer();
+        recognitionActive = false;
     }
 
     private class InternalRecognitionListener implements RecognitionListener {
@@ -336,12 +368,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
 
                 GoogleRecognitionServiceImpl.this.onError(aiError);
             }
-
-            if (isDestroyRecognizer()) {
-                clearRecognizer();
-            }
-
-            recognitionActive = false;
+            stopInternal();
         }
 
         @TargetApi(14)
@@ -373,17 +400,13 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     GoogleRecognitionServiceImpl.this.sendRequest(aiRequest, requestExtras);
                 }
             }
-
-            if (isDestroyRecognizer()) {
-                clearRecognizer();
-            }
-
-            recognitionActive = false;
+            stopInternal();
         }
 
         @Override
         public void onPartialResults(final Bundle partialResults) {
             if (recognitionActive) {
+                updateStopRunnable(1);
                 final ArrayList<String> partialRecognitionResults = partialResults.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
                 if (partialRecognitionResults != null && !partialRecognitionResults.isEmpty()) {
                     GoogleRecognitionServiceImpl.this.onPartialResults(partialRecognitionResults);
