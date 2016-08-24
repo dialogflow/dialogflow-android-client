@@ -803,7 +803,7 @@ public abstract class ProtocolTestBase {
         assertEquals("Yes, it is not from domains", agentResponse.getResult().getFulfillment().getSpeech());
     }
 
-    @Test
+    //@Test
     public void locationFieldTest() throws AIServiceException {
         final AIDataService aiDataService = createDataService("23e7d37f6dd24e4eb7dbbd7491f832cf");
 
