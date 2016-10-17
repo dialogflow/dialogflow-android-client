@@ -21,6 +21,7 @@ package ai.api.model;
  *
  ***********************************************************************************************************************/
 
+import com.google.gson.JsonElement;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -30,11 +31,44 @@ public class Fulfillment implements Serializable {
     @SerializedName("speech")
     private String speech;
 
+    @SerializedName("displayText")
+    private String displayText;
+
+    @SerializedName("data")
+    private JsonElement data;
+
+    @SerializedName("source")
+    private String source;
+
     public String getSpeech() {
         return speech;
     }
 
     public void setSpeech(final String speech) {
         this.speech = speech;
+    }
+
+    public JsonElement getData() {
+        return data;
+    }
+
+    public void setData(final JsonElement data) {
+        this.data = data;
+    }
+
+    public String getDisplayText() {
+        return displayText;
+    }
+
+    public void setDisplayText(final String displayText) {
+        this.displayText = displayText;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(final String source) {
+        this.source = source;
     }
 }
