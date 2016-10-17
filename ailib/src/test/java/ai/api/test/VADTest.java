@@ -34,7 +34,7 @@ import ai.api.util.VoiceActivityDetector;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@Config(constants = BuildConfig.class, manifest = Config.DEFAULT, sdk = BuildConfig.TESTS_SDK)
+@Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 public class VADTest {
 

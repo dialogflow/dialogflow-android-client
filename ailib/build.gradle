@@ -11,12 +11,6 @@ android {
         versionCode Integer.parseInt(project.VERSION_CODE)
         versionName project.VERSION_NAME
     }
-    sourceSets {
-        androidTest {
-            setRoot('src/test')
-        }
-        instrumentTest.setRoot('src/test')
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -53,7 +47,7 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     testCompile "junit:junit:4.12"
     testCompile "org.assertj:assertj-core:1.7.0"
-    testCompile "org.robolectric:robolectric:3.0"
+    testCompile "org.robolectric:robolectric:3.1.2"
 }
 
 apply from: '../gradle-mvn-push.gradle'
