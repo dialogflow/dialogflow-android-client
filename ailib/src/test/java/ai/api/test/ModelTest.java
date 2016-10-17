@@ -1,8 +1,10 @@
 package ai.api.test;
 
+import ai.api.model.Fulfillment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import com.google.gson.JsonPrimitive;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,16 +17,13 @@ import ai.api.BuildConfig;
 import ai.api.GsonFactory;
 import ai.api.model.AIResponse;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Config(constants = BuildConfig.class, manifest = Config.NONE, sdk = BuildConfig.TESTS_SDK)
 @RunWith(RobolectricTestRunner.class)
 public class ModelTest {
 
-    public static final String TEST_JSON = "{\n" +
+    private static final String TEST_JSON = "{\n" +
             "  \"id\": \"d872e7d9-d2ee-4ebd-aaff-655bfc8fbf33\",\n" +
             "  \"timestamp\": \"2015-03-18T09:54:36.216Z\",\n" +
             "  \"result\": {\n" +
@@ -91,5 +90,48 @@ public class ModelTest {
         assertNotNull(jsonObject);
         assertNotNull(jsonObject.get("nested_key"));
         assertEquals("nested_value", jsonObject.get("nested_key").getAsString());
+    }
+
+    @Test
+    public void parseFulfillmentTest() {
+        String stringFulfillment = "{\"speech\":\"hi friend\",\"source\":\"webhook\",\"displayText\":\"hi friend\",\"data\":{\"param\":\"value\"}}";
+        {
+            final Fulfillment fulfillment = gson.fromJson(stringFulfillment, Fulfillment.class);
+
+            assertNotNull(fulfillment);
+            assertEquals("hi friend", fulfillment.getSpeech());
+            assertEquals("hi friend", fulfillment.getDisplayText());
+            assertEquals("webhook", fulfillment.getSource());
+            assertNotNull(fulfillment.getData());
+
+            final JsonObject data = (JsonObject) fulfillment.getData();
+
+            assertEquals("value", data.getAsJsonPrimitive("param").getAsString());
+        }
+
+        stringFulfillment = "{\"speech\":\"hi friend\",\"displayText\":\"hi friend\"}";
+        {
+            final Fulfillment fulfillment = gson.fromJson(stringFulfillment, Fulfillment.class);
+
+            assertNotNull(fulfillment);
+            assertEquals("hi friend", fulfillment.getSpeech());
+            assertEquals("hi friend", fulfillment.getDisplayText());
+            assertNull(fulfillment.getSource());
+            assertNull(fulfillment.getData());
+        }
+
+        stringFulfillment = "{\"speech\":\"hi friend\",\"data\":\"some string data\"}";
+        {
+            final Fulfillment fulfillment = gson.fromJson(stringFulfillment, Fulfillment.class);
+
+            assertNotNull(fulfillment);
+            assertEquals("hi friend", fulfillment.getSpeech());
+            assertNull(fulfillment.getDisplayText());
+            assertNull(fulfillment.getSource());
+            assertNotNull(fulfillment.getData());
+
+            final JsonPrimitive jsonPrimitive = (JsonPrimitive) fulfillment.getData();
+            assertEquals("some string data", jsonPrimitive.getAsString());
+        }
     }
 }
