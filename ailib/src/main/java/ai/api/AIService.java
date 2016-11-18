@@ -27,6 +27,8 @@ import android.content.Context;
 import java.util.Collection;
 import java.util.List;
 
+import ai.api.android.AIConfiguration;
+import ai.api.android.AIDataService;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;

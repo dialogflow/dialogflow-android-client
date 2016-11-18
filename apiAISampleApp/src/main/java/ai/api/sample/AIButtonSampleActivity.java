@@ -33,8 +33,8 @@ import com.google.gson.JsonElement;
 import java.util.HashMap;
 import java.util.Map;
 
-import ai.api.AIConfiguration;
-import ai.api.GsonFactory;
+import ai.api.android.AIConfiguration;
+import ai.api.android.GsonFactory;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 import ai.api.model.Metadata;

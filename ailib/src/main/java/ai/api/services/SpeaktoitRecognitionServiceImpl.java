@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ai.api.AIConfiguration;
+import ai.api.android.AIConfiguration;
 import ai.api.AIService;
 import ai.api.AIServiceException;
 import ai.api.RequestExtras;

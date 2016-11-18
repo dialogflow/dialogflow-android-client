@@ -33,10 +33,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.Calendar;
 
-import ai.api.AIConfiguration;
+import ai.api.android.AIConfiguration;
 import ai.api.AIServiceException;
 import ai.api.BuildConfig;
-import ai.api.GsonFactory;
+import ai.api.android.GsonFactory;
 import ai.api.model.AIRequest;
 import ai.api.test.compatibility.v20150204_protocol_model.AIResponseV20150204;
 

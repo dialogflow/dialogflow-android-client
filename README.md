@@ -227,7 +227,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
 7. Expand the import section and add the following lines to import the necessary API.AI classes:
     
     ```java
-    import ai.api.AIConfiguration;
+    import ai.api.android.AIConfiguration;
     import ai.api.AIListener;
     import ai.api.AIService;
     import ai.api.model.AIError;

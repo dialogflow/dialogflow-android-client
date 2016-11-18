@@ -22,14 +22,13 @@ package ai.api.util;
  ***********************************************************************************************************************/
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import ai.api.GsonFactory;
+import ai.api.android.GsonFactory;
 
 public class VersionConfig {
 

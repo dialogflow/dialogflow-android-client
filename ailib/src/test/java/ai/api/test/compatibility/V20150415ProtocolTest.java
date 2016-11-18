@@ -31,8 +31,8 @@ import org.robolectric.annotation.Config;
 import java.util.Collections;
 import java.util.List;
 
-import ai.api.AIConfiguration;
-import ai.api.AIDataService;
+import ai.api.android.AIConfiguration;
+import ai.api.android.AIDataService;
 import ai.api.AIServiceException;
 import ai.api.BuildConfig;
 import ai.api.model.AIContext;

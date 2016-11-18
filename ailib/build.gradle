@@ -45,6 +45,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.1'
     compile 'com.google.code.gson:gson:2.3'
     compile 'commons-io:commons-io:2.4'
+    compile group: 'ai.api', name: 'libai', version: '1.2.1'
     testCompile "junit:junit:4.12"
     testCompile "org.assertj:assertj-core:1.7.0"
     testCompile "org.robolectric:robolectric:3.1.2"

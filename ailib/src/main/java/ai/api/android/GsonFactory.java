@@ -1,4 +1,4 @@
-package ai.api;
+package ai.api.android;
 
 /***********************************************************************************************************************
  *
@@ -29,11 +29,8 @@ import java.util.Locale;
 
 public class GsonFactory {
 
-    private static final Gson protocolGson = new GsonBuilder()
-            .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).toPattern()).create();
-
     public static Gson getGson(){
-        return protocolGson;
+        return ai.api.GsonFactory.getDefaultFactory().getGson();
     }
 
 }

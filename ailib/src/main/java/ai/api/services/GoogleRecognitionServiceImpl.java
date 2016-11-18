@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ai.api.AIConfiguration;
+import ai.api.android.AIConfiguration;
 import ai.api.AIService;
 import ai.api.AIServiceException;
 import ai.api.PartialResultsListener;

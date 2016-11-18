@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.Toast;
 
-import ai.api.AIConfiguration;
+import ai.api.android.AIConfiguration;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 import ai.api.ui.AIDialog;

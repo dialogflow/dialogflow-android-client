@@ -36,7 +36,7 @@ import android.view.animation.Transformation;
 
 import java.util.List;
 
-import ai.api.AIConfiguration;
+import ai.api.android.AIConfiguration;
 import ai.api.AIListener;
 import ai.api.AIService;
 import ai.api.AIServiceException;
