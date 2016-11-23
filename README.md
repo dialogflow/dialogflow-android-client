@@ -13,7 +13,7 @@ Two permissions are required to use the API.AI Android SDK:
 Add this dependencies to your project to use SDK
 
 ```
-compile 'ai.api:sdk:1.10.0@aar'
+compile 'ai.api:sdk:2.0.0@aar'
 // api.ai SDK dependencies
 compile 'com.android.support:appcompat-v7:23.2.1'
 compile 'com.google.code.gson:gson:2.3'
@@ -22,7 +22,7 @@ compile 'commons-io:commons-io:2.4'
 
 Currently, speech recognition is performed using Google's Android SDK, either on the client device or in the cloud. Recognized text is passed to the API.AI through HTTP requests. Also you can try Speaktoit recognition engine (Use [AIConfiguration.RecognitionEngine.Speaktoit](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java#L37)).
 
-Authentication is accomplished through setting the client access token when initializing an [AIConfiguration](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java) object. The client access token specifies which agent will be used for natural language processing.
+Authentication is accomplished through setting the client access token when initializing an [AIConfiguration](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/android/AIConfiguration.java) object. The client access token specifies which agent will be used for natural language processing.
 
 **Note:** The API.AI Android SDK only makes query requests, and cannot be used to manage entities and intents. Instead, use the API.AI user interface or REST API to  create, retrieve, update, and delete entities and intents.
 
@@ -64,7 +64,7 @@ To implement speech recognition and natural language processing features in your
 1. Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
 
     ```
-    compile 'ai.api:sdk:1.10.0@aar'
+    compile 'ai.api:sdk:2.0.0@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.google.code.gson:gson:2.3'
@@ -221,15 +221,15 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     
 3. Save **AndroidManifest.xml**.
 4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](docs/images/Dependencies.png)
-5. In the opened dialog search **ai.api**, choose **ai.api:sdk:1.10.0** item and append `@aar` to the end of library name (see image) then click OK.<br/> ![Add dependency](docs/images/Dependencies2.png)
+5. In the opened dialog search **ai.api**, choose **ai.api:sdk:2.0.0** item and append `@aar` to the end of library name (see image) then click OK.<br/> ![Add dependency](docs/images/Dependencies2.png)
     * Also you need to add dependencies of the SDK library : *com.android.support:appcompat-v7*, *com.google.code.gson:gson*, *commons-io:commons-io*. Add them in the same way.
 6. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
 7. Expand the import section and add the following lines to import the necessary API.AI classes:
     
     ```java
-    import ai.api.android.AIConfiguration;
     import ai.api.AIListener;
-    import ai.api.AIService;
+    import ai.api.android.AIConfiguration;
+    import ai.api.android.AIService;
     import ai.api.model.AIError;
     import ai.api.model.AIResponse;
     import ai.api.model.Result;
