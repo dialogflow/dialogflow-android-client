@@ -21,6 +21,7 @@ package ai.api;
  *
  ***********************************************************************************************************************/
 
+import ai.api.android.AIService;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
 

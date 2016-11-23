@@ -24,6 +24,7 @@ package ai.api.test;
 import ai.api.*;
 import ai.api.android.AIConfiguration;
 import ai.api.android.AIDataService;
+import ai.api.android.SessionIdStorage;
 import ai.api.model.*;
 import android.text.TextUtils;
 

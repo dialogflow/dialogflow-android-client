@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import ai.api.android.AIConfiguration;
-import ai.api.AIService;
+import ai.api.android.AIService;
 import ai.api.AIServiceException;
 import ai.api.PartialResultsListener;
 import ai.api.RequestExtras;

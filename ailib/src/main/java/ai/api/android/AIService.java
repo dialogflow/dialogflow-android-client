@@ -1,4 +1,4 @@
-package ai.api;
+package ai.api.android;
 
 /***********************************************************************************************************************
  *
@@ -27,8 +27,9 @@ import android.content.Context;
 import java.util.Collection;
 import java.util.List;
 
-import ai.api.android.AIConfiguration;
-import ai.api.android.AIDataService;
+import ai.api.AIListener;
+import ai.api.AIServiceException;
+import ai.api.RequestExtras;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIRequest;

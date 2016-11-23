@@ -45,7 +45,7 @@ import java.util.Map;
 
 import ai.api.android.AIConfiguration;
 import ai.api.AIListener;
-import ai.api.AIService;
+import ai.api.android.AIService;
 import ai.api.android.GsonFactory;
 import ai.api.RequestExtras;
 import ai.api.model.AIContext;

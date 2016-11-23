@@ -38,7 +38,7 @@ import java.util.List;
 
 import ai.api.android.AIConfiguration;
 import ai.api.AIListener;
-import ai.api.AIService;
+import ai.api.android.AIService;
 import ai.api.AIServiceException;
 import ai.api.PartialResultsListener;
 import ai.api.R;

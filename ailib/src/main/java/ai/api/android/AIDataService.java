@@ -27,7 +27,6 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 
 import ai.api.AIServiceContext;
-import ai.api.SessionIdStorage;
 
 /**
  * Do simple requests to the AI Service
