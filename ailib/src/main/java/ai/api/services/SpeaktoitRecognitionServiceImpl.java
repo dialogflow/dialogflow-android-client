@@ -40,10 +40,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import ai.api.android.AIConfiguration;
-import ai.api.android.AIService;
 import ai.api.AIServiceException;
 import ai.api.RequestExtras;
+import ai.api.android.AIConfiguration;
+import ai.api.android.AIService;
 import ai.api.model.AIContext;
 import ai.api.model.AIError;
 import ai.api.model.AIResponse;
@@ -52,6 +52,10 @@ import ai.api.util.VoiceActivityDetector;
 import static ai.api.util.VoiceActivityDetector.FRAME_SIZE_IN_BYTES;
 import static ai.api.util.VoiceActivityDetector.NOISE_BYTES;
 
+/*
+* @deprecated Use GoogleRecognitionServiceImpl
+*/
+@Deprecated
 public class SpeaktoitRecognitionServiceImpl extends AIService implements
         VoiceActivityDetector.SpeechEventsListener,
         MediaPlayer.OnCompletionListener,

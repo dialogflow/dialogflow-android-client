@@ -44,7 +44,11 @@ public class AIConfiguration extends ai.api.AIConfiguration {
 
         /**
          * Speaktoit recognition engine
+         *
+         * @deprecated Use System instead
+         * will be support until 01.02.2017
          */
+        @Deprecated
         Speaktoit
     }
 
@@ -70,7 +74,7 @@ public class AIConfiguration extends ai.api.AIConfiguration {
     private boolean normalizeInputSound = false;
 
     public AIConfiguration(final String clientAccessToken, final SupportedLanguages language, final RecognitionEngine recognitionEngine) {
-        super(clientAccessToken);
+        super(clientAccessToken, language);
 
         this.recognitionEngine = recognitionEngine;
 
