@@ -148,7 +148,6 @@ public class AITextSampleActivity extends BaseActivity implements AdapterView.On
             }
         };
 
-        Log.v("$$$$", String.format("AITextSampleActivity.sendRequest queryString = %s, eventString = %s, contextString = %s", queryString, eventString, contextString));
         task.execute(queryString, eventString, contextString);
     }
 
