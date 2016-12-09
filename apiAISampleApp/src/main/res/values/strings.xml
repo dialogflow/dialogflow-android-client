@@ -7,10 +7,13 @@
     <string name="title_activity_aibutton_sample">AIButtonSampleActivity</string>
     <string name="title_activity_aiservice_sample">AIServiceSample</string>
     <string name="title_activity_aidialog_sample">AIDialogSample</string>
+    <string name="title_activity_aitext_sample">AITextSample</string>
     <string name="service_sample_text">Service sample</string>
     <string name="button_sample_text">Button sample</string>
     <string name="dialog_sample_text">Dialog sample</string>
+    <string name="text_sample_text">Text sample</string>
     <string name="title_app_widget">Voice command</string>
+    <string name="non_empty_query">Query should not be empty</string>
 
     <string name="use_bluetooth_headset">Use Bluetooth headset</string>
 

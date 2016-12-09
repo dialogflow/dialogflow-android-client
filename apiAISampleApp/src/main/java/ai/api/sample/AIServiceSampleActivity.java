@@ -60,28 +60,12 @@ public class AIServiceSampleActivity extends BaseActivity
 
     public static final String TAG = AIServiceSampleActivity.class.getName();
 
-    final static LanguageConfig[] languages = new LanguageConfig[]{
-            new LanguageConfig("en", "3485a96fb27744db83e78b8c4bc9e7b7"),
-            new LanguageConfig("ru", "adcb900f02594f4186420c082e44173e"),
-            new LanguageConfig("de", "96807aac0e98426eaf684f4081b7e431"),
-            new LanguageConfig("pt", "4c4a2277516041f6a1c909163ebfed39"),
-            new LanguageConfig("pt-BR", "6076377eea9e4291854204795b55eee9"),
-            new LanguageConfig("es", "430d461ea8e64c09a4459560353a5b1d"),
-            new LanguageConfig("fr", "d6434b3bf49d4a93a25679782619f39d"),
-            new LanguageConfig("it", "4319f7aa1765468194d9761432e4db36"),
-            new LanguageConfig("ja", "6cab6813dc8c416f92c3c2e2b4a7bc27"),
-            new LanguageConfig("ko", "b0219c024ee848eaa7cfb17dceb9934a"),
-            new LanguageConfig("zh-CN", "2b575c06deb246d2abe4bf769eb3200b"),
-            new LanguageConfig("zh-HK", "00ef32d3e35f43178405c046a16f3843"),
-            new LanguageConfig("zh-TW", "dd7ebc8a02974155aeffec26b21b55cf"),
-    };
-
 
     private AIService aiService;
     private ProgressBar progressBar;
     private ImageView recIndicator;
     private TextView resultTextView;
-    private EditText contextTextView;
+    private EditText contextEditText;
 
     private Gson gson = GsonFactory.getGson();
 
@@ -93,10 +77,10 @@ public class AIServiceSampleActivity extends BaseActivity
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         recIndicator = (ImageView) findViewById(R.id.recIndicator);
         resultTextView = (TextView) findViewById(R.id.resultTextView);
-        contextTextView = (EditText) findViewById(R.id.contextTextView);
+        contextEditText = (EditText) findViewById(R.id.contextEditText);
 
         Spinner spinner = (Spinner) findViewById(R.id.selectLanguageSpinner);
-        final ArrayAdapter<LanguageConfig> languagesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, languages);
+        final ArrayAdapter<LanguageConfig> languagesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Config.languages);
         spinner.setAdapter(languagesAdapter);
         spinner.setOnItemSelectedListener(this);
     }
@@ -155,7 +139,7 @@ public class AIServiceSampleActivity extends BaseActivity
     }
 
     public void startRecognition(final View view) {
-        final String contextString = String.valueOf(contextTextView.getText());
+        final String contextString = String.valueOf(contextEditText.getText());
         if (TextUtils.isEmpty(contextString)) {
             aiService.startListening();
         } else {

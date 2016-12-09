@@ -68,6 +68,15 @@
 
         </activity>
 
+        <activity
+            android:name=".AITextSampleActivity"
+            android:label="@string/title_activity_aitext_sample"
+            android:parentActivityName="ai.api.sample.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ai.api.sample.MainActivity" />
+        </activity>
+
         <receiver android:name=".AISampleAppWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

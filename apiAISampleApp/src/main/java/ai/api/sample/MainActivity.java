@@ -78,6 +78,10 @@ public class MainActivity extends BaseActivity {
         startActivity(AIDialogSampleActivity.class);
     }
 
+    public void textSampleClick(final View view) {
+        startActivity(AITextSampleActivity.class);
+    }
+
     private void startActivity(Class<?> cls) {
         final Intent intent = new Intent(this, cls);
         startActivity(intent);
