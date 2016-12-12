@@ -14,7 +14,7 @@ Add this dependencies to your project to use SDK
 
 ```
 compile 'ai.api:libai:1.2.2'
-compile 'ai.api:sdk:2.0.0@aar'
+compile 'ai.api:sdk:2.0.1@aar'
 // api.ai SDK dependencies
 compile 'com.android.support:appcompat-v7:23.2.1'
 compile 'com.google.code.gson:gson:2.3.1'
@@ -66,7 +66,7 @@ To implement speech recognition and natural language processing features in your
 
     ```
     compile 'ai.api:libai:1.2.2'
-    compile 'ai.api:sdk:2.0.0@aar'
+    compile 'ai.api:sdk:2.0.1@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.google.code.gson:gson:2.3'
@@ -223,7 +223,7 @@ Next you will integrate with the SDK to be able to make calls. Follow these step
     
 3. Save **AndroidManifest.xml**.
 4. Next, you need to add a new dependency for the AI.API library. Right click on your module name (it should be _app_) in the Project Navigator and select **Open Module Settings**. Click on the **Dependencies** tab. Click on the **+** sign on the bottom left side and select **Library dependency**. <br/>![Add dependency](docs/images/Dependencies.png)
-5. In the opened dialog search **ai.api**, choose **ai.api:sdk:2.0.0** item and append `@aar` to the end of library name (see image) then click OK.<br/> ![Add dependency](docs/images/Dependencies2.png)
+5. In the opened dialog search **ai.api**, choose **ai.api:sdk:2.0.1** item and append `@aar` to the end of library name (see image) then click OK.<br/> ![Add dependency](docs/images/Dependencies2.png)
     * Also you need to add dependencies of the SDK library : *com.android.support:appcompat-v7*, *com.google.code.gson:gson*, *commons-io:commons-io*. Add them in the same way.
 6. Open **MainActivity.java** under **app/src/main/java/com.example.yourAppName.app**, or whatever your package name is.
 7. Expand the import section and add the following lines to import the necessary API.AI classes:
