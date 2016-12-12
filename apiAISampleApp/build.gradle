@@ -33,7 +33,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'commons-io:commons-io:2.4'
-    compile 'ai.api:libai:1.2.1'
+    compile 'ai.api:libai:1.2.2'
     compile 'ai.api:sdk:2.0.0@aar'
     // this line left for testing purposes
     //compile project(':ailib')
