@@ -13,7 +13,7 @@ Two permissions are required to use the API.AI Android SDK:
 Add this dependencies to your project to use SDK
 
 ```
-compile 'ai.api:libai:1.2.1'
+compile 'ai.api:libai:1.2.2'
 compile 'ai.api:sdk:2.0.0@aar'
 // api.ai SDK dependencies
 compile 'com.android.support:appcompat-v7:23.2.1'
@@ -65,7 +65,7 @@ To implement speech recognition and natural language processing features in your
 1. Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
 
     ```
-    compile 'ai.api:libai:1.2.1'
+    compile 'ai.api:libai:1.2.2'
     compile 'ai.api:sdk:2.0.0@aar'
     // api.ai SDK dependencies
     compile 'com.android.support:appcompat-v7:23.2.1'
