@@ -192,6 +192,71 @@ new AsyncTask<AIRequest, Void, AIResponse>() {
     }
 }.execute(aiRequest);
 ```
+
+## Getting results
+After implementing AIListener interface, you can get the response from api.ai inside your listener like this:
+
+```java
+public void onResult(final AIResponse response) {
+   // Use the response object to get all the results
+}
+```
+
+Here is how to get different part of the result object:
+
+* Get the status
+
+   ```java
+   final Status status = response.getStatus();
+   Log.i(TAG, "Status code: " + status.getCode());
+   Log.i(TAG, "Status type: " + status.getErrorType());
+   ```
+   
+* Get resolved query
+
+   ```java
+   final Result result = response.getResult();
+   Log.i(TAG, "Resolved query: " + result.getResolvedQuery());
+   ```
+   
+* Get action
+
+   ```java
+   final Result result = response.getResult();
+   Log.i(TAG, "Action: " + result.getAction());
+   ```
+   
+* Get speech
+
+   ```java
+   final Result result = response.getResult();
+   final String speech = result.getFulfillment().getSpeech();
+   Log.i(TAG, "Speech: " + speech);
+   ```
+   
+* Get metadata
+
+   ```java
+   final Result result = response.getResult();
+   final Metadata metadata = result.getMetadata();
+   if (metadata != null) {
+     Log.i(TAG, "Intent id: " + metadata.getIntentId());
+     Log.i(TAG, "Intent name: " + metadata.getIntentName());
+   }
+   ```
+
+* Get parameters
+
+   ```java
+   final Result result = response.getResult();
+   final HashMap<String, JsonElement> params = result.getParameters();
+   if (params != null && !params.isEmpty()) {
+     Log.i(TAG, "Parameters: ");
+     for (final Map.Entry<String, JsonElement> entry : params.entrySet()) {
+         Log.i(TAG, String.format("%s: %s", entry.getKey(), entry.getValue().toString()));
+     }
+   }
+   ```
     
 # <a name="tutorial" />Tutorial
 
