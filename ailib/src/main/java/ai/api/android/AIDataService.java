@@ -21,12 +21,15 @@ package ai.api.android;
  *
  ***********************************************************************************************************************/
 
+import java.util.TimeZone;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
 import ai.api.AIServiceContext;
+
 
 /**
  * Do simple requests to the AI Service
@@ -62,5 +65,7 @@ public class AIDataService extends ai.api.AIDataService {
         public String getSessionId() {
             return sessionId;
         }
+
+        public TimeZone getTimeZone() { return null; }
     }
 }
