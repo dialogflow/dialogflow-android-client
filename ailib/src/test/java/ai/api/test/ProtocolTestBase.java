@@ -742,7 +742,7 @@ public abstract class ProtocolTestBase {
         assertNotNull(aiResponse.getResult().getContext("weather"));
 
         AIResponse nextResponse = null;
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 1; i++) {
             nextResponse = makeRequest(aiDataService, new AIRequest("next request"));
         }
 
