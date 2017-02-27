@@ -26,6 +26,8 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 
+import java.util.TimeZone;
+
 import ai.api.AIServiceContext;
 
 /**
@@ -62,5 +64,7 @@ public class AIDataService extends ai.api.AIDataService {
         public String getSessionId() {
             return sessionId;
         }
+
+        public TimeZone getTimeZone() { return TimeZone.getDefault(); }
     }
 }
