@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
 
@@ -103,6 +104,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
+    @Ignore("Voice recognition is not supported anymore")
     public void voiceRequestTest() throws AIServiceException {
         final AIDataService aiDataService = createDataService();
 
@@ -188,6 +190,7 @@ public abstract class ProtocolTestBase {
     }
 
     @Test
+    @Ignore("Voice recognition is not supported anymore")
     public void outputContextVoiceTest() throws AIServiceException {
         final AIConfiguration config = new AIConfiguration(getAccessToken(),
                 AIConfiguration.SupportedLanguages.English,
@@ -797,7 +800,7 @@ public abstract class ProtocolTestBase {
         final AIResponse domainsResponse = makeRequest(aiDataService, domainsRequest);
 
         assertEquals("domains", domainsResponse.getResult().getSource());
-        assertEquals("smalltalk.greetings", domainsResponse.getResult().getAction());
+        assertEquals("smalltalk.greetings.hello", domainsResponse.getResult().getAction());
 
         final AIRequest agentRequest = new AIRequest("not from domains");
         final AIResponse agentResponse = makeRequest(aiDataService, agentRequest);

@@ -21,11 +21,6 @@ android {
     }
 
     packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'LICENSE.txt'
     }
 }
 
@@ -39,9 +34,6 @@ repositories {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile 'commons-io:commons-io:2.4'
-    compile 'ai.api:libai:1.4.8'
     // compile 'ai.api:sdk:2.0.4@aar'
     // this line is for testing purposes
     compile project(':ailib')
