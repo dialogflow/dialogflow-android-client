@@ -13,12 +13,9 @@ Two permissions are required to use the API.AI Android SDK:
 Add this dependencies to your project to use SDK
 
 ```
-compile 'ai.api:libai:1.4.8'
-compile 'ai.api:sdk:2.0.5@aar'
+compile 'ai.api:sdk:2.0.6@aar'
 // api.ai SDK dependencies
 compile 'com.android.support:appcompat-v7:23.2.1'
-compile 'com.google.code.gson:gson:2.3.1'
-compile 'commons-io:commons-io:2.4'
 ```
 
 Currently, speech recognition is performed using Google's Android SDK, either on the client device or in the cloud. Recognized text is passed to the API.AI through HTTP requests. Also you can try Speaktoit recognition engine (Use [AIConfiguration.RecognitionEngine.Speaktoit](https://github.com/api-ai/api-ai-android-sdk/blob/master/ailib/src/main/java/ai/api/AIConfiguration.java#L37)).
