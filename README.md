@@ -13,7 +13,7 @@ Two permissions are required to use the API.AI Android SDK:
 Add this dependencies to your project to use SDK
 
 ```
-compile 'ai.api:sdk:2.0.6@aar'
+compile 'ai.api:sdk:2.0.7@aar'
 // api.ai SDK dependencies
 compile 'com.android.support:appcompat-v7:23.2.1'
 ```
