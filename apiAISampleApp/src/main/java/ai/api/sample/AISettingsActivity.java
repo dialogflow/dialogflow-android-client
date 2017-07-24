@@ -46,6 +46,7 @@ public class AISettingsActivity extends BaseActivity implements
         bluetoothSwitch = (CheckBox) findViewById(R.id.activity_settings_bluetooth_swith);
         bluetoothSwitch.setChecked(settingsManager.isUseBluetooth());
         bluetoothSwitch.setOnCheckedChangeListener(this);
+
     }
 
     @Override
