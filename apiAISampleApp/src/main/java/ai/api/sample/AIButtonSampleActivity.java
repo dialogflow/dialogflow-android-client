@@ -21,6 +21,7 @@ package ai.api.sample;
  *
  ***********************************************************************************************************************/
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -100,6 +101,7 @@ public class AIButtonSampleActivity extends BaseActivity implements AIButton.AIB
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(AISettingsActivity.class);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -167,5 +169,10 @@ public class AIButtonSampleActivity extends BaseActivity implements AIButton.AIB
                 resultTextView.setText("");
             }
         });
+    }
+
+    private void startActivity(Class<?> cls) {
+        final Intent intent = new Intent(this, cls);
+        startActivity(intent);
     }
 }

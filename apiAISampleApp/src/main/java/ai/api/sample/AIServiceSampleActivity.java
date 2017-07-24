@@ -21,6 +21,7 @@ package ai.api.sample;
  *
  ***********************************************************************************************************************/
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -112,6 +113,7 @@ public class AIServiceSampleActivity extends BaseActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(AISettingsActivity.class);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -266,5 +268,10 @@ public class AIServiceSampleActivity extends BaseActivity
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    private void startActivity(Class<?> cls) {
+        final Intent intent = new Intent(this, cls);
+        startActivity(intent);
     }
 }
