@@ -62,12 +62,7 @@ To implement speech recognition and natural language processing features in your
 1. Add a dependency to your *build.gradle* file. Add the following line to your **build.gradle** file. (In the sample app, the **apiAISampleApp/build.gradle** is an example of how to do this.)
 
     ```
-    compile 'ai.api:libai:1.4.8'
-    compile 'ai.api:sdk:2.0.5@aar'
-    // api.ai SDK dependencies
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.google.code.gson:gson:2.3'
-    compile 'commons-io:commons-io:2.4'
+    compile 'ai.api:sdk:2.0.7@aar'
     ```
     
 2. (Not recommended) Download the library source code from github, and attach it to your project.
