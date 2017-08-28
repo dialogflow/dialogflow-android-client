@@ -386,6 +386,7 @@ public class GoogleRecognitionServiceImpl extends AIService {
                     final AIRequest aiRequest = new AIRequest();
                     if (rates != null) {
                         aiRequest.setQuery(recognitionResults.toArray(new String[recognitionResults.size()]), rates);
+                        sortResultsByRate(recognitionResults, rates);
                     } else {
                         aiRequest.setQuery(recognitionResults.get(0));
                     }
@@ -412,6 +413,27 @@ public class GoogleRecognitionServiceImpl extends AIService {
         @Override
         public void onEvent(final int eventType, final Bundle params) {
         }
+    }
+
+    private static void sortResultsByRate(List<String> recognitionResults, float[] rates) {
+        int n = rates.length;
+        boolean swapped;
+        /* Until there is nothing to swap */
+        do {
+            swapped = false;
+            for (int i = 1; i <= n - 1; i++) {
+                /* if this pair is out of order (rates should decrease) */
+                if (rates[i - 1] < rates[i]) {
+                    /* swap them and remember something changed */
+                    recognitionResults.set(i, recognitionResults.set(i - 1, recognitionResults.get(i)));
+                    Float tmpF = rates[i];
+                    rates[i] = rates[i - 1];
+                    rates[i - 1] = tmpF;
+                    swapped = true;
+                }
+            }
+            n = n - 1;
+        } while (swapped);
     }
 
 }
