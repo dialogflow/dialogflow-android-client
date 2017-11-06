@@ -16,8 +16,11 @@
 
 package ai.api.sample;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -141,4 +144,31 @@ public class AIDialogSampleActivity extends BaseActivity implements AIDialog.AID
     public void buttonListenOnClick(final View view) {
         aiDialog.showAndListen();
     }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_aibutton_sample, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        final int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            startActivity(AISettingsActivity.class);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void startActivity(Class<?> cls) {
+        final Intent intent = new Intent(this, cls);
+        startActivity(intent);
+    }
+
+
 }
