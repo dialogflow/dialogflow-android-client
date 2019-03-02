@@ -86,12 +86,12 @@ Once you've added the SDK library, follow these steps:
     compile 'ai.api:libai:1.6.12'
 ```
 
-to yor app level gradle file.
+to your app level gradle file.
 
 
 )
 
-    ```java
+  ```java
     public interface AIListener {
         void onResult(AIResponse result); // here process response
         void onError(AIError error); // here process error
@@ -100,7 +100,7 @@ to yor app level gradle file.
         void onListeningCanceled(); // indicate stop listening here
         void onListeningFinished(); // indicate stop listening here
     }
-    ```
+  ```
 
 3. Create an instance of AIConfiguration, specifying the access token, locale, and recognition engine.
 
