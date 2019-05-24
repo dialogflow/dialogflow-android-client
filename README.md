@@ -81,15 +81,10 @@ Once you've added the SDK library, follow these steps:
     * **android.permission.RECORD_AUDIO**
     
 2. Create a class that implements the AIListener interface. This class will process responses from API.AI. (AIRequest, AIResponse are not a part of "ai.api:sdk:2.0.7@aar", they are a part of "ai.api:libai:1.6.12", if you haven't added it until now add 
-```
-
-    compile 'ai.api:libai:1.6.12'
-```
-
-to yor app level gradle file.
-
-
-)
+	```
+	compile 'ai.api:libai:1.6.12'
+	```
+	to your app level gradle file.
 
     ```java
     public interface AIListener {
